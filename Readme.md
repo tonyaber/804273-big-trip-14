@@ -1,7 +1,7 @@
 # Проект «Большое путешествие»
 
 * Студент: [Antonina Berchuk](https://up.htmlacademy.ru/ecmascript/14/user/804273).
-* Наставник: `Неизвестно`.
+* Наставник: [Антон Попов](https://up.htmlacademy.ru/ecmascript/14/user/78239).
 
 ---
 
