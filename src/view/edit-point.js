@@ -1,14 +1,17 @@
 import dayjs from 'dayjs';
 import { types, cities, allOffers, offersClassName } from '../const.js';
+
 export const createSiteEditPointTemplate = (point) => {
   const { base_price, date_from, date_to, type, offers, description } = point;
 
   //создание разметки для поля type
   const createTypeTemplate = (typeRadio) => {
     let check = '';
+
     if (typeRadio === type) {
       check = 'checked';
     }
+
     return `<div class="event__type-item">
               <input id="event-type-${typeRadio.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${typeRadio.toLowerCase()}" ${check}>
               <label class="event__type-label  event__type-label--${typeRadio.toLowerCase()}" for="event-type-${typeRadio.toLowerCase()}-1">${typeRadio}</label>
@@ -27,9 +30,11 @@ export const createSiteEditPointTemplate = (point) => {
   //создание разметки для дополнительных опций
   const createOfferTemplate = (offer) => {
     let check = '';
+
     if (offers.some((element) => element.id == offer.id)) {
       check = 'checked';
     }
+
     return `<div class="event__offer-selector">
               <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offersClassName[offer.id]}-1" type="checkbox" name="event-offer-${offersClassName[offer.id]}" ${check}>
               <label class="event__offer-label" for="event-offer-${offersClassName[offer.id]}-1">

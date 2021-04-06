@@ -51,7 +51,7 @@ export const generatePoint = () => {
   const date_from = dayjs().add(getRandomNumber(-20, 20), 'day').format('YYYY-MM-DDTHH:mm:ss.SSS') + 'Z';
   const date_to = dayjs(date_from).add(getRandomNumber(30, 160), 'minute').format('YYYY-MM-DDTHH:mm:ss.SSS') + 'Z';
   return {
-    base_price: getRandomNumber(0, 1000),
+    base_price: getRandomNumber(100, 1000),
     date_from,
     date_to,
     description: generateDescription(),

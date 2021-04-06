@@ -8,6 +8,7 @@ import { createSiteEditPointTemplate } from './view/edit-point.js';
 import { createSitePointTemplate } from './view/point.js';
 import { createSiteNewPointTemplate } from './view/new-point.js';
 import { generatePoint } from './mock/mock-point.js';
+
 //количество точек маршрута в списке
 const POINT_COUNT = 20;
 
@@ -20,10 +21,10 @@ const render = (container, template, place) => {
 
 //находим нужные елементы в разметке и добавляем к ним шаблоны
 const siteHeaderElement = document.querySelector('.trip-main');
-render(siteHeaderElement, createSiteTripInfoTemplate(), 'afterbegin');
+render(siteHeaderElement, createSiteTripInfoTemplate(points), 'afterbegin');
 
 const sitePriceElement = siteHeaderElement.querySelector('.trip-main__trip-info');
-render(sitePriceElement, createSitePriceTemplate(), 'beforeend');
+render(sitePriceElement, createSitePriceTemplate(points), 'beforeend');
 
 const siteMenuElement = siteHeaderElement.querySelector('.trip-controls__navigation');
 render(siteMenuElement, createSiteMenuTemplate(), 'beforeend');

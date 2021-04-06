@@ -8,15 +8,20 @@ export const createSitePointTemplate = (point) => {
   const date2 = dayjs(date_to);
   let duration = Math.round(date2.diff(date1) / 60000);
   let hours = 0;
+
   while (duration > 60) {
     hours = hours + 1;
     duration = duration - 60;
   }
+
   let minutes = duration;
+
   if (minutes < 10) {
     minutes = '0' + minutes;
   }
+
   let durationTemplate = '';
+
   if (hours != 0) {
     if (hours < 10) {
       hours = '0' + hours;
@@ -26,6 +31,7 @@ export const createSitePointTemplate = (point) => {
   else {
     durationTemplate = `${minutes}M`;
   }
+
   //создание списка дополнительных опций
   const createOffers = (offer) => {
     return `<li class="event__offer">
@@ -41,6 +47,7 @@ export const createSitePointTemplate = (point) => {
 
   //проверяем, в избранном ли поездка
   let isFavoriteTemplate = 'event__favorite-btn';
+
   if (is_favorite) {
     isFavoriteTemplate = 'event__favorite-btn event__favorite-btn--active';
   }
