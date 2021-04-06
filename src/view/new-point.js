@@ -1,25 +1,21 @@
 import dayjs from 'dayjs';
-import { types, cities, allOffers, offersClassName } from '../const.js';
+import { TYPES, cities, allOffers, offersClassName } from '../const.js';
 
 export const createSiteNewPointTemplate = (point) => {
-  const { date_from, date_to, type, offers, description } = point;
+  const {  type, offers, description } = point;
+  const dateFrom = dayjs(point.date_from);
+  const dateTo = dayjs(point.date_to);
 
   //создание разметки для поля type
-  const createTypeTemplate = (typeRadio) => {
-    let check = '';
-
-    if (typeRadio === type) {
-      check = 'checked';
-    }
-
+  const createTypeTemplate = (typeRadio,index) => {
     return `<div class="event__type-item">
-              <input id="event-type-${typeRadio.toLowerCase()}-2" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${typeRadio.toLowerCase()}" ${check}>
-              <label class="event__type-label  event__type-label--${typeRadio.toLowerCase()}" for="event-type-${typeRadio.toLowerCase()}-2">${typeRadio}</label>
+              <input id="event-type-${typeRadio.toLowerCase()}-0${index}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${typeRadio.toLowerCase()}" ${(typeRadio === type) ? 'checked':''}>
+              <label class="event__type-label  event__type-label--${typeRadio.toLowerCase()}" for="event-type-${typeRadio.toLowerCase()}-0${index}">${typeRadio}</label>
             </div>`;
   };
 
-  const TypeTemplate = types
-    .map((type) => createTypeTemplate(type))
+  const TypeTemplate = TYPES
+    .map((type, index) => createTypeTemplate(type,index))
     .join('');
 
   //создание разметки для поля город
@@ -28,16 +24,16 @@ export const createSiteNewPointTemplate = (point) => {
     .join('');
 
   //создание разметки для дополнительных опций
-  const createOfferTemplate = (offer) => {
+  const createOfferTemplate = (offer,index) => {
     let check = '';
 
-    if (offers.some((element) => element.id == offer.id)) {
+    if (offers.some((element) => element.name == offer.name)) {
       check = 'checked';
     }
 
     return `<div class="event__offer-selector">
-              <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offersClassName[offer.id]}-1" type="checkbox" name="event-offer-${offersClassName[offer.id]}" ${check}>
-              <label class="event__offer-label" for="event-offer-${offersClassName[offer.id]}-1">
+              <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offersClassName[index]}-1" type="checkbox" name="event-offer-${offersClassName[index]}" ${check}>
+              <label class="event__offer-label" for="event-offer-${offersClassName[index]}-1">
               <span class="event__offer-title">${offer.name}</span>
               &plus;&euro;&nbsp;
               <span class="event__offer-price">${offer.price}</span>
@@ -46,12 +42,12 @@ export const createSiteNewPointTemplate = (point) => {
   };
 
   const offerTemplate = allOffers
-    .map((offer) => createOfferTemplate(offer))
+    .map((offer,index) => createOfferTemplate(offer,index))
     .join('');
 
   //создание разметки для фото
   const createPhotoTemplate = (photo) => {
-    return `<img class="event__photo" src="${photo.src}" alt="${photo.descriptions}">`;
+    return `<img class="event__photo" src="${photo.src}" alt="${photo.description}">`;
   };
 
   const photoTemplate = description.pictures
@@ -88,10 +84,10 @@ export const createSiteNewPointTemplate = (point) => {
 
                   <div class="event__field-group  event__field-group--time">
                     <label class="visually-hidden" for="event-start-time-1">From</label>
-                    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dayjs(date_from).format('DD/MM/YY HH:mm')}">
+                    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dateFrom.format('DD/MM/YY HH:mm')}">
                     &mdash;
                     <label class="visually-hidden" for="event-end-time-1">To</label>
-                    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dayjs(date_to).format('DD/MM/YY HH:mm')}">
+                    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateTo.format('DD/MM/YY HH:mm')}">
                   </div>
 
                   <div class="event__field-group  event__field-group--price">

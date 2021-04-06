@@ -1,5 +1,5 @@
 import { getRandomNumber, getRandomArray } from '../utils.js';
-import { types, cities, allOffers } from '../const.js';
+import { TYPES, cities, allOffers } from '../const.js';
 import dayjs from 'dayjs';
 
 //константы
@@ -8,7 +8,7 @@ const COUNT_PHOTO = 50;
 const MAX_SIZE_PHOTO = 6;
 
 //генерация случайных данных с массива для заполнения
-const generateDate = (array) => {
+const getRandomElementFromArray = (array) => {
   const randomIndex = getRandomNumber(0, array.length - 1);
   return array[randomIndex];
 };
@@ -33,8 +33,8 @@ const photos = new Array(COUNT_PHOTO).fill('http://picsum.photos/248/152?r=').ma
 //функиция генерации обьекта сo случайнм фото и описанием к нему
 const generatePhoto = () => {
   return {
-    src: generateDate(photos),
-    descriptions: generateDate(descriptions),
+    src: getRandomElementFromArray(photos),
+    description: getRandomElementFromArray(descriptions),
   };
 };
 
@@ -42,7 +42,7 @@ const generatePhoto = () => {
 const generateDescription = () => {
   return {
     description: getRandomArray(descriptions, MAX_SIZE_DESCRIPTION),
-    name: generateDate(cities),
+    name: getRandomElementFromArray(cities),
     pictures: new Array(getRandomNumber(1, MAX_SIZE_PHOTO)).fill().map(generatePhoto),
   };
 };
@@ -58,6 +58,6 @@ export const generatePoint = () => {
     id: getRandomNumber(0, 10),
     is_favorite: Boolean(getRandomNumber(0, 1)),
     offers: getRandomArray(allOffers),
-    type: generateDate(types),
+    type: getRandomElementFromArray(TYPES),
   };
 };
