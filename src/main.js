@@ -7,9 +7,11 @@ import { createSiteListTemplate } from './view/list.js';
 import { createSiteEditPointTemplate } from './view/edit-point.js';
 import { createSitePointTemplate } from './view/point.js';
 import { createSiteNewPointTemplate } from './view/new-point.js';
-
+import { generatePoint } from './mock/mock-point.js';
 //количество точек маршрута в списке
-const POINT_COUNT = 3;
+const POINT_COUNT = 20;
+
+const points = new Array(POINT_COUNT).fill().map(generatePoint);
 
 //создаем функцию для добавления елементов в разметку
 const render = (container, template, place) => {
@@ -37,7 +39,7 @@ const siteListElement = siteEventsElement.querySelector('.trip-events__list');
 render(siteListElement, createSiteEditPointTemplate(), 'afterbegin');
 
 for (let i = 0; i < POINT_COUNT; i++){
-  render(siteListElement, createSitePointTemplate(), 'beforeend');
+  render(siteListElement, createSitePointTemplate(points[i]), 'beforeend');
 }
 
 render(siteListElement, createSiteNewPointTemplate(), 'beforeend');
