@@ -16,15 +16,15 @@ export const createSitePointTemplate = (point) => {
   if (minutes < 10) {
     minutes = '0' + minutes;
   }
-  let timeToTrevel = '';
+  let durationTemplate = '';
   if (hours != 0) {
     if (hours < 10) {
       hours = '0' + hours;
     }
-    timeToTrevel = `${hours}H ${minutes}M`;
+    durationTemplate = `${hours}H ${minutes}M`;
   }
   else {
-    timeToTrevel = `${minutes}M`;
+    durationTemplate = `${minutes}M`;
   }
   //создание списка дополнительных опций
   const createOffers = (offer) => {
@@ -58,7 +58,7 @@ export const createSitePointTemplate = (point) => {
                     &mdash;
                     <time class="event__end-time" datetime="${dayjs(date_to).format('YYYY-MM-DDTHH:mm')}">${dayjs(date_to).format('HH:mm')}</time>
                   </p>
-                  <p class="event__duration">${timeToTrevel}</p>
+                  <p class="event__duration">${durationTemplate}</p>
                 </div>
                 <p class="event__price">
                   &euro;&nbsp;<span class="event__price-value">${base_price}</span>

@@ -1,4 +1,5 @@
 import { getRandomNumber, getRandomArray } from '../utils.js';
+import { types, cities, allOffers } from '../const.js';
 import dayjs from 'dayjs';
 
 //константы
@@ -12,10 +13,6 @@ const generateDate = (array) => {
   return array[randomIndex];
 };
 
-const types = ['Taxi', 'Bus', 'Train', 'Ship', 'Transport', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
-
-const cities = ['Amsterdam', 'Chamonix', 'Geneva', 'Paris', 'Berlin', 'Dresden'];
-
 const descriptions = [
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit. ',
   'Cras aliquet varius magna, non porta ligula feugiat eget. ',
@@ -28,34 +25,6 @@ const descriptions = [
   'Aliquam erat volutpat. ',
   'Nunc fermentum tortor ac porta dapibus. ',
   'In rutrum ac purus sit amet tempus. ',
-];
-
-const offers = [
-  {
-    name: 'Add luggage',
-    price: 30,
-    id: 0,
-  },
-  {
-    name: 'Switch to comfort class',
-    price: 100,
-    id: 1,
-  },
-  {
-    name: 'Add meal',
-    price: 15,
-    id: 2,
-  },
-  {
-    name: 'Choose seats',
-    price: 5,
-    id: 3,
-  },
-  {
-    name: 'Travel by train',
-    price: 40,
-    id: 4,
-  },
 ];
 
 //создания массива фотографий
@@ -79,14 +48,16 @@ const generateDescription = () => {
 };
 
 export const generatePoint = () => {
+  const date_from = dayjs().add(getRandomNumber(-20, 20), 'day').format('YYYY-MM-DDTHH:mm:ss.SSS') + 'Z';
+  const date_to = dayjs(date_from).add(getRandomNumber(30, 160), 'minute').format('YYYY-MM-DDTHH:mm:ss.SSS') + 'Z';
   return {
     base_price: getRandomNumber(0, 1000),
-    date_from: dayjs().format('YYYY-MM-DDTHH:mm:ss.SSS') + 'Z',
-    date_to: dayjs().add(getRandomNumber(30, 160), 'minute').format('YYYY-MM-DDTHH:mm:ss.SSS') + 'Z',
+    date_from,
+    date_to,
     description: generateDescription(),
     id: getRandomNumber(0, 10),
     is_favorite: Boolean(getRandomNumber(0, 1)),
-    offers: getRandomArray(offers),
+    offers: getRandomArray(allOffers),
     type: generateDate(types),
   };
 };

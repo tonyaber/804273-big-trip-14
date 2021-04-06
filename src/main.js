@@ -36,10 +36,10 @@ render(siteEventsElement, createSiteSortTemplate(), 'beforeend');
 render(siteEventsElement, createSiteListTemplate(), 'beforeend');
 
 const siteListElement = siteEventsElement.querySelector('.trip-events__list');
-render(siteListElement, createSiteEditPointTemplate(), 'afterbegin');
+render(siteListElement, createSiteEditPointTemplate(points[0]), 'afterbegin');
 
-for (let i = 0; i < POINT_COUNT; i++){
+for (let i = 1; i < POINT_COUNT-1; i++){
   render(siteListElement, createSitePointTemplate(points[i]), 'beforeend');
 }
 
-render(siteListElement, createSiteNewPointTemplate(), 'beforeend');
+render(siteListElement, createSiteNewPointTemplate(points[POINT_COUNT-1]), 'beforeend');
