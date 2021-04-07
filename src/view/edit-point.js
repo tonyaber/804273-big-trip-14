@@ -1,10 +1,10 @@
 import dayjs from 'dayjs';
-import { TYPES, cities, allOffers, offersClassName } from '../const.js';
+import { TYPES, CITIES, ALL_OFFERS, OFFERS_CLASS_NAME } from '../const.js';
 
 export const createSiteEditPointTemplate = (point) => {
-  const { base_price, type, offers, description } = point;
-  const dateFrom = dayjs(point.date_from);
-  const dateTo = dayjs(point.date_to);
+  const { date_from, date_to, base_price, type, offers, description } = point;
+  const dateFrom = dayjs(date_from);
+  const dateTo = dayjs(date_to);
 
   //создание разметки для поля type
   const createTypeTemplate = (typeRadio,index) => {
@@ -19,7 +19,7 @@ export const createSiteEditPointTemplate = (point) => {
     .join('');
 
   //создание разметки для поля город
-  const cityTemplate = cities
+  const cityTemplate = CITIES
     .map((city) => `<option value="${city}"></option>`)
     .join('');
 
@@ -32,8 +32,8 @@ export const createSiteEditPointTemplate = (point) => {
     }
 
     return `<div class="event__offer-selector">
-              <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offersClassName[index]}-2" type="checkbox" name="event-offer-${offersClassName[index]}" ${check}>
-              <label class="event__offer-label" for="event-offer-${offersClassName[index]}-2">
+              <input class="event__offer-checkbox  visually-hidden" id="event-offer-${OFFERS_CLASS_NAME[index]}-2" type="checkbox" name="event-offer-${OFFERS_CLASS_NAME[index]}" ${check}>
+              <label class="event__offer-label" for="event-offer-${OFFERS_CLASS_NAME[index]}-2">
               <span class="event__offer-title">${offer.name}</span>
               &plus;&euro;&nbsp;
               <span class="event__offer-price">${offer.price}</span>
@@ -41,7 +41,7 @@ export const createSiteEditPointTemplate = (point) => {
              </div>`;
   };
 
-  const offerTemplate = allOffers
+  const offerTemplate = ALL_OFFERS
     .map((offer,index) => createOfferTemplate(offer,index))
     .join('');
 
@@ -51,7 +51,7 @@ export const createSiteEditPointTemplate = (point) => {
                   <div class="event__type-wrapper">
                     <label class="event__type  event__type-btn" for="event-type-toggle-1">
                       <span class="visually-hidden">Choose event type</span>
-                      <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
+                      <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
                     </label>
                     <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 

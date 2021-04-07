@@ -1,10 +1,10 @@
 const TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Transport', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
 
-const cities = ['Amsterdam', 'Chamonix', 'Geneva', 'Paris', 'Berlin', 'Dresden'];
+const CITIES = ['Amsterdam', 'Chamonix', 'Geneva', 'Paris', 'Berlin', 'Dresden'];
 
-const offersClassName = ['luggage', 'comfort', 'meal', 'seats','train'];
+const OFFERS_CLASS_NAME = ['luggage', 'comfort', 'meal', 'seats','train'];
 
-const allOffers = [
+const ALL_OFFERS = [
   {
     name: 'Add luggage',
     price: 30,
@@ -27,4 +27,4 @@ const allOffers = [
   },
 ];
 
-export { TYPES, cities, allOffers, offersClassName };
+export { TYPES, CITIES, OFFERS_CLASS_NAME, ALL_OFFERS };

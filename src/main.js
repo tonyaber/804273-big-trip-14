@@ -7,19 +7,19 @@ import { createSiteListTemplate } from './view/list.js';
 import { createSiteEditPointTemplate } from './view/edit-point.js';
 import { createSitePointTemplate } from './view/point.js';
 import { createSiteNewPointTemplate } from './view/new-point.js';
-import { generatePoint } from './mock/mock-point.js';
+import { generatePoint } from './mock/point.js';
 
 //количество точек маршрута в списке
 const POINT_COUNT = 20;
 
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
 
-//создаем функцию для добавления елементов в разметку
+//создаем функцию для добавления элементов в разметку
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
 };
 
-//находим нужные елементы в разметке и добавляем к ним шаблоны
+//находим нужные элементы в разметке и добавляем к ним шаблоны
 const siteHeaderElement = document.querySelector('.trip-main');
 render(siteHeaderElement, createSiteTripInfoTemplate(points), 'afterbegin');
 

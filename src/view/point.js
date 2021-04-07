@@ -1,6 +1,13 @@
 import dayjs from 'dayjs';
 
-//функция считает разницу во времени, возвращает формат `${hours}H ${minutes}M`
+/**
+  * функция считает промежуток во времени
+  *
+  * @param {date} start - начало промежутка
+  * @param {date} second - конец промежутка
+  * @returns {string} - возвращает промежуток в формате ${hours}H ${minutes}M
+  * если прошло меньше часа, то возвращает ${minutes}M
+  */
 const calculateDuration = (start, end) => {
   const quantityMinutes = Math.round(end.diff(start) / 60000);
 
@@ -21,11 +28,11 @@ const calculateDuration = (start, end) => {
 };
 
 export const createSitePointTemplate = (point) => {
-  const { base_price, is_favorite, type, offers, description } = point;
+  const { date_from, date_to, base_price, is_favorite, type, offers, description } = point;
 
   //определение длины поездки
-  const dateFrom = dayjs(point.date_from);
-  const dateTo = dayjs(point.date_to);
+  const dateFrom = dayjs(date_from);
+  const dateTo = dayjs(date_to);
   const durationTemplate = calculateDuration(dateFrom, dateTo);
 
   //создание списка дополнительных опций

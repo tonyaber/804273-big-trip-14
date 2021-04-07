@@ -1,9 +1,23 @@
-//функция рандомного числа
+/**
+  * функция генерирует рандомное число из  заданого промежутка
+  *
+  * @param {number} min - начало промежутка
+  * @param {number} max - конец промежутка
+  * @returns {number} - возвращает случайное значение
+  */
 const getRandomNumber = (min, max) => {
   return Math.round((Math.random() * (max - min) + min));
 };
 
-//Функция создания массива с рандомным набором данных
+/**
+  * функция создает новый массив рандомной длины
+  * с переешанными элементами
+  *
+  * @param {array} array - массив
+  * @param {number} size - максимально возможный размер нового массива,
+  * по умолчанию равен длине массива - 1
+  * @returns {array} - возвращает новый массив с рандомными элементами
+  */
 const getRandomArray = (array, size = array.length - 1) => {
   const newArray = array.slice();
 
