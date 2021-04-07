@@ -7,21 +7,24 @@ import { createSiteListTemplate } from './view/list.js';
 import { createSiteEditPointTemplate } from './view/edit-point.js';
 import { createSitePointTemplate } from './view/point.js';
 import { createSiteNewPointTemplate } from './view/new-point.js';
+import { generatePoint } from './mock/point.js';
 
 //количество точек маршрута в списке
-const POINT_COUNT = 3;
+const POINT_COUNT = 20;
 
-//создаем функцию для добавления елементов в разметку
+const points = new Array(POINT_COUNT).fill().map(generatePoint);
+
+//создаем функцию для добавления элементов в разметку
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
 };
 
-//находим нужные елементы в разметке и добавляем к ним шаблоны
+//находим нужные элементы в разметке и добавляем к ним шаблоны
 const siteHeaderElement = document.querySelector('.trip-main');
-render(siteHeaderElement, createSiteTripInfoTemplate(), 'afterbegin');
+render(siteHeaderElement, createSiteTripInfoTemplate(points), 'afterbegin');
 
 const sitePriceElement = siteHeaderElement.querySelector('.trip-main__trip-info');
-render(sitePriceElement, createSitePriceTemplate(), 'beforeend');
+render(sitePriceElement, createSitePriceTemplate(points), 'beforeend');
 
 const siteMenuElement = siteHeaderElement.querySelector('.trip-controls__navigation');
 render(siteMenuElement, createSiteMenuTemplate(), 'beforeend');
@@ -34,10 +37,10 @@ render(siteEventsElement, createSiteSortTemplate(), 'beforeend');
 render(siteEventsElement, createSiteListTemplate(), 'beforeend');
 
 const siteListElement = siteEventsElement.querySelector('.trip-events__list');
-render(siteListElement, createSiteEditPointTemplate(), 'afterbegin');
+render(siteListElement, createSiteEditPointTemplate(points[0]), 'afterbegin');
 
-for (let i = 0; i < POINT_COUNT; i++){
-  render(siteListElement, createSitePointTemplate(), 'beforeend');
+for (let i = 1; i < POINT_COUNT-1; i++){
+  render(siteListElement, createSitePointTemplate(points[i]), 'beforeend');
 }
 
-render(siteListElement, createSiteNewPointTemplate(), 'beforeend');
+render(siteListElement, createSiteNewPointTemplate(points[POINT_COUNT-1]), 'beforeend');
