@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-
+import { createElement } from '../utils.js';
 /**
   * функция считает промежуток во времени
   *
@@ -27,7 +27,7 @@ const calculateDuration = (start, end) => {
   return `${minutes}M`;
 };
 
-export const createSitePointTemplate = (point) => {
+const createSitePointTemplate = (point) => {
   const { date_from, date_to, base_price, is_favorite, type, offers, description } = point;
 
   //определение длины поездки
@@ -82,3 +82,25 @@ export const createSitePointTemplate = (point) => {
               </div>
             </li>`;
 };
+export default class Point {
+  constructor(point) {
+    this._point = point;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createSitePointTemplate(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+

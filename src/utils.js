@@ -1,3 +1,6 @@
+import { RenderPosition } from './const.js';
+import EditPointView from './view/edit-point.js';
+import PointView from './view/point.js';
 /**
   * функция генерирует рандомное число из  заданого промежутка
   *
@@ -33,4 +36,83 @@ const getRandomArray = (array, size = array.length - 1) => {
   return newArray.slice(0, count);
 };
 
-export { getRandomNumber, getRandomArray };
+/**
+  * функция обавляет DOM-элемент в контейнер
+  *
+  * @param container - DOM-элемент, в корорый записываем новое значение
+  * @param element - добавляемый DOM-элемент
+  * @param place - параметр, отвечающий за место, куда записываем
+  *
+  */
+
+const renderElement = (container, element, place) => {
+  switch (place) {
+    case RenderPosition.AFTERBEGIN:
+      container.prepend(element);
+      break;
+    case RenderPosition.BEFOREEND:
+      container.append(element);
+      break;
+  }
+};
+/**
+  * функция создания DOM-элемента
+  *
+  * Принцип работы:
+  * 1. создаём пустой div-блок
+  * 2. берём HTML в виде строки и вкладываем в этот div-блок, превращая в DOM-элемент @param template
+  * 3. @returns возвращаем этот DOM-элемент
+  *
+  */
+const createElement = (template) => {
+  const newElement = document.createElement('div'); // 1
+  newElement.innerHTML = template; // 2
+
+  return newElement.firstChild; // 3
+};
+
+/**
+  * функция открывает поле редактирования и скрывает его после изменений
+  *
+  * @param pointListElement - список
+  * @param point - DOM-элемент списка
+  *
+  */
+const renderPoint = (pointListElement, point) => {
+  const pointComponent = new PointView(point);
+  const pointEditComponent = new EditPointView(point);
+
+  //смена точки на форму редактирования
+  const replacePointToForm = () => {
+    pointListElement.replaceChild(pointEditComponent.getElement(), pointComponent.getElement());
+  };
+
+  //смена формы редактирования на обычное отображение точки
+  const replaceFormToPoint = () => {
+    pointListElement.replaceChild(pointComponent.getElement(), pointEditComponent.getElement());
+  };
+
+  //фукнкция клика на кнопку Escape
+  const onEscKeyDown = (evt) => {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      replaceFormToPoint();
+      document.removeEventListener('keydown', onEscKeyDown);
+    }
+  };
+
+  pointComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+    replacePointToForm();
+    document.addEventListener('keydown', onEscKeyDown);
+  });
+
+  pointEditComponent.getElement().querySelector('form').addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    replaceFormToPoint();
+    document.removeEventListener('keydown', onEscKeyDown);
+  });
+
+  renderElement(pointListElement, pointComponent.getElement(), RenderPosition.BEFOREEND);
+};
+
+export { getRandomNumber, getRandomArray, renderElement, createElement, renderPoint };

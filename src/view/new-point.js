@@ -1,16 +1,27 @@
 import dayjs from 'dayjs';
-import { TYPES, CITIES, ALL_OFFERS, OFFERS_CLASS_NAME} from '../const.js';
+import { TYPES, CITIES, ALL_OFFERS, OFFERS_CLASS_NAME } from '../const.js';
+import { createElement } from '../utils.js';
 
-export const createSiteNewPointTemplate = (point) => {
+const createSiteNewPointTemplate = (point) => {
   const { date_from, date_to, type, offers, description } = point;
+
   const dateFrom = dayjs(date_from);
   const dateTo = dayjs(date_to);
 
   //создание разметки для поля type
   const createTypeTemplate = (typeRadio,index) => {
     return `<div class="event__type-item">
-              <input id="event-type-${typeRadio.toLowerCase()}-0${index}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${typeRadio.toLowerCase()}" ${(typeRadio === type) ? 'checked':''}>
-              <label class="event__type-label  event__type-label--${typeRadio.toLowerCase()}" for="event-type-${typeRadio.toLowerCase()}-0${index}">${typeRadio}</label>
+              <input id="event-type-${typeRadio.toLowerCase()}-0${index}"
+                class="event__type-input  visually-hidden"
+                type="radio"
+                name="event-type"
+                value="${typeRadio.toLowerCase()}"
+                ${(typeRadio === type) ? 'checked' : ''}>
+              <label class="event__type-label
+                event__type-label--${typeRadio.toLowerCase()}"
+                for="event-type-${typeRadio.toLowerCase()}-0${index}">
+                  ${typeRadio}
+              </label>
             </div>`;
   };
 
@@ -32,11 +43,15 @@ export const createSiteNewPointTemplate = (point) => {
     }
 
     return `<div class="event__offer-selector">
-              <input class="event__offer-checkbox  visually-hidden" id="event-offer-${OFFERS_CLASS_NAME[index]}-1" type="checkbox" name="event-offer-${OFFERS_CLASS_NAME[index]}" ${check}>
+              <input class="event__offer-checkbox  visually-hidden"
+                id="event-offer-${OFFERS_CLASS_NAME[index]}-1"
+                type="checkbox"
+                name="event-offer-${OFFERS_CLASS_NAME[index]}"
+                ${check}>
               <label class="event__offer-label" for="event-offer-${OFFERS_CLASS_NAME[index]}-1">
-              <span class="event__offer-title">${offer.name}</span>
-              &plus;&euro;&nbsp;
-              <span class="event__offer-price">${offer.price}</span>
+                <span class="event__offer-title">${offer.name}</span>
+                &plus;&euro;&nbsp;
+                <span class="event__offer-price">${offer.price}</span>
               </label>
              </div>`;
   };
@@ -76,7 +91,11 @@ export const createSiteNewPointTemplate = (point) => {
                     <label class="event__label  event__type-output" for="event-destination-1">
                        ${type}
                     </label>
-                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${description.name}" list="destination-list-1">
+                    <input class="event__input  event__input--destination"
+                      id="event-destination-1" type="text"
+                      name="event-destination"
+                      value="${description.name}"
+                      list="destination-list-1">
                     <datalist id="destination-list-1">
                       ${cityTemplate}
                     </datalist>
@@ -124,3 +143,24 @@ export const createSiteNewPointTemplate = (point) => {
               </form>
             </li>`;
 };
+export default class NewPoint {
+  constructor(point) {
+    this._point = point;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createSiteNewPointTemplate(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
