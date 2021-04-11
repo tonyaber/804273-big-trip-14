@@ -1,7 +1,8 @@
 import dayjs from 'dayjs';
 import { TYPES, CITIES, ALL_OFFERS, OFFERS_CLASS_NAME } from '../const.js';
+import { createElement } from '../utils.js';
 
-export const createSiteEditPointTemplate = (point) => {
+const createSiteEditPointTemplate = (point) => {
   const { date_from, date_to, base_price, type, offers, description } = point;
   const dateFrom = dayjs(date_from);
   const dateTo = dayjs(date_to);
@@ -9,8 +10,16 @@ export const createSiteEditPointTemplate = (point) => {
   //создание разметки для поля type
   const createTypeTemplate = (typeRadio,index) => {
     return `<div class="event__type-item">
-              <input id="event-type-${typeRadio.toLowerCase()}-1${index}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${typeRadio.toLowerCase()}" ${(typeRadio === type) ? 'checked':''}>
-              <label class="event__type-label  event__type-label--${typeRadio.toLowerCase()}" for="event-type-${typeRadio.toLowerCase()}-1${index}">${typeRadio}</label>
+              <input id="event-type-${typeRadio.toLowerCase()}-1${index}"
+                class="event__type-input  visually-hidden"
+                type="radio"
+                name="event-type"
+                value="${typeRadio.toLowerCase()}"
+                ${(typeRadio === type) ? 'checked' : ''}>
+              <label class="event__type-label  event__type-label--${typeRadio.toLowerCase()}"
+                for="event-type-${typeRadio.toLowerCase()}-1${index}">
+                ${typeRadio}
+              </label>
             </div>`;
   };
 
@@ -32,7 +41,11 @@ export const createSiteEditPointTemplate = (point) => {
     }
 
     return `<div class="event__offer-selector">
-              <input class="event__offer-checkbox  visually-hidden" id="event-offer-${OFFERS_CLASS_NAME[index]}-2" type="checkbox" name="event-offer-${OFFERS_CLASS_NAME[index]}" ${check}>
+              <input class="event__offer-checkbox  visually-hidden"
+                id="event-offer-${OFFERS_CLASS_NAME[index]}-2"
+                type="checkbox"
+                name="event-offer-${OFFERS_CLASS_NAME[index]}"
+                ${check}>
               <label class="event__offer-label" for="event-offer-${OFFERS_CLASS_NAME[index]}-2">
               <span class="event__offer-title">${offer.name}</span>
               &plus;&euro;&nbsp;
@@ -67,7 +80,12 @@ export const createSiteEditPointTemplate = (point) => {
                     <label class="event__label  event__type-output" for="event-destination-1">
                        ${type}
                     </label>
-                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${description.name}" list="destination-list-1">
+                    <input class="event__input  event__input--destination"
+                      id="event-destination-1"
+                      type="text"
+                      name="event-destination"
+                      value="${description.name}"
+                      list="destination-list-1">
                     <datalist id="destination-list-1">
                       ${cityTemplate}
                     </datalist>
@@ -75,10 +93,19 @@ export const createSiteEditPointTemplate = (point) => {
 
                   <div class="event__field-group  event__field-group--time">
                     <label class="visually-hidden" for="event-start-time-1">From</label>
-                    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dateFrom.format('DD/MM/YY HH:mm')}">
+                    <input class="event__input
+                      event__input--time"
+                      id="event-start-time-1"
+                      type="text"
+                      name="event-start-time"
+                      value="${dateFrom.format('DD/MM/YY HH:mm')}">
                     &mdash;
                     <label class="visually-hidden" for="event-end-time-1">To</label>
-                    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateTo.format('DD/MM/YY HH:mm')}">
+                    <input class="event__input  event__input--time"
+                      id="event-end-time-1"
+                      type="text"
+                      name="event-end-time"
+                      value="${dateTo.format('DD/MM/YY HH:mm')}">
                   </div>
 
                   <div class="event__field-group  event__field-group--price">
@@ -112,3 +139,24 @@ export const createSiteEditPointTemplate = (point) => {
               </form>
             </li>`;
 };
+export default class EditPoint {
+  constructor(point) {
+    this._point = point;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createSiteEditPointTemplate(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

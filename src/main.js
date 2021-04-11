@@ -1,46 +1,37 @@
-import { createSiteTripInfoTemplate } from './view/trip-info.js';
-import { createSiteMenuTemplate } from './view/menu.js';
-import { createSitePriceTemplate } from './view/price.js';
-import { createSiteFiltersTemplate } from './view/filters.js';
-import { createSiteSortTemplate } from './view/sort.js';
-import { createSiteListTemplate } from './view/list.js';
-import { createSiteEditPointTemplate } from './view/edit-point.js';
-import { createSitePointTemplate } from './view/point.js';
-import { createSiteNewPointTemplate } from './view/new-point.js';
+import { renderElement, renderPoint } from './utils.js';
+import TripInfoView from './view/trip-info.js';
+import MenuView from './view/menu.js';
+import PriceView from './view/price.js';
+import FiltersView from './view/filters.js';
+import SortView from './view/sort.js';
+import ListView from './view/list.js';
+import NewPointView from './view/new-point.js';
 import { generatePoint } from './mock/point.js';
-
-//количество точек маршрута в списке
-const POINT_COUNT = 20;
+import { RenderPosition, POINT_COUNT } from './const.js';
 
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
 
-//создаем функцию для добавления элементов в разметку
-const render = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
-};
-
 //находим нужные элементы в разметке и добавляем к ним шаблоны
 const siteHeaderElement = document.querySelector('.trip-main');
-render(siteHeaderElement, createSiteTripInfoTemplate(points), 'afterbegin');
+renderElement(siteHeaderElement, new TripInfoView(points).getElement(), RenderPosition.AFTERBEGIN);
 
 const sitePriceElement = siteHeaderElement.querySelector('.trip-main__trip-info');
-render(sitePriceElement, createSitePriceTemplate(points), 'beforeend');
+renderElement(sitePriceElement, new PriceView(points).getElement(), RenderPosition.BEFOREEND);
 
 const siteMenuElement = siteHeaderElement.querySelector('.trip-controls__navigation');
-render(siteMenuElement, createSiteMenuTemplate(), 'beforeend');
+renderElement(siteMenuElement, new MenuView().getElement(), RenderPosition.BEFOREEND);
 
 const siteFiltersElement = siteHeaderElement.querySelector('.trip-controls__filters');
-render(siteFiltersElement, createSiteFiltersTemplate(), 'beforeend');
+renderElement(siteFiltersElement, new FiltersView().getElement(), RenderPosition.BEFOREEND);
 
 const siteEventsElement = document.querySelector('.trip-events');
-render(siteEventsElement, createSiteSortTemplate(), 'beforeend');
-render(siteEventsElement, createSiteListTemplate(), 'beforeend');
+renderElement(siteEventsElement, new SortView().getElement(), RenderPosition.BEFOREEND);
 
-const siteListElement = siteEventsElement.querySelector('.trip-events__list');
-render(siteListElement, createSiteEditPointTemplate(points[0]), 'afterbegin');
+const pointListComponent = new ListView();
+renderElement(siteEventsElement, pointListComponent.getElement(), RenderPosition.BEFOREEND);
 
-for (let i = 1; i < POINT_COUNT-1; i++){
-  render(siteListElement, createSitePointTemplate(points[i]), 'beforeend');
+for (let i = 0; i < POINT_COUNT-1; i++){
+  renderPoint(pointListComponent.getElement(),points[i]);
 }
 
-render(siteListElement, createSiteNewPointTemplate(points[POINT_COUNT-1]), 'beforeend');
+renderElement(pointListComponent.getElement(), new NewPointView(points[POINT_COUNT - 1]).getElement(), RenderPosition.BEFOREEND);

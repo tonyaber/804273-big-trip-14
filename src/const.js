@@ -2,7 +2,9 @@ const TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Transport', 'Drive', 'Flight', '
 
 const CITIES = ['Amsterdam', 'Chamonix', 'Geneva', 'Paris', 'Berlin', 'Dresden'];
 
-const OFFERS_CLASS_NAME = ['luggage', 'comfort', 'meal', 'seats','train'];
+const OFFERS_CLASS_NAME = ['luggage', 'comfort', 'meal', 'seats', 'train'];
+
+const FILTERS = ['Everything', 'Future', 'Past'];
 
 const ALL_OFFERS = [
   {
@@ -27,4 +29,11 @@ const ALL_OFFERS = [
   },
 ];
 
-export { TYPES, CITIES, OFFERS_CLASS_NAME, ALL_OFFERS };
+const RenderPosition = {
+  AFTERBEGIN: 'afterbegin',
+  BEFOREEND: 'beforeend',
+};
+
+const POINT_COUNT = 20;
+
+export { TYPES, CITIES, OFFERS_CLASS_NAME, ALL_OFFERS, RenderPosition, POINT_COUNT, FILTERS};

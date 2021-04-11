@@ -1,9 +1,10 @@
 import dayjs from 'dayjs';
 import * as minMax from 'dayjs/plugin/minMax';
+import { createElement } from '../utils.js';
 
 dayjs.extend(minMax);
 
-export const createSiteTripInfoTemplate = (points) => {
+const createSiteTripInfoTemplate = (points) => {
   //массив со всех городов
   const cities = points.map((element) => element.description.name);
 
@@ -26,3 +27,26 @@ export const createSiteTripInfoTemplate = (points) => {
             </div>
           </section>`;
 };
+
+export default class TripInfo {
+  constructor(points) {
+    this._points = points;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createSiteTripInfoTemplate(this._points);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
