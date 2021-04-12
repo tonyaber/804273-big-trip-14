@@ -5,7 +5,6 @@ import PriceView from './view/price.js';
 import FiltersView from './view/filters.js';
 import SortView from './view/sort.js';
 import ListView from './view/list.js';
-import NewPointView from './view/new-point.js';
 import { generatePoint } from './mock/point.js';
 import { RenderPosition, POINT_COUNT } from './const.js';
 
@@ -30,8 +29,6 @@ renderElement(siteEventsElement, new SortView().getElement(), RenderPosition.BEF
 const pointListComponent = new ListView();
 renderElement(siteEventsElement, pointListComponent.getElement(), RenderPosition.BEFOREEND);
 
-for (let i = 0; i < POINT_COUNT-1; i++){
-  renderPoint(pointListComponent.getElement(),points[i]);
+for (let i = 0; i < POINT_COUNT - 1; i++) {
+  renderPoint(pointListComponent.getElement(), points[i]);
 }
-
-renderElement(pointListComponent.getElement(), new NewPointView(points[POINT_COUNT - 1]).getElement(), RenderPosition.BEFOREEND);
