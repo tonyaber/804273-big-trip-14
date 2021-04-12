@@ -3,9 +3,7 @@ import { TYPES, CITIES, ALL_OFFERS, OFFERS_CLASS_NAME } from '../const.js';
 import { createElement } from '../utils.js';
 
 const createSiteEditPointTemplate = (point) => {
-  const { date_from, date_to, base_price, type, offers, description } = point;
-  const dateFrom = dayjs(date_from);
-  const dateTo = dayjs(date_to);
+  const { dateFrom, dateTo, basePrice, type, offers, description } = point;
 
   //создание разметки для поля type
   const createTypeTemplate = (typeRadio,index) => {
@@ -98,14 +96,14 @@ const createSiteEditPointTemplate = (point) => {
                       id="event-start-time-1"
                       type="text"
                       name="event-start-time"
-                      value="${dateFrom.format('DD/MM/YY HH:mm')}">
+                      value="${dayjs(dateFrom).format('DD/MM/YY HH:mm')}">
                     &mdash;
                     <label class="visually-hidden" for="event-end-time-1">To</label>
                     <input class="event__input  event__input--time"
                       id="event-end-time-1"
                       type="text"
                       name="event-end-time"
-                      value="${dateTo.format('DD/MM/YY HH:mm')}">
+                      value="${dayjs(dateTo).format('DD/MM/YY HH:mm')}">
                   </div>
 
                   <div class="event__field-group  event__field-group--price">
@@ -113,7 +111,7 @@ const createSiteEditPointTemplate = (point) => {
                       <span class="visually-hidden">Price</span>
                       &euro;
                     </label>
-                    <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${base_price}">
+                    <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
                   </div>
 
                   <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>

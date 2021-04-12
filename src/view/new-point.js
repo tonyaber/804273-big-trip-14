@@ -3,10 +3,7 @@ import { TYPES, CITIES, ALL_OFFERS, OFFERS_CLASS_NAME } from '../const.js';
 import { createElement } from '../utils.js';
 
 const createSiteNewPointTemplate = (point) => {
-  const { date_from, date_to, type, offers, description } = point;
-
-  const dateFrom = dayjs(date_from);
-  const dateTo = dayjs(date_to);
+  const { dateFrom, dateTo, type, offers, description } = point;
 
   //создание разметки для поля type
   const createTypeTemplate = (typeRadio,index) => {
@@ -103,10 +100,10 @@ const createSiteNewPointTemplate = (point) => {
 
                   <div class="event__field-group  event__field-group--time">
                     <label class="visually-hidden" for="event-start-time-1">From</label>
-                    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dateFrom.format('DD/MM/YY HH:mm')}">
+                    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dayjs(dateFrom).format('DD/MM/YY HH:mm')}">
                     &mdash;
                     <label class="visually-hidden" for="event-end-time-1">To</label>
-                    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateTo.format('DD/MM/YY HH:mm')}">
+                    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dayjs(dateTo).format('DD/MM/YY HH:mm')}">
                   </div>
 
                   <div class="event__field-group  event__field-group--price">

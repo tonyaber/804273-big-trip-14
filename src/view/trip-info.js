@@ -12,11 +12,11 @@ const createSiteTripInfoTemplate = (points) => {
   const citiesNotRepeat = Array.from(new Set(cities)).join(' &mdash; ');
 
   //первая дата с массива всех дат
-  const dateFrom = points.map((element) => dayjs(element.date_from));
+  const dateFrom = points.map((element) => dayjs(element.dateFrom));
   const dateFromTemplate = dayjs.min(dateFrom).format('MMM DD');
 
   //последняя дата с массива всех дат
-  const dateTo = points.map((element) => dayjs(element.date_to));
+  const dateTo = points.map((element) => dayjs(element.dateTo));
   const dateToTemplate = dayjs.max(dateTo).format('MMM DD');
 
   return `<section class="trip-main__trip-info  trip-info">

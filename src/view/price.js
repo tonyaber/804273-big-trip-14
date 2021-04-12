@@ -3,7 +3,7 @@ const createSitePriceTemplate = (points) => {
 
   //считаем базовою стоимость всех поездок
   const basePrice = points.
-    map((point) => point.base_price).
+    map((point) => point.basePrice).
     reduce((accumulator, price) => accumulator + price);
 
   //считаем стоимость дополнительных опций

@@ -5,7 +5,7 @@ import PriceView from './view/price.js';
 import FiltersView from './view/filters.js';
 import SortView from './view/sort.js';
 import ListView from './view/list.js';
-import NewPointView from './view/new-point.js';
+import EmptyListView from './view/empty-list.js';
 import { generatePoint } from './mock/point.js';
 import { RenderPosition, POINT_COUNT } from './const.js';
 
@@ -25,13 +25,18 @@ const siteFiltersElement = siteHeaderElement.querySelector('.trip-controls__filt
 renderElement(siteFiltersElement, new FiltersView().getElement(), RenderPosition.BEFOREEND);
 
 const siteEventsElement = document.querySelector('.trip-events');
-renderElement(siteEventsElement, new SortView().getElement(), RenderPosition.BEFOREEND);
 
-const pointListComponent = new ListView();
-renderElement(siteEventsElement, pointListComponent.getElement(), RenderPosition.BEFOREEND);
+if (points.length === 0) {
+  renderElement(siteEventsElement, new EmptyListView().getElement(), RenderPosition.BEFOREEND);
+}
+else {
+  renderElement(siteEventsElement, new SortView().getElement(), RenderPosition.BEFOREEND);
 
-for (let i = 0; i < POINT_COUNT-1; i++){
-  renderPoint(pointListComponent.getElement(),points[i]);
+  const pointListComponent = new ListView();
+  renderElement(siteEventsElement, pointListComponent.getElement(), RenderPosition.BEFOREEND);
+
+  for (let i = 0; i < POINT_COUNT-1; i++){
+    renderPoint(pointListComponent.getElement(),points[i]);
+  }
 }
 
-renderElement(pointListComponent.getElement(), new NewPointView(points[POINT_COUNT - 1]).getElement(), RenderPosition.BEFOREEND);
