@@ -1,4 +1,4 @@
-import { renderElement, renderPoint } from './utils.js';
+import { renderElement, renderPoint } from './utils/render.js';
 import TripInfoView from './view/trip-info.js';
 import MenuView from './view/menu.js';
 import PriceView from './view/price.js';

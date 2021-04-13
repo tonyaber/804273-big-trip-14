@@ -1,5 +1,6 @@
 import { TYPES, CITIES, ALL_OFFERS, OFFERS_CLASS_NAME } from '../const.js';
-import { createElement, formatDate } from '../utils.js';
+import { formatDate } from '../utils/point.js';
+import AbstractView from './abstract.js';
 
 const createSiteNewPointTemplate = (point) => {
   const { dateFrom, dateTo, type, offers, description, id } = point;
@@ -139,24 +140,13 @@ const createSiteNewPointTemplate = (point) => {
               </form>
             </li>`;
 };
-export default class NewPoint {
+export default class NewPoint extends AbstractView{
   constructor(point) {
+    super();
     this._point = point;
-    this._element = null;
   }
 
   getTemplate() {
     return createSiteNewPointTemplate(this._point);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

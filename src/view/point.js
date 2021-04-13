@@ -1,31 +1,6 @@
 import dayjs from 'dayjs';
-import { createElement } from '../utils.js';
-/**
-  * функция считает промежуток во времени
-  *
-  * @param {date} start - начало промежутка
-  * @param {date} second - конец промежутка
-  * @returns {string} - возвращает промежуток в формате ${hours}H ${minutes}M
-  * если прошло меньше часа, то возвращает ${minutes}M
-  */
-const calculateDuration = (start, end) => {
-  const quantityMinutes = Math.round(end.diff(start) / 60000);
-
-  let hours = Math.floor(quantityMinutes / 60);
-  let minutes = (quantityMinutes > 60) ? (quantityMinutes % 60) : quantityMinutes;
-
-  if (minutes < 10) {
-    minutes = '0' + minutes;
-  }
-
-  if (hours > 0) {
-    if (hours < 10) {
-      hours = '0' + hours;
-    }
-    return `${hours}H ${minutes}M`;
-  }
-  return `${minutes}M`;
-};
+import AbstractView from './abstract.js';
+import { calculateDuration } from '../utils/point.js';
 
 const createSitePointTemplate = (point) => {
   const { dateFrom, dateTo, basePrice, isFavorite, type, offers, description } = point;
@@ -81,25 +56,27 @@ const createSitePointTemplate = (point) => {
               </div>
             </li>`;
 };
-export default class Point {
+
+export default class Point extends AbstractView{
   constructor(point) {
+    super();
     this._point = point;
-    this._element = null;
+
+    this._editClickHandler = this._editClickHandler.bind(this);
   }
 
   getTemplate() {
     return createSitePointTemplate(this._point);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
+  _editClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.editClick();
   }
 
-  removeElement() {
-    this._element = null;
+  setEditClickHandler(callback) {
+    this._callback.editClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._editClickHandler);
   }
 }
 

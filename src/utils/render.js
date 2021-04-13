@@ -1,41 +1,7 @@
-import { RenderPosition } from './const.js';
-import EditPointView from './view/edit-point.js';
-import PointView from './view/point.js';
-import dayjs from 'dayjs';
-/**
-  * функция генерирует рандомное число из  заданого промежутка
-  *
-  * @param {number} min - начало промежутка
-  * @param {number} max - конец промежутка
-  * @returns {number} - возвращает случайное значение
-  */
-const getRandomNumber = (min, max) => {
-  return Math.round((Math.random() * (max - min) + min));
-};
-
-/**
-  * функция создает новый массив рандомной длины
-  * с переешанными элементами
-  *
-  * @param {array} array - массив
-  * @param {number} size - максимально возможный размер нового массива,
-  * по умолчанию равен длине массива - 1
-  * @returns {array} - возвращает новый массив с рандомными элементами
-  */
-const getRandomArray = (array, size = array.length - 1) => {
-  const newArray = array.slice();
-
-  for (let i = newArray.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    const swap = newArray[j];
-    newArray[j] = newArray[i];
-    newArray[i] = swap;
-  }
-
-  const count = getRandomNumber(1, size);
-
-  return newArray.slice(0, count);
-};
+import Abstract from '../view/abstract.js';
+import EditPointView from '../view/edit-point.js';
+import PointView from '../view/point.js';
+import { RenderPosition } from '../const.js';
 
 /**
   * функция обавляет DOM-элемент в контейнер
@@ -45,8 +11,15 @@ const getRandomArray = (array, size = array.length - 1) => {
   * @param place - параметр, отвечающий за место, куда записываем
   *
   */
-
 const renderElement = (container, element, place) => {
+  if (container instanceof Abstract) {
+    container = container.getElement();
+  }
+
+  if (element instanceof Abstract) {
+    element = element.getElement();
+  }
+
   switch (place) {
     case RenderPosition.AFTERBEGIN:
       container.prepend(element);
@@ -56,6 +29,7 @@ const renderElement = (container, element, place) => {
       break;
   }
 };
+
 /**
   * функция создания DOM-элемента
   *
@@ -102,18 +76,17 @@ const renderPoint = (pointListElement, point) => {
     }
   };
 
-  pointComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+  pointComponent.setEditClickHandler(() => {
     replacePointToForm();
     document.addEventListener('keydown', onEscKeyDown);
   });
 
-  pointEditComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+  pointEditComponent.setEditClickHandler(() => {
     replaceFormToPoint();
     document.removeEventListener('keydown', onEscKeyDown);
   });
 
-  pointEditComponent.getElement().querySelector('form').addEventListener('submit', (evt) => {
-    evt.preventDefault();
+  pointEditComponent.setFormSubmitHandler(() => {
     replaceFormToPoint();
     document.removeEventListener('keydown', onEscKeyDown);
   });
@@ -121,8 +94,4 @@ const renderPoint = (pointListElement, point) => {
   renderElement(pointListElement, pointComponent.getElement(), RenderPosition.BEFOREEND);
 };
 
-const formatDate = (date) => {
-  return dayjs(date).format('DD/MM/YY HH:mm');
-};
-
-export { getRandomNumber, getRandomArray, renderElement, createElement, renderPoint, formatDate };
+export { renderElement, renderPoint, createElement };
