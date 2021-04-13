@@ -44,7 +44,7 @@ export const generatePoint = () => {
     dateTo,
     description: generateDescription(),
     id: nanoid(),
-    is_favorite: Boolean(getRandomNumber(0, 1)),
+    isFavorite: Boolean(getRandomNumber(0, 1)),
     offers: getRandomArray(ALL_OFFERS),
     type: getRandomElementFromArray(TYPES),
   };

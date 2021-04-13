@@ -1,6 +1,7 @@
 import { RenderPosition } from './const.js';
 import EditPointView from './view/edit-point.js';
 import PointView from './view/point.js';
+import dayjs from 'dayjs';
 /**
   * функция генерирует рандомное число из  заданого промежутка
   *
@@ -120,4 +121,8 @@ const renderPoint = (pointListElement, point) => {
   renderElement(pointListElement, pointComponent.getElement(), RenderPosition.BEFOREEND);
 };
 
-export { getRandomNumber, getRandomArray, renderElement, createElement, renderPoint };
+const formatDate = (date) => {
+  return dayjs(date).format('DD/MM/YY HH:mm');
+};
+
+export { getRandomNumber, getRandomArray, renderElement, createElement, renderPoint, formatDate };

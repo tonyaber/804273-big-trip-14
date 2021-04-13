@@ -1,6 +1,5 @@
-import dayjs from 'dayjs';
 import { TYPES, CITIES, ALL_OFFERS, OFFERS_CLASS_NAME } from '../const.js';
-import { createElement } from '../utils.js';
+import { createElement, formatDate } from '../utils.js';
 
 const createSiteEditPointTemplate = (point) => {
   const { dateFrom, dateTo, basePrice, type, offers, description, id } = point;
@@ -96,14 +95,14 @@ const createSiteEditPointTemplate = (point) => {
                       id="event-start-time-1"
                       type="text"
                       name="event-start-time"
-                      value="${dayjs(dateFrom).format('DD/MM/YY HH:mm')}">
+                      value="${formatDate(dateFrom)}">
                     &mdash;
                     <label class="visually-hidden" for="event-end-time-1">To</label>
                     <input class="event__input  event__input--time"
                       id="event-end-time-1"
                       type="text"
                       name="event-end-time"
-                      value="${dayjs(dateTo).format('DD/MM/YY HH:mm')}">
+                      value="${formatDate(dateTo)}">
                   </div>
 
                   <div class="event__field-group  event__field-group--price">
