@@ -91,7 +91,7 @@ const renderPoint = (pointListElement, point) => {
     document.removeEventListener('keydown', onEscKeyDown);
   });
 
-  renderElement(pointListElement, pointComponent.getElement(), RenderPosition.BEFOREEND);
+  renderElement(pointListElement, pointComponent, RenderPosition.BEFOREEND);
 };
 
 export { renderElement, renderPoint, createElement };
