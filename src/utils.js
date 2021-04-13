@@ -94,7 +94,7 @@ const renderPoint = (pointListElement, point) => {
 
   //фукнкция клика на кнопку Escape
   const onEscKeyDown = (evt) => {
-    if (evt.key === 'Escape') {
+    if (evt.key === 'Escape' && evt.target.tagName !== 'INPUT') {
       evt.preventDefault();
       replaceFormToPoint();
       document.removeEventListener('keydown', onEscKeyDown);

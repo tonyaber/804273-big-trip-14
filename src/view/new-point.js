@@ -3,7 +3,7 @@ import { TYPES, CITIES, ALL_OFFERS, OFFERS_CLASS_NAME } from '../const.js';
 import { createElement } from '../utils.js';
 
 const createSiteNewPointTemplate = (point) => {
-  const { dateFrom, dateTo, type, offers, description } = point;
+  const { dateFrom, dateTo, type, offers, description,id } = point;
 
   //создание разметки для поля type
   const createTypeTemplate = (typeRadio,index) => {
@@ -70,11 +70,11 @@ const createSiteNewPointTemplate = (point) => {
               <form class="event event--edit" action="#" method="post">
                 <header class="event__header">
                   <div class="event__type-wrapper">
-                    <label class="event__type  event__type-btn" for="event-type-toggle-2">
+                    <label class="event__type  event__type-btn" for="event-type-toggle-${id}">
                       <span class="visually-hidden">Choose event type</span>
                       <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
                     </label>
-                    <input class="event__type-toggle  visually-hidden" id="event-type-toggle-2" type="checkbox">
+                    <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox">
 
                     <div class="event__type-list">
                       <fieldset class="event__type-group">

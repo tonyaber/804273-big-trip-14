@@ -22,7 +22,7 @@ renderElement(siteFiltersElement, new FiltersView().getElement(), RenderPosition
 
 const siteEventsElement = document.querySelector('.trip-events');
 
-if (points.length === 0) {
+if (!points.length) {
   renderElement(siteEventsElement, new EmptyListView().getElement(), RenderPosition.BEFOREEND);
 }
 else {

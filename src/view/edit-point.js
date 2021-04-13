@@ -3,26 +3,26 @@ import { TYPES, CITIES, ALL_OFFERS, OFFERS_CLASS_NAME } from '../const.js';
 import { createElement } from '../utils.js';
 
 const createSiteEditPointTemplate = (point) => {
-  const { dateFrom, dateTo, basePrice, type, offers, description } = point;
+  const { dateFrom, dateTo, basePrice, type, offers, description, id } = point;
 
   //создание разметки для поля type
-  const createTypeTemplate = (typeRadio,index) => {
+  const createTypeTemplate = (typeRadio) => {
     return `<div class="event__type-item">
-              <input id="event-type-${typeRadio.toLowerCase()}-1${index}"
+              <input id="event-type-${typeRadio.toLowerCase()}-${id}"
                 class="event__type-input  visually-hidden"
                 type="radio"
                 name="event-type"
                 value="${typeRadio.toLowerCase()}"
                 ${(typeRadio === type) ? 'checked' : ''}>
               <label class="event__type-label  event__type-label--${typeRadio.toLowerCase()}"
-                for="event-type-${typeRadio.toLowerCase()}-1${index}">
+                for="event-type-${typeRadio.toLowerCase()}-${id}">
                 ${typeRadio}
               </label>
             </div>`;
   };
 
   const typeTemplate = TYPES
-    .map((type, index) => createTypeTemplate(type,index))
+    .map((type) => createTypeTemplate(type))
     .join('');
 
   //создание разметки для поля город
@@ -40,11 +40,11 @@ const createSiteEditPointTemplate = (point) => {
 
     return `<div class="event__offer-selector">
               <input class="event__offer-checkbox  visually-hidden"
-                id="event-offer-${OFFERS_CLASS_NAME[index]}-2"
+                id="event-offer-${OFFERS_CLASS_NAME[index]}-${id}"
                 type="checkbox"
                 name="event-offer-${OFFERS_CLASS_NAME[index]}"
                 ${check}>
-              <label class="event__offer-label" for="event-offer-${OFFERS_CLASS_NAME[index]}-2">
+              <label class="event__offer-label" for="event-offer-${OFFERS_CLASS_NAME[index]}-${id}">
               <span class="event__offer-title">${offer.name}</span>
               &plus;&euro;&nbsp;
               <span class="event__offer-price">${offer.price}</span>
@@ -60,11 +60,11 @@ const createSiteEditPointTemplate = (point) => {
               <form class="event event--edit" action="#" method="post">
                 <header class="event__header">
                   <div class="event__type-wrapper">
-                    <label class="event__type  event__type-btn" for="event-type-toggle-1">
+                    <label class="event__type  event__type-btn" for="event-type-toggle-${id}">
                       <span class="visually-hidden">Choose event type</span>
                       <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
                     </label>
-                    <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+                    <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox">
 
                     <div class="event__type-list">
                       <fieldset class="event__type-group">

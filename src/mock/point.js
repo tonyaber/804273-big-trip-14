@@ -2,6 +2,7 @@ import { getRandomNumber, getRandomArray } from '../utils.js';
 import { TYPES, CITIES, ALL_OFFERS } from '../const.js';
 import { MAX_SIZE_PHOTO, MAX_SIZE_DESCRIPTION, COUNT_PHOTO, DESCRIOTIONS } from './const.js';
 import dayjs from 'dayjs';
+import { nanoid } from 'nanoid';
 
 /**
   * функция возващает случайный элемент с массива
@@ -42,7 +43,7 @@ export const generatePoint = () => {
     dateFrom,
     dateTo,
     description: generateDescription(),
-    id: getRandomNumber(0, 10),
+    id: nanoid(),
     is_favorite: Boolean(getRandomNumber(0, 1)),
     offers: getRandomArray(ALL_OFFERS),
     type: getRandomElementFromArray(TYPES),
