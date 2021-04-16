@@ -4,6 +4,32 @@ import PointView from '../view/point.js';
 import { RenderPosition } from '../const.js';
 
 /**
+  * функция меняет заменяет один DOM элемент другим
+  *
+  * @param newChild - новые элемент,который добавляем
+  * @param oldChild - старый элемент, который заменяем
+  *
+  */
+const replace = (newChild, oldChild) => {
+  if (oldChild instanceof Abstract) {
+    oldChild = oldChild.getElement();
+  }
+
+  if (newChild instanceof Abstract) {
+    newChild = newChild.getElement();
+  }
+
+  const parent = oldChild.parentElement;
+
+  if (parent === null || oldChild === null || newChild === null) {
+    throw new Error('Can\'t replace unexisting elements');
+  }
+
+  parent.replaceChild(newChild, oldChild);
+};
+
+
+/**
   * функция обавляет DOM-элемент в контейнер
   *
   * @param container - DOM-элемент, в корорый записываем новое значение
@@ -59,12 +85,12 @@ const renderPoint = (pointListElement, point) => {
 
   //смена точки на форму редактирования
   const replacePointToForm = () => {
-    pointListElement.replaceChild(pointEditComponent.getElement(), pointComponent.getElement());
+    replace(pointEditComponent, pointComponent);
   };
 
   //смена формы редактирования на обычное отображение точки
   const replaceFormToPoint = () => {
-    pointListElement.replaceChild(pointComponent.getElement(), pointEditComponent.getElement());
+    replace(pointComponent, pointEditComponent);
   };
 
   //фукнкция клика на кнопку Escape
