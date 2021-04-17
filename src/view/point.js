@@ -1,34 +1,9 @@
 import dayjs from 'dayjs';
-import { createElement } from '../utils.js';
-/**
-  * функция считает промежуток во времени
-  *
-  * @param {date} start - начало промежутка
-  * @param {date} second - конец промежутка
-  * @returns {string} - возвращает промежуток в формате ${hours}H ${minutes}M
-  * если прошло меньше часа, то возвращает ${minutes}M
-  */
-const calculateDuration = (start, end) => {
-  const quantityMinutes = Math.round(end.diff(start) / 60000);
-
-  let hours = Math.floor(quantityMinutes / 60);
-  let minutes = (quantityMinutes > 60) ? (quantityMinutes % 60) : quantityMinutes;
-
-  if (minutes < 10) {
-    minutes = '0' + minutes;
-  }
-
-  if (hours > 0) {
-    if (hours < 10) {
-      hours = '0' + hours;
-    }
-    return `${hours}H ${minutes}M`;
-  }
-  return `${minutes}M`;
-};
+import AbstractView from './abstract.js';
+import { calculateDuration } from '../utils/point.js';
 
 const createSitePointTemplate = (point) => {
-  const { dateFrom, dateTo, basePrice, is_favorite, type, offers, description } = point;
+  const { dateFrom, dateTo, basePrice, isFavorite, type, offers, description } = point;
 
   //определение длины поездки
 
@@ -69,7 +44,7 @@ const createSitePointTemplate = (point) => {
                 <ul class="event__selected-offers">
                   ${OffersTemplate}
                 </ul>
-                <button class="event__favorite-btn ${is_favorite ? 'event__favorite-btn--active' : ''}" type="button">
+                <button class="event__favorite-btn ${isFavorite ? 'event__favorite-btn--active' : ''}" type="button">
                   <span class="visually-hidden">Add to favorite</span>
                   <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
                     <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
@@ -81,25 +56,27 @@ const createSitePointTemplate = (point) => {
               </div>
             </li>`;
 };
-export default class Point {
+
+export default class Point extends AbstractView{
   constructor(point) {
+    super();
     this._point = point;
-    this._element = null;
+
+    this._editClickHandler = this._editClickHandler.bind(this);
   }
 
   getTemplate() {
     return createSitePointTemplate(this._point);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
+  _editClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.editClick();
   }
 
-  removeElement() {
-    this._element = null;
+  setEditClickHandler(callback) {
+    this._callback.editClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._editClickHandler);
   }
 }
 

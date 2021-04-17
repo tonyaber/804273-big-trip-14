@@ -1,14 +1,14 @@
-import dayjs from 'dayjs';
 import { TYPES, CITIES, ALL_OFFERS, OFFERS_CLASS_NAME } from '../const.js';
-import { createElement } from '../utils.js';
+import { formatDate } from '../utils/point.js';
+import AbstractView from './abstract.js';
 
 const createSiteNewPointTemplate = (point) => {
-  const { dateFrom, dateTo, type, offers, description } = point;
+  const { dateFrom, dateTo, type, offers, description, id } = point;
 
   //создание разметки для поля type
-  const createTypeTemplate = (typeRadio,index) => {
+  const createTypeTemplate = (typeRadio) => {
     return `<div class="event__type-item">
-              <input id="event-type-${typeRadio.toLowerCase()}-0${index}"
+              <input id="event-type-${typeRadio.toLowerCase()}-${id}"
                 class="event__type-input  visually-hidden"
                 type="radio"
                 name="event-type"
@@ -16,14 +16,14 @@ const createSiteNewPointTemplate = (point) => {
                 ${(typeRadio === type) ? 'checked' : ''}>
               <label class="event__type-label
                 event__type-label--${typeRadio.toLowerCase()}"
-                for="event-type-${typeRadio.toLowerCase()}-0${index}">
+                for="event-type-${typeRadio.toLowerCase()}-${id}">
                   ${typeRadio}
               </label>
             </div>`;
   };
 
   const TypeTemplate = TYPES
-    .map((type, index) => createTypeTemplate(type,index))
+    .map((type) => createTypeTemplate(type))
     .join('');
 
   //создание разметки для поля город
@@ -41,11 +41,11 @@ const createSiteNewPointTemplate = (point) => {
 
     return `<div class="event__offer-selector">
               <input class="event__offer-checkbox  visually-hidden"
-                id="event-offer-${OFFERS_CLASS_NAME[index]}-1"
+                id="event-offer-${OFFERS_CLASS_NAME[index]}-${id}"
                 type="checkbox"
                 name="event-offer-${OFFERS_CLASS_NAME[index]}"
                 ${check}>
-              <label class="event__offer-label" for="event-offer-${OFFERS_CLASS_NAME[index]}-1">
+              <label class="event__offer-label" for="event-offer-${OFFERS_CLASS_NAME[index]}-${id}">
                 <span class="event__offer-title">${offer.name}</span>
                 &plus;&euro;&nbsp;
                 <span class="event__offer-price">${offer.price}</span>
@@ -70,11 +70,11 @@ const createSiteNewPointTemplate = (point) => {
               <form class="event event--edit" action="#" method="post">
                 <header class="event__header">
                   <div class="event__type-wrapper">
-                    <label class="event__type  event__type-btn" for="event-type-toggle-2">
+                    <label class="event__type  event__type-btn" for="event-type-toggle-${id}">
                       <span class="visually-hidden">Choose event type</span>
                       <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
                     </label>
-                    <input class="event__type-toggle  visually-hidden" id="event-type-toggle-2" type="checkbox">
+                    <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox">
 
                     <div class="event__type-list">
                       <fieldset class="event__type-group">
@@ -89,21 +89,21 @@ const createSiteNewPointTemplate = (point) => {
                        ${type}
                     </label>
                     <input class="event__input  event__input--destination"
-                      id="event-destination-1" type="text"
+                      id="event-destination-${id}" type="text"
                       name="event-destination"
                       value="${description.name}"
                       list="destination-list-1">
-                    <datalist id="destination-list-1">
+                    <datalist id="destination-list-${id}">
                       ${cityTemplate}
                     </datalist>
                   </div>
 
                   <div class="event__field-group  event__field-group--time">
                     <label class="visually-hidden" for="event-start-time-1">From</label>
-                    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dayjs(dateFrom).format('DD/MM/YY HH:mm')}">
+                    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatDate(dateFrom)}">
                     &mdash;
                     <label class="visually-hidden" for="event-end-time-1">To</label>
-                    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dayjs(dateTo).format('DD/MM/YY HH:mm')}">
+                    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatDate(dateTo)}">
                   </div>
 
                   <div class="event__field-group  event__field-group--price">
@@ -140,24 +140,13 @@ const createSiteNewPointTemplate = (point) => {
               </form>
             </li>`;
 };
-export default class NewPoint {
+export default class NewPoint extends AbstractView{
   constructor(point) {
+    super();
     this._point = point;
-    this._element = null;
   }
 
   getTemplate() {
     return createSiteNewPointTemplate(this._point);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

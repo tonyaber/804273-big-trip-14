@@ -1,4 +1,4 @@
-import { renderElement, renderPoint } from './utils.js';
+import { renderElement, renderPoint } from './utils/render.js';
 import TripInfoView from './view/trip-info.js';
 import MenuView from './view/menu.js';
 import PriceView from './view/price.js';
@@ -15,29 +15,29 @@ const points = new Array(POINT_COUNT).fill().map(generatePoint);
 const siteHeaderElement = document.querySelector('.trip-main');
 
 const siteMenuElement = siteHeaderElement.querySelector('.trip-controls__navigation');
-renderElement(siteMenuElement, new MenuView().getElement(), RenderPosition.BEFOREEND);
+renderElement(siteMenuElement, new MenuView(), RenderPosition.BEFOREEND);
 
 const siteFiltersElement = siteHeaderElement.querySelector('.trip-controls__filters');
-renderElement(siteFiltersElement, new FiltersView().getElement(), RenderPosition.BEFOREEND);
+renderElement(siteFiltersElement, new FiltersView(), RenderPosition.BEFOREEND);
 
 const siteEventsElement = document.querySelector('.trip-events');
 
-if (points.length === 0) {
-  renderElement(siteEventsElement, new EmptyListView().getElement(), RenderPosition.BEFOREEND);
+if (!points.length) {
+  renderElement(siteEventsElement, new EmptyListView(), RenderPosition.BEFOREEND);
 }
 else {
-  renderElement(siteHeaderElement, new TripInfoView(points).getElement(), RenderPosition.AFTERBEGIN);
+  renderElement(siteHeaderElement, new TripInfoView(points), RenderPosition.AFTERBEGIN);
 
   const sitePriceElement = siteHeaderElement.querySelector('.trip-main__trip-info');
-  renderElement(sitePriceElement, new PriceView(points).getElement(), RenderPosition.BEFOREEND);
+  renderElement(sitePriceElement, new PriceView(points), RenderPosition.BEFOREEND);
 
-  renderElement(siteEventsElement, new SortView().getElement(), RenderPosition.BEFOREEND);
+  renderElement(siteEventsElement, new SortView(), RenderPosition.BEFOREEND);
 
   const pointListComponent = new ListView();
-  renderElement(siteEventsElement, pointListComponent.getElement(), RenderPosition.BEFOREEND);
+  renderElement(siteEventsElement, pointListComponent, RenderPosition.BEFOREEND);
 
   for (let i = 0; i < POINT_COUNT-1; i++){
-    renderPoint(pointListComponent.getElement(),points[i]);
+    renderPoint(pointListComponent,points[i]);
   }
 }
 

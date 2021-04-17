@@ -1,40 +1,33 @@
-import { RenderPosition } from './const.js';
-import EditPointView from './view/edit-point.js';
-import PointView from './view/point.js';
-/**
-  * функция генерирует рандомное число из  заданого промежутка
-  *
-  * @param {number} min - начало промежутка
-  * @param {number} max - конец промежутка
-  * @returns {number} - возвращает случайное значение
-  */
-const getRandomNumber = (min, max) => {
-  return Math.round((Math.random() * (max - min) + min));
-};
+import Abstract from '../view/abstract.js';
+import EditPointView from '../view/edit-point.js';
+import PointView from '../view/point.js';
+import { RenderPosition } from '../const.js';
 
 /**
-  * функция создает новый массив рандомной длины
-  * с переешанными элементами
+  * функция меняет заменяет один DOM элемент другим
   *
-  * @param {array} array - массив
-  * @param {number} size - максимально возможный размер нового массива,
-  * по умолчанию равен длине массива - 1
-  * @returns {array} - возвращает новый массив с рандомными элементами
+  * @param newChild - новые элемент,который добавляем
+  * @param oldChild - старый элемент, который заменяем
+  *
   */
-const getRandomArray = (array, size = array.length - 1) => {
-  const newArray = array.slice();
-
-  for (let i = newArray.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    const swap = newArray[j];
-    newArray[j] = newArray[i];
-    newArray[i] = swap;
+const replace = (newChild, oldChild) => {
+  if (oldChild instanceof Abstract) {
+    oldChild = oldChild.getElement();
   }
 
-  const count = getRandomNumber(1, size);
+  if (newChild instanceof Abstract) {
+    newChild = newChild.getElement();
+  }
 
-  return newArray.slice(0, count);
+  const parent = oldChild.parentElement;
+
+  if (parent === null || oldChild === null || newChild === null) {
+    throw new Error('Can\'t replace unexisting elements');
+  }
+
+  parent.replaceChild(newChild, oldChild);
 };
+
 
 /**
   * функция обавляет DOM-элемент в контейнер
@@ -44,8 +37,15 @@ const getRandomArray = (array, size = array.length - 1) => {
   * @param place - параметр, отвечающий за место, куда записываем
   *
   */
-
 const renderElement = (container, element, place) => {
+  if (container instanceof Abstract) {
+    container = container.getElement();
+  }
+
+  if (element instanceof Abstract) {
+    element = element.getElement();
+  }
+
   switch (place) {
     case RenderPosition.AFTERBEGIN:
       container.prepend(element);
@@ -55,6 +55,7 @@ const renderElement = (container, element, place) => {
       break;
   }
 };
+
 /**
   * функция создания DOM-элемента
   *
@@ -84,40 +85,39 @@ const renderPoint = (pointListElement, point) => {
 
   //смена точки на форму редактирования
   const replacePointToForm = () => {
-    pointListElement.replaceChild(pointEditComponent.getElement(), pointComponent.getElement());
+    replace(pointEditComponent, pointComponent);
   };
 
   //смена формы редактирования на обычное отображение точки
   const replaceFormToPoint = () => {
-    pointListElement.replaceChild(pointComponent.getElement(), pointEditComponent.getElement());
+    replace(pointComponent, pointEditComponent);
   };
 
   //фукнкция клика на кнопку Escape
   const onEscKeyDown = (evt) => {
-    if (evt.key === 'Escape') {
+    if (evt.key === 'Escape' && evt.target.tagName !== 'INPUT') {
       evt.preventDefault();
       replaceFormToPoint();
       document.removeEventListener('keydown', onEscKeyDown);
     }
   };
 
-  pointComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+  pointComponent.setEditClickHandler(() => {
     replacePointToForm();
     document.addEventListener('keydown', onEscKeyDown);
   });
 
-  pointEditComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+  pointEditComponent.setEditClickHandler(() => {
     replaceFormToPoint();
     document.removeEventListener('keydown', onEscKeyDown);
   });
 
-  pointEditComponent.getElement().querySelector('form').addEventListener('submit', (evt) => {
-    evt.preventDefault();
+  pointEditComponent.setFormSubmitHandler(() => {
     replaceFormToPoint();
     document.removeEventListener('keydown', onEscKeyDown);
   });
 
-  renderElement(pointListElement, pointComponent.getElement(), RenderPosition.BEFOREEND);
+  renderElement(pointListElement, pointComponent, RenderPosition.BEFOREEND);
 };
 
-export { getRandomNumber, getRandomArray, renderElement, createElement, renderPoint };
+export { renderElement, renderPoint, createElement };
