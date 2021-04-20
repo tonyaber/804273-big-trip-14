@@ -31,7 +31,7 @@ const createSiteEditPointTemplate = (point) => {
     .join('');
 
   //создание разметки для дополнительных опций
-  const createOfferTemplate = (offer,index) => {
+  const createOfferTemplate = (offer, index) => {
     let check = '';
 
     if (offers.some((element) => element.name == offer.name)) {
@@ -137,6 +137,7 @@ const createSiteEditPointTemplate = (point) => {
               </form>
             </li>`;
 };
+
 export default class EditPoint extends AbstractView {
   constructor(point) {
     super();

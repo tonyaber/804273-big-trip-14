@@ -140,6 +140,7 @@ const createSiteNewPointTemplate = (point) => {
               </form>
             </li>`;
 };
+
 export default class NewPoint extends AbstractView{
   constructor(point) {
     super();

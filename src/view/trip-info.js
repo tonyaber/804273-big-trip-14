@@ -19,13 +19,11 @@ const createSiteTripInfoTemplate = (points) => {
   const dateTo = points.map((element) => dayjs(element.dateTo));
   const dateToTemplate = dayjs.max(dateTo).format('MMM DD');
 
-  return `<section class="trip-main__trip-info  trip-info">
-            <div class="trip-info__main">
-              <h1 class="trip-info__title">${citiesNotRepeat}</h1>
+  return `<div class="trip-info__main">
+            <h1 class="trip-info__title">${citiesNotRepeat}</h1>
 
-              <p class="trip-info__dates">${dateFromTemplate}&nbsp;&mdash;&nbsp;${dateToTemplate}</p>
-            </div>
-          </section>`;
+            <p class="trip-info__dates">${dateFromTemplate}&nbsp;&mdash;&nbsp;${dateToTemplate}</p>
+          </div>`;
 };
 
 export default class TripInfo extends AbstractView {

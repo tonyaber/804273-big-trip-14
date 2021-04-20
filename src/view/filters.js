@@ -10,9 +10,9 @@ const createFilterTemplate = (filter) => {
                 value="${filter.toLowerCase()}"
                 ${filter === FILTERS[0] ? 'checked' : ''}>
               <label class="trip-filters__filter-label" for="filter-${filter.toLowerCase()}">${filter}</label>
-            </div>
-`;
+            </div>`;
 };
+
 const filterTemplate = FILTERS
   .map((filter) => createFilterTemplate(filter))
   .join('');

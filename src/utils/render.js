@@ -1,15 +1,13 @@
 import Abstract from '../view/abstract.js';
-import EditPointView from '../view/edit-point.js';
-import PointView from '../view/point.js';
 import { RenderPosition } from '../const.js';
 
 /**
-  * функция меняет заменяет один DOM элемент другим
-  *
-  * @param newChild - новые элемент,который добавляем
-  * @param oldChild - старый элемент, который заменяем
-  *
-  */
+ * функция меняет заменяет один DOM элемент другим
+ *
+ * @param newChild - новые элемент,который добавляем
+ * @param oldChild - старый элемент, который заменяем
+ *
+ */
 const replace = (newChild, oldChild) => {
   if (oldChild instanceof Abstract) {
     oldChild = oldChild.getElement();
@@ -28,15 +26,14 @@ const replace = (newChild, oldChild) => {
   parent.replaceChild(newChild, oldChild);
 };
 
-
 /**
-  * функция обавляет DOM-элемент в контейнер
-  *
-  * @param container - DOM-элемент, в корорый записываем новое значение
-  * @param element - добавляемый DOM-элемент
-  * @param place - параметр, отвечающий за место, куда записываем
-  *
-  */
+ * функция обавляет DOM-элемент в контейнер
+ *
+ * @param container - DOM-элемент, в корорый записываем новое значение
+ * @param element - добавляемый DOM-элемент
+ * @param place - параметр, отвечающий за место, куда записываем
+ *
+ */
 const renderElement = (container, element, place) => {
   if (container instanceof Abstract) {
     container = container.getElement();
@@ -57,14 +54,14 @@ const renderElement = (container, element, place) => {
 };
 
 /**
-  * функция создания DOM-элемента
-  *
-  * Принцип работы:
-  * 1. создаём пустой div-блок
-  * 2. берём HTML в виде строки и вкладываем в этот div-блок, превращая в DOM-элемент @param template
-  * 3. @returns возвращаем этот DOM-элемент
-  *
-  */
+ * функция создания DOM-элемента
+ *
+ * Принцип работы:
+ * 1. создаём пустой div-блок
+ * 2. берём HTML в виде строки и вкладываем в этот div-блок, превращая в DOM-элемент @param template
+ * 3. @returns возвращаем этот DOM-элемент
+ *
+ */
 const createElement = (template) => {
   const newElement = document.createElement('div'); // 1
   newElement.innerHTML = template; // 2
@@ -73,51 +70,38 @@ const createElement = (template) => {
 };
 
 /**
-  * функция открывает поле редактирования и скрывает его после изменений
-  *
-  * @param pointListElement - список
-  * @param point - DOM-элемент списка
-  *
-  */
-const renderPoint = (pointListElement, point) => {
-  const pointComponent = new PointView(point);
-  const pointEditComponent = new EditPointView(point);
+ * функция удаления DOM-элемента
+ *
+ * @param component - DOM-элемент, который удаляем
+ */
+const remove = (component) => {
+  if (!(component instanceof Abstract)) {
+    throw new Error('Can remove only components');
+  }
 
-  //смена точки на форму редактирования
-  const replacePointToForm = () => {
-    replace(pointEditComponent, pointComponent);
-  };
-
-  //смена формы редактирования на обычное отображение точки
-  const replaceFormToPoint = () => {
-    replace(pointComponent, pointEditComponent);
-  };
-
-  //фукнкция клика на кнопку Escape
-  const onEscKeyDown = (evt) => {
-    if (evt.key === 'Escape' && evt.target.tagName !== 'INPUT') {
-      evt.preventDefault();
-      replaceFormToPoint();
-      document.removeEventListener('keydown', onEscKeyDown);
-    }
-  };
-
-  pointComponent.setEditClickHandler(() => {
-    replacePointToForm();
-    document.addEventListener('keydown', onEscKeyDown);
-  });
-
-  pointEditComponent.setEditClickHandler(() => {
-    replaceFormToPoint();
-    document.removeEventListener('keydown', onEscKeyDown);
-  });
-
-  pointEditComponent.setFormSubmitHandler(() => {
-    replaceFormToPoint();
-    document.removeEventListener('keydown', onEscKeyDown);
-  });
-
-  renderElement(pointListElement, pointComponent, RenderPosition.BEFOREEND);
+  component.getElement().remove();
+  component.removeElement();
 };
 
-export { renderElement, renderPoint, createElement };
+/**
+ * функция, которая меняем один эелемент в массиве(по индексу)
+ *
+ * @param items - массив элементов
+ * @param update - значение для изменения
+ * @returns @param array - возвращает массив с новым значением
+ */
+const updateItem = (items, update) => {
+  const index = items.findIndex((item) => item.id === update.id);
+
+  if (index === -1) {
+    return items;
+  }
+
+  return [
+    ...items.slice(0, index),
+    update,
+    ...items.slice(index + 1),
+  ];
+};
+
+export { renderElement, replace, createElement, remove, updateItem };

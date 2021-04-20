@@ -5,14 +5,13 @@ const formatDate = (date) => {
 };
 
 /**
-  * функция считает промежуток во времени
-  *
-  * @param {date} start - начало промежутка
-  * @param {date} second - конец промежутка
-  * @returns {string} - возвращает промежуток в формате ${hours}H ${minutes}M
-  * если прошло меньше часа, то возвращает ${minutes}M
-  */
-
+ * функция считает промежуток во времени
+ *
+ * @param {date} start - начало промежутка
+ * @param {date} second - конец промежутка
+ * @returns {string} - возвращает промежуток в формате ${hours}H ${minutes}M
+ * если прошло меньше часа, то возвращает ${minutes}M
+ */
 const calculateDuration = (start, end) => {
   const quantityMinutes = Math.round(end.diff(start) / 60000);
 
