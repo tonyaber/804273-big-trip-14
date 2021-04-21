@@ -30,4 +30,18 @@ const calculateDuration = (start, end) => {
   }
   return `${minutes}M`;
 };
-export { formatDate, calculateDuration };
+/**
+ * функции для сортировки
+ *
+ * @param pointA - первый элемент моков
+ * @param pointB - следующий за ним элемент соков
+ *
+ */
+
+const sortDay = (pointA, pointB) =>  dayjs(pointB.dateFrom).diff(dayjs(pointA.dateFrom));
+
+const sortTime = (pointA, pointB) => dayjs(dayjs(pointB.dateTo).diff(dayjs(pointB.dateFrom))).diff(dayjs(dayjs(pointA.dateTo).diff(dayjs(pointA.dateFrom))));
+
+const sortPrice = (pointA, pointB) =>  pointB.basePrice - pointA.basePrice;
+
+export { formatDate, calculateDuration, sortDay, sortTime, sortPrice };
