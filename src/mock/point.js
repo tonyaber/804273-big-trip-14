@@ -1,4 +1,4 @@
-import { getRandomNumber, getRandomArray } from '../utils/common.js';
+import { getRandomNumber, getRandomArray } from './utils.js';
 import { TYPES, CITIES, ALL_OFFERS } from '../const.js';
 import { MAX_SIZE_PHOTO, MAX_SIZE_DESCRIPTION, COUNT_PHOTO, DESCRIOTIONS } from './const.js';
 import dayjs from 'dayjs';

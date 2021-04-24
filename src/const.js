@@ -36,4 +36,15 @@ const RenderPosition = {
 
 const POINT_COUNT = 20;
 
-export { TYPES, CITIES, OFFERS_CLASS_NAME, ALL_OFFERS, RenderPosition, POINT_COUNT, FILTERS};
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
+
+const SortType = {
+  DAY: 'day',
+  TIME: 'time',
+  PRICE: 'price',
+};
+
+export { TYPES, CITIES, OFFERS_CLASS_NAME, ALL_OFFERS, RenderPosition, POINT_COUNT, FILTERS, Mode, SortType };

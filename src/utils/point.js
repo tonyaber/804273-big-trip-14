@@ -5,14 +5,13 @@ const formatDate = (date) => {
 };
 
 /**
-  * функция считает промежуток во времени
-  *
-  * @param {date} start - начало промежутка
-  * @param {date} second - конец промежутка
-  * @returns {string} - возвращает промежуток в формате ${hours}H ${minutes}M
-  * если прошло меньше часа, то возвращает ${minutes}M
-  */
-
+ * функция считает промежуток во времени
+ *
+ * @param {date} start - начало промежутка
+ * @param {date} second - конец промежутка
+ * @returns {string} - возвращает промежуток в формате ${hours}H ${minutes}M
+ * если прошло меньше часа, то возвращает ${minutes}M
+ */
 const calculateDuration = (start, end) => {
   const quantityMinutes = Math.round(end.diff(start) / 60000);
 
@@ -31,4 +30,18 @@ const calculateDuration = (start, end) => {
   }
   return `${minutes}M`;
 };
-export { formatDate, calculateDuration };
+
+/**
+ * функции для сортировки
+ *
+ * @param pointA - первый элемент моков
+ * @param pointB - следующий за ним элемент моков
+ *
+ */
+const sortDay = (pointA, pointB) =>  dayjs(pointB.dateFrom).diff(dayjs(pointA.dateFrom));
+
+const sortTime = (pointA, pointB) => dayjs(pointB.dateTo).diff(dayjs(pointB.dateFrom)) - dayjs(pointA.dateTo).diff(dayjs(pointA.dateFrom));
+
+const sortPrice = (pointA, pointB) =>  pointB.basePrice - pointA.basePrice;
+
+export { formatDate, calculateDuration, sortDay, sortTime, sortPrice };
