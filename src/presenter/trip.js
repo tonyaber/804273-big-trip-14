@@ -1,4 +1,4 @@
-import { renderElement, updateItem } from '../utils/render.js';
+import { renderElement, updateItem, remove } from '../utils/render.js';
 import { sortDay, sortTime, sortPrice } from '../utils/point.js';
 import TripInfoView from '../view/trip-info.js';
 import NavigationView from '../view/menu.js';
@@ -8,7 +8,7 @@ import SortView from '../view/sort.js';
 import ListView from '../view/list.js';
 import EmptyListView from '../view/empty-list.js';
 import PointPresenter from './point.js';
-import { RenderPosition, SortType } from '../const.js';
+import { RenderPosition } from '../const.js';
 
 export default class Trip {
   constructor(tripContainer, tripInfoContainer, tripFilterContainer, siteNavigationContainer) {
@@ -24,7 +24,7 @@ export default class Trip {
     this._emptyListComponent = new EmptyListView();
 
     this._pointPresenter = {};
-    this._currentSortType = SortType.DAY;
+    this._currentSortType = 'sort-day';
 
     this._handlePointFavorite = this._handlePointFavorite.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
@@ -33,8 +33,6 @@ export default class Trip {
 
   init(points) {
     this._points = points.slice();
-    this._sourcedPoints = points.slice();
-
     this._renderList();
     this._renderTrip();
   }
@@ -45,10 +43,10 @@ export default class Trip {
 
   _sortPoints(sortType) {
     switch (sortType) {
-      case SortType.TIME:
+      case 'sort-time':
         this._points.sort(sortTime);
         break;
-      case SortType.PRICE:
+      case 'sort-price':
         this._points.sort(sortPrice);
         break;
       default:
@@ -60,7 +58,6 @@ export default class Trip {
 
   _handlePointFavorite(updatedPoint) {
     this._points = updateItem(this._points, updatedPoint);
-    this._sourcedPoints = updateItem(this._sourcedPoints, updatedPoint);
     this._pointPresenter[updatedPoint.id].init(updatedPoint);
   }
 
@@ -76,9 +73,13 @@ export default class Trip {
     }
 
     this._sortPoints(sortType);
-    this._clearPointList();
+    this._clearPoint();
+    this._clearSort();
+    this._sortComponent = new SortView();
+    this._renderSort();
     this._renderPoints();
   }
+
   _renderList() {
     renderElement(this._tripContainer, this._listComponent, RenderPosition.BEFOREEND);
   }
@@ -118,11 +119,15 @@ export default class Trip {
     renderElement(this._tripContainer, this._emptyListComponent, RenderPosition.BEFOREEND);
   }
 
-  _clearPointList() {
+  _clearPoint() {
     Object
       .values(this._pointPresenter)
       .forEach((presenter) => presenter.destroy());
     this._pointPresenter = {};
+  }
+
+  _clearSort() {
+    remove(this._sortComponent);
   }
 
   _renderTrip() {

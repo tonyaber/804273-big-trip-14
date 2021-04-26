@@ -41,10 +41,9 @@ const Mode = {
   EDITING: 'EDITING',
 };
 
-const SortType = {
-  DAY: 'day',
-  TIME: 'time',
-  PRICE: 'price',
+const SortListChecked = {
+  DAY: 'checked',
+  TIME: '',
+  PRICE: '',
 };
-
-export { TYPES, CITIES, OFFERS_CLASS_NAME, ALL_OFFERS, RenderPosition, POINT_COUNT, FILTERS, Mode, SortType };
+export { TYPES, CITIES, OFFERS_CLASS_NAME, ALL_OFFERS, RenderPosition, POINT_COUNT, FILTERS, Mode, SortListChecked };
