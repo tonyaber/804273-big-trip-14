@@ -35,9 +35,18 @@ const generateDescription = () => {
   };
 };
 
+const getArrayForType = (array, type) => {
+  const i = array.find((element) => element.type === type);
+  return getRandomArray(i.offers);
+};
+
+
 export const generatePoint = () => {
   const dateFrom = dayjs().add(getRandomNumber(-20, 20), 'day').format('YYYY-MM-DDTHH:mm:ss.SSS') + 'Z';
   const dateTo = dayjs(dateFrom).add(getRandomNumber(30, 160), 'minute').format('YYYY-MM-DDTHH:mm:ss.SSS') + 'Z';
+  const type = getRandomElementFromArray(TYPES);
+  const offers = getArrayForType(ALL_OFFERS, type.toLowerCase());
+
   return {
     basePrice: getRandomNumber(100, 1000),
     dateFrom,
@@ -45,7 +54,7 @@ export const generatePoint = () => {
     description: generateDescription(),
     id: nanoid(),
     isFavorite: Boolean(getRandomNumber(0, 1)),
-    offers: getRandomArray(ALL_OFFERS),
-    type: getRandomElementFromArray(TYPES),
+    offers,
+    type,
   };
 };

@@ -1,4 +1,4 @@
-import { TYPES, CITIES, ALL_OFFERS, OFFERS_CLASS_NAME } from '../const.js';
+import { TYPES, CITIES, ALL_OFFERS } from '../const.js';
 import { formatDate } from '../utils/point.js';
 import AbstractView from './abstract.js';
 
@@ -31,29 +31,31 @@ const createSiteEditPointTemplate = (point) => {
     .join('');
 
   //создание разметки для дополнительных опций
+  const offersOfType = ALL_OFFERS.find((element) => element.type === type.toLowerCase()).offers;
+
   const createOfferTemplate = (offer, index) => {
     let check = '';
 
-    if (offers.some((element) => element.name == offer.name)) {
+    if (offers.some((element) => element.title === offer.title)) {
       check = 'checked';
     }
 
     return `<div class="event__offer-selector">
               <input class="event__offer-checkbox  visually-hidden"
-                id="event-offer-${OFFERS_CLASS_NAME[index]}-${id}"
+                id="event-offer-${index}-${id}"
                 type="checkbox"
-                name="event-offer-${OFFERS_CLASS_NAME[index]}"
+                name="event-offer-${index}"
                 ${check}>
-              <label class="event__offer-label" for="event-offer-${OFFERS_CLASS_NAME[index]}-${id}">
-              <span class="event__offer-title">${offer.name}</span>
+              <label class="event__offer-label" for="event-offer-${index}-${id}">
+              <span class="event__offer-title">${offer.title}</span>
               &plus;&euro;&nbsp;
               <span class="event__offer-price">${offer.price}</span>
               </label>
              </div>`;
   };
 
-  const offerTemplate = ALL_OFFERS
-    .map((offer,index) => createOfferTemplate(offer,index))
+  const offerTemplate = offersOfType
+    .map((offer, index) => createOfferTemplate(offer, index))
     .join('');
 
   return `<li class="trip-events__item">

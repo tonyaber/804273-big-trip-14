@@ -9,7 +9,9 @@ const createSiteTripInfoTemplate = (points) => {
   const cities = points.map((element) => element.description.name);
 
   //массив всех городов без повторов
-  const citiesNotRepeat = Array.from(new Set(cities)).join(' &mdash; ');
+  let citiesNotRepeat;
+  cities.length <= 3 ? citiesNotRepeat = Array.from(new Set(cities)).join(' &mdash; ')
+    : citiesNotRepeat = `${Array.from(new Set(cities)).slice(0, 1)} — ... — ${Array.from(new Set(cities)).slice(-1)}`;
 
   //первая дата с массива всех дат
   const dateFrom = points.map((element) => dayjs(element.dateFrom));

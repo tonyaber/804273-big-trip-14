@@ -71,12 +71,10 @@ export default class Trip {
     if (this._currentSortType === sortType) {
       return;
     }
-
     this._sortPoints(sortType);
-    this._clearPoint();
     this._clearSort();
-    this._sortComponent = new SortView();
     this._renderSort();
+    this._clearPoint();
     this._renderPoints();
   }
 
