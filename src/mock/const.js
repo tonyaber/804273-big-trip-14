@@ -1,8 +1,8 @@
 const MAX_SIZE_DESCRIPTION = 5;
 
-const COUNT_PHOTO = 50;
-
 const MAX_SIZE_PHOTO = 6;
+
+const COUNT_PHOTO = 50;
 
 const DESCRIOTIONS = [
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit. ',
@@ -18,4 +18,4 @@ const DESCRIOTIONS = [
   'In rutrum ac purus sit amet tempus. ',
 ];
 
-export { MAX_SIZE_PHOTO, MAX_SIZE_DESCRIPTION, COUNT_PHOTO, DESCRIOTIONS };
+export { MAX_SIZE_PHOTO, MAX_SIZE_DESCRIPTION, DESCRIOTIONS, COUNT_PHOTO };

@@ -33,4 +33,15 @@ const getRandomArray = (array, size = array.length - 1) => {
   return newArray.slice(0, count);
 };
 
-export { getRandomNumber, getRandomArray };
+/**
+  * функция возващает случайный элемент с массива
+  *
+  * @param {array} array - массив
+  * @returns {string} - возвращает элемент массива
+  */
+const getRandomElementFromArray = (array) => {
+  const randomIndex = getRandomNumber(0, array.length - 1);
+  return array[randomIndex];
+};
+
+export { getRandomNumber, getRandomArray, getRandomElementFromArray };

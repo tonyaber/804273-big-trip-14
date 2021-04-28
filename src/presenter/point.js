@@ -102,7 +102,8 @@ export default class Point {
     this._replaceFormToCard();
   }
 
-  _handleFormSubmit() {
+  _handleFormSubmit(point) {
     this._replaceFormToCard();
+    this._changeData(point);
   }
 }

@@ -1,6 +1,7 @@
 import { TYPES, CITIES, ALL_OFFERS } from '../const.js';
+import { DESCRIOTION } from '../mock/point.js';
 import { formatDate } from '../utils/point.js';
-import AbstractView from './abstract.js';
+import SmartView from './smart.js';
 
 const createSiteEditPointTemplate = (point) => {
   const { dateFrom, dateTo, basePrice, type, offers, description, id } = point;
@@ -57,6 +58,23 @@ const createSiteEditPointTemplate = (point) => {
   const offerTemplate = offersOfType
     .map((offer, index) => createOfferTemplate(offer, index))
     .join('');
+
+  //создание разметки для фото
+  const createPhotoTemplate = (photo) => {
+    return `<img class="event__photo" src="${photo.src}" alt="${photo.description}">`;
+  };
+
+  const photoTemplate = DESCRIOTION.find((element) => element.name === description.name).pictures
+    .map((photo) => createPhotoTemplate(photo))
+    .join('');
+
+  const createDescriptionTemplate = (description) => {
+    return `${description}`;
+  };
+
+  const descriptionTemplate = DESCRIOTION.find((element) => element.name === description.name).description
+    .map((description) => createDescriptionTemplate(description))
+    .join(' ');
 
   return `<li class="trip-events__item">
               <form class="event event--edit" action="#" method="post">
@@ -133,24 +151,48 @@ const createSiteEditPointTemplate = (point) => {
 
                   <section class="event__section  event__section--destination">
                     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-                    <p class="event__destination-description">${description.description}</p>
-                  </section>
+                    <p class="event__destination-description">${descriptionTemplate}</p>
+                    <div class="event__photos-container">
+                      <div class="event__photos-tape">
+                        ${photoTemplate}
+                      </div>
+                    </div>
+                    </section>
                 </section>
               </form>
             </li>`;
 };
 
-export default class EditPoint extends AbstractView {
+export default class EditPoint extends SmartView {
   constructor(point) {
     super();
     this._point = point;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._editClickHandler = this._editClickHandler.bind(this);
+    this._typeClickHandler = this._typeClickHandler.bind(this);
+    this._cityClickHandler = this._cityClickHandler.bind(this);
+
+    this._setInnerHandlers();
   }
 
   getTemplate() {
     return createSiteEditPointTemplate(this._point);
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setEditClickHandler(this._callback.editClick);
+  }
+
+  _setInnerHandlers() {
+    this.getElement()
+      .querySelector('.event__type-group')
+      .addEventListener('change', this._typeClickHandler);
+    this.getElement()
+      .querySelector('.event__input--destination')
+      .addEventListener('change', this._cityClickHandler);
   }
 
   _formSubmitHandler(evt) {
@@ -161,6 +203,32 @@ export default class EditPoint extends AbstractView {
   _editClickHandler(evt) {
     evt.preventDefault();
     this._callback.editClick(this._point);
+  }
+
+  _typeClickHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      type: evt.target.value,
+    });
+  }
+
+  //!!Спросить про ошибку, если выбрано не то поле
+  _validityForm(evt) {
+    CITIES.some((element) => element === evt.target.value) ?
+      evt.target.setCustomValidity('') :
+      evt.target.setCustomValidity('Выберите город из доступного списка');
+  }
+
+  _cityClickHandler(evt) {
+    evt.preventDefault();
+    this._validityForm(evt);
+    this.updateData({
+      description: Object.assign(
+        {},
+        this._point.description,
+        { name: evt.target.value },
+      ),
+    });
   }
 
   setFormSubmitHandler(callback) {
