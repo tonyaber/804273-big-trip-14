@@ -286,15 +286,19 @@ export default class EditPoint extends SmartView {
   }
 
   _cityClickHandler(evt) {
-    evt.preventDefault();
-    this._validityFormForCity(evt);
-    this.updateData({
-      description: Object.assign(
-        {},
-        this._point.description,
-        { name: evt.target.value },
-      ),
-    });
+    if (evt.target.value && DESCRIOTION.find((element) => element.name === evt.target.value)) {
+      evt.preventDefault();
+      this.updateData({
+        description: Object.assign(
+          {},
+          this._point.description,
+          { name: evt.target.value },
+        ),
+      });
+    }
+    else {
+      this._validityFormForCity(evt);
+    }
   }
 
   setFormSubmitHandler(callback) {
