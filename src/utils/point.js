@@ -14,18 +14,19 @@ const formatDate = (date) => {
  */
 const calculateDuration = (start, end) => {
   const quantityMinutes = Math.round(end.diff(start) / 60000);
+  let days = Math.floor(quantityMinutes / 1440);
+  let hours = (quantityMinutes >= 1440) ?
+    Math.floor(quantityMinutes % 1440 / 60) : Math.floor(quantityMinutes / 60);
+  let minutes = (quantityMinutes >= 60) ? (quantityMinutes % 60) : quantityMinutes;
 
-  let hours = Math.floor(quantityMinutes / 60);
-  let minutes = (quantityMinutes > 60) ? (quantityMinutes % 60) : quantityMinutes;
+  if (days < 10) days = '0' + days;
+  if (hours < 10) hours = '0' + hours;
+  if (minutes < 10) minutes = '0' + minutes;
 
-  if (minutes < 10) {
-    minutes = '0' + minutes;
+  if (days > 0) {
+    return `${days}D ${hours}H ${minutes}M`;
   }
-
   if (hours > 0) {
-    if (hours < 10) {
-      hours = '0' + hours;
-    }
     return `${hours}H ${minutes}M`;
   }
   return `${minutes}M`;

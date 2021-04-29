@@ -182,44 +182,6 @@ export default class EditPoint extends SmartView {
     this._dueDateToChangeHandler = this._dueDateToChangeHandler.bind(this);
 
     this._setInnerHandlers();
-    this._setDatepickerFrom();
-    this._setDatepickerTo();
-  }
-
-  _setDatepickerFrom() {
-    if (this._datepickerFrom) {
-      this._datepickerFrom.destroy();
-      this._datepickerFrom = null;
-      return;
-    }
-    if (this._point.dateFrom) {
-      this._datepickerFrom = flatpickr(
-        this.getElement().querySelector('#event-start-time'),
-        {
-          dateFormat: 'd/m/y h:m',
-          defaultDate: this._data.dateFrom,
-          onChange: this._dueDateFromChangeHandler,
-        },
-      );
-    }
-  }
-
-  _setDatepickerTo() {
-    if (this._datepickerTo) {
-      this._datepickerTo.destroy();
-      this._datepickerTo = null;
-      return;
-    }
-    if (this._point.dateTo) {
-      this._datepickerTo = flatpickr(
-        this.getElement().querySelector('#event-end-time'),
-        {
-          dateFormat: 'd/m/y h:m',
-          defaultDate: this._data.dateTo,
-          onChange: this._dueDateToChangeHandler,
-        },
-      );
-    }
   }
 
   getTemplate() {
@@ -235,12 +197,26 @@ export default class EditPoint extends SmartView {
   }
 
   _setInnerHandlers() {
+    this._setDatepickerFrom();
+    this._setDatepickerTo();
     this.getElement()
       .querySelector('.event__type-group')
       .addEventListener('change', this._typeClickHandler);
     this.getElement()
       .querySelector('.event__input--destination')
       .addEventListener('change', this._cityClickHandler);
+  }
+
+  _validityFormForCity(evt) {
+    CITIES.some((element) => element === evt.target.value) ?
+      evt.target.setCustomValidity('') :
+      evt.target.setCustomValidity('Выберите город из доступного списка');
+  }
+
+  _validityFormForDate() {
+    dayjs(this._point.dateTo).diff(dayjs(this._point.dateFrom)) < 0 ?
+      this.getElement().querySelector('#event-end-time').setCustomValidity('Измените время. Начало поездки не может быть позже окончания') :
+      this.getElement().querySelector('#event-end-time').setCustomValidity('');
   }
 
   _formSubmitHandler(evt) {
@@ -260,28 +236,57 @@ export default class EditPoint extends SmartView {
     });
   }
 
-  //!!Спросить про ошибку, если выбрано не то поле
-  _validityFormForCity(evt) {
-    CITIES.some((element) => element === evt.target.value) ?
-      evt.target.setCustomValidity('') :
-      evt.target.setCustomValidity('Выберите город из доступного списка');
+  _setDatepickerFrom() {
+    this._validityFormForDate();
+    if (this._datepickerFrom) {
+      this._datepickerFrom.destroy();
+      this._datepickerFrom = null;
+      return;
+    }
+    if (this._point.dateFrom) {
+      this._datepickerFrom = flatpickr(
+        this.getElement().querySelector('#event-start-time'),
+        {
+          dateFormat: 'd/m/Y H:i',
+          enableTime: true,
+          allowInput: true,
+          defaultDate: [''],
+          onClose: this._dueDateFromChangeHandler,
+        },
+      );
+    }
   }
 
-  _validityFormForDate() {
-    dayjs(this._point.dateTo).diff(dayjs(this._point.dateFrom)) > 0 ?
-      this._datepickerFrom.setCustomValidity('Измените время. Начало поездки не может быть позже окончания') :
-      this._datepickerFrom.setCustomValidity('');
+  _setDatepickerTo() {
+    this._validityFormForDate();
+    if (this._datepickerTo) {
+      this._datepickerTo.destroy();
+      this._datepickerTo = null;
+      return;
+    }
+    if (this._point.dateTo) {
+      this._datepickerTo = flatpickr(
+        this.getElement().querySelector('#event-end-time'),
+        {
+          dateFormat: 'd/m/Y H:i',
+          enableTime: true,
+          allowInput: true,
+          defaultDate: [''],
+          onClose: this._dueDateToChangeHandler,
+        },
+      );
+    }
   }
 
   _dueDateFromChangeHandler([userDate]) {
     this.updateData({
-      dateFrom: userDate,
+      dateFrom: dayjs(userDate),
     });
   }
 
   _dueDateToChangeHandler([userDate]) {
     this.updateData({
-      dateTo: userDate,
+      dateTo: dayjs(userDate),
     });
   }
 
