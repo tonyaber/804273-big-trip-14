@@ -2,6 +2,9 @@ import { TYPES, CITIES, ALL_OFFERS } from '../const.js';
 import { DESCRIOTION } from '../mock/point.js';
 import { formatDate } from '../utils/point.js';
 import SmartView from './smart.js';
+import flatpickr from 'flatpickr';
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
+import dayjs from 'dayjs';
 
 const createSiteEditPointTemplate = (point) => {
   const { dateFrom, dateTo, basePrice, type, offers, description, id } = point;
@@ -110,17 +113,17 @@ const createSiteEditPointTemplate = (point) => {
                   </div>
 
                   <div class="event__field-group  event__field-group--time">
-                    <label class="visually-hidden" for="event-start-time-1">From</label>
+                    <label class="visually-hidden" for="event-start-time">From</label>
                     <input class="event__input
                       event__input--time"
-                      id="event-start-time-1"
+                      id="event-start-time"
                       type="text"
                       name="event-start-time"
                       value="${formatDate(dateFrom)}">
                     &mdash;
-                    <label class="visually-hidden" for="event-end-time-1">To</label>
+                    <label class="visually-hidden" for="event-end-time">To</label>
                     <input class="event__input  event__input--time"
-                      id="event-end-time-1"
+                      id="event-end-time"
                       type="text"
                       name="event-end-time"
                       value="${formatDate(dateTo)}">
@@ -167,13 +170,56 @@ export default class EditPoint extends SmartView {
   constructor(point) {
     super();
     this._point = point;
+    this._datepickerFrom = null;
+    this._datepickerTo = null;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._editClickHandler = this._editClickHandler.bind(this);
     this._typeClickHandler = this._typeClickHandler.bind(this);
     this._cityClickHandler = this._cityClickHandler.bind(this);
 
+    this._dueDateFromChangeHandler = this._dueDateFromChangeHandler.bind(this);
+    this._dueDateToChangeHandler = this._dueDateToChangeHandler.bind(this);
+
     this._setInnerHandlers();
+    this._setDatepickerFrom();
+    this._setDatepickerTo();
+  }
+
+  _setDatepickerFrom() {
+    if (this._datepickerFrom) {
+      this._datepickerFrom.destroy();
+      this._datepickerFrom = null;
+      return;
+    }
+    if (this._point.dateFrom) {
+      this._datepickerFrom = flatpickr(
+        this.getElement().querySelector('#event-start-time'),
+        {
+          dateFormat: 'd/m/y h:m',
+          defaultDate: this._data.dateFrom,
+          onChange: this._dueDateFromChangeHandler,
+        },
+      );
+    }
+  }
+
+  _setDatepickerTo() {
+    if (this._datepickerTo) {
+      this._datepickerTo.destroy();
+      this._datepickerTo = null;
+      return;
+    }
+    if (this._point.dateTo) {
+      this._datepickerTo = flatpickr(
+        this.getElement().querySelector('#event-end-time'),
+        {
+          dateFormat: 'd/m/y h:m',
+          defaultDate: this._data.dateTo,
+          onChange: this._dueDateToChangeHandler,
+        },
+      );
+    }
   }
 
   getTemplate() {
@@ -182,6 +228,8 @@ export default class EditPoint extends SmartView {
 
   restoreHandlers() {
     this._setInnerHandlers();
+    this._setDatepickerFrom();
+    this._setDatepickerTo();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setEditClickHandler(this._callback.editClick);
   }
@@ -213,15 +261,33 @@ export default class EditPoint extends SmartView {
   }
 
   //!!Спросить про ошибку, если выбрано не то поле
-  _validityForm(evt) {
+  _validityFormForCity(evt) {
     CITIES.some((element) => element === evt.target.value) ?
       evt.target.setCustomValidity('') :
       evt.target.setCustomValidity('Выберите город из доступного списка');
   }
 
+  _validityFormForDate() {
+    dayjs(this._point.dateTo).diff(dayjs(this._point.dateFrom)) > 0 ?
+      this._datepickerFrom.setCustomValidity('Измените время. Начало поездки не может быть позже окончания') :
+      this._datepickerFrom.setCustomValidity('');
+  }
+
+  _dueDateFromChangeHandler([userDate]) {
+    this.updateData({
+      dateFrom: userDate,
+    });
+  }
+
+  _dueDateToChangeHandler([userDate]) {
+    this.updateData({
+      dateTo: userDate,
+    });
+  }
+
   _cityClickHandler(evt) {
     evt.preventDefault();
-    this._validityForm(evt);
+    this._validityFormForCity(evt);
     this.updateData({
       description: Object.assign(
         {},
