@@ -12,7 +12,7 @@ const createSitePointTemplate = (point) => {
   //создание списка дополнительных опций
   const createOffers = (offer) => {
     return `<li class="event__offer">
-              <span class="event__offer-title">${offer.name}</span>
+              <span class="event__offer-title">${offer.title}</span>
                 &plus;&euro;&nbsp;
               <span class="event__offer-price">${offer.price}</span>
             </li>`;
@@ -57,7 +57,7 @@ const createSitePointTemplate = (point) => {
             </li>`;
 };
 
-export default class Point extends AbstractView{
+export default class Point extends AbstractView {
   constructor(point) {
     super();
     this._point = point;

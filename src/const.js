@@ -2,30 +2,214 @@ const TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Transport', 'Drive', 'Flight', '
 
 const CITIES = ['Amsterdam', 'Chamonix', 'Geneva', 'Paris', 'Berlin', 'Dresden'];
 
-const OFFERS_CLASS_NAME = ['luggage', 'comfort', 'meal', 'seats', 'train'];
-
 const FILTERS = ['Everything', 'Future', 'Past'];
 
 const ALL_OFFERS = [
   {
-    name: 'Add luggage',
-    price: 30,
+    'type': 'taxi',
+    'offers': [
+      {
+        'title': 'Choose the radio station',
+        'price': 60,
+      },
+      {
+        'title': 'Non-smoking driver',
+        'price': 30,
+      },
+      {
+        'title': 'Air conditioning',
+        'price': 20,
+      },
+    ],
   },
   {
-    name: 'Switch to comfort class',
-    price: 100,
+    'type': 'bus',
+    'offers': [
+      {
+        'title': 'Air conditioning',
+        'price': 30,
+      },
+      {
+        'title': 'WC',
+        'price': 15,
+      },
+      {
+        'title': 'Comfortable armchairs',
+        'price': 60,
+      },
+      {
+        'title': 'TV near the armchairs',
+        'price': 80,
+      },
+    ],
   },
   {
-    name: 'Add meal',
-    price: 15,
+    'type': 'train',
+    'offers': [
+      {
+        'title': 'Air conditioning',
+        'price': 30,
+      },
+      {
+        'title': 'Comfortable armchairs',
+        'price': 60,
+      },
+      {
+        'title': 'TV near the armchairs',
+        'price': 80,
+      },
+      {
+        'title': 'Сanteen and drinks bar',
+        'price': 60,
+      },
+    ],
   },
   {
-    name: 'Choose seats',
-    price: 5,
+    'type': 'ship',
+    'offers': [
+      {
+        'title': 'Live music on board',
+        'price': 120,
+      },
+      {
+        'title': 'Restaurant',
+        'price': 100,
+      },
+      {
+        'title': 'Guided tour',
+        'price': 180,
+      },
+    ],
   },
   {
-    name: 'Travel by train',
-    price: 40,
+    'type': 'transport',
+    'offers': [
+      {
+        'title': 'Ship',
+        'price': 300,
+      },
+      {
+        'title': 'Taxi',
+        'price': 60,
+      },
+      {
+        'title': 'Train',
+        'price': 100,
+      },
+      {
+        'title': 'Bus',
+        'price': 30,
+      },
+    ],
+  },
+  {
+    'type': 'drive',
+    'offers': [
+      {
+        'title': 'Non-smoking car',
+        'price': 30,
+      },
+      {
+        'title': 'Air conditioning',
+        'price': 60,
+      },
+      {
+        'title': 'Electric car',
+        'price': 300,
+      },
+      {
+        'title': 'Trailer on wheels',
+        'price': 300,
+      },
+    ],
+  },
+  {
+    'type': 'flight',
+    'offers': [
+      {
+        'title': 'Comfortable armchairs',
+        'price': 60,
+      },
+      {
+        'title': 'TV near the armchairs',
+        'price': 80,
+      },
+      {
+        'title': 'Сanteen and drinks bar',
+        'price': 60,
+      },
+    ],
+  },
+  {
+    'type': 'check-in',
+    'offers': [
+      {
+        'title': 'Wonderful view from the room',
+        'price': 150,
+      },
+      {
+        'title': 'Large balcony or terrace',
+        'price': 150,
+      },
+      {
+        'title': 'Breakfast included',
+        'price': 30,
+      },
+      {
+        'title': 'Extra large bed',
+        'price': 10,
+      },
+      {
+        'title': 'Extra bed for a child',
+        'price': 50,
+      },
+      {
+        'title': 'Extra space for a pet',
+        'price': 70,
+      },
+    ],
+  },
+  {
+    'type': 'sightseeing',
+    'offers': [
+      {
+        'title': 'Guided tour',
+        'price': 200,
+      },
+      {
+        'title': 'Professional photography',
+        'price': 200,
+      },
+      {
+        'title': 'Souvenirs',
+        'price': 50,
+      },
+      {
+        'title': 'Helicopter tour',
+        'price': 300,
+      },
+    ],
+  },
+  {
+    'type': 'restaurant',
+    'offers': [
+      {
+        'title': 'Vegetarian cuisine',
+        'price': 60,
+      },
+      {
+        'title': 'Local kitchen',
+        'price': 80,
+      },
+      {
+        'title': 'Quick snack',
+        'price': 20,
+      },
+      {
+        'title': 'Coffee and drinks',
+        'price': 10,
+      },
+    ],
   },
 ];
 
@@ -41,10 +225,9 @@ const Mode = {
   EDITING: 'EDITING',
 };
 
-const SortType = {
-  DAY: 'day',
-  TIME: 'time',
-  PRICE: 'price',
+const SortListChecked = {
+  DAY: 'checked',
+  TIME: '',
+  PRICE: '',
 };
-
-export { TYPES, CITIES, OFFERS_CLASS_NAME, ALL_OFFERS, RenderPosition, POINT_COUNT, FILTERS, Mode, SortType };
+export { TYPES, CITIES, ALL_OFFERS, RenderPosition, POINT_COUNT, FILTERS, Mode, SortListChecked };

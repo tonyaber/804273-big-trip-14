@@ -1,8 +1,7 @@
 import EditPointView from '../view/edit-point.js';
 import PointView from '../view/point.js';
 import { RenderPosition, Mode } from '../const.js';
-import { replace, remove } from '../utils/render.js';
-import { renderElement } from '../utils/render.js';
+import { replace, remove, renderElement } from '../utils/render.js';
 
 export default class Point {
   constructor(tripContainer, changeData, changeMode) {
@@ -103,7 +102,8 @@ export default class Point {
     this._replaceFormToCard();
   }
 
-  _handleFormSubmit() {
+  _handleFormSubmit(point) {
     this._replaceFormToCard();
+    this._changeData(point);
   }
 }
