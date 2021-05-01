@@ -47,7 +47,7 @@ export default class Sort extends AbstractView {
     evt.preventDefault();
 
     Object.keys(SortListChecked).
-      forEach((key) => SortListChecked[key] = (evt.target.value.substr(prunSorting) === key.toLowerCase()) ? true : false);
+      forEach((key) => SortListChecked[key] = (evt.target.value.substr(prunSorting) === key.toLowerCase()));
 
     this._callback.sortTypeChange(evt.target.value);
   }
