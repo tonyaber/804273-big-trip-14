@@ -1,6 +1,7 @@
-import { TYPES, CITIES, ALL_OFFERS } from '../const.js';
-import { DESCRIOTION } from '../mock/point.js';
-import { formatDate } from '../utils/point.js';
+import { TYPES} from '../const.js';
+import {CITIES, TYPE_WITH_OFFERS } from '../mock/const.js';
+import { descriptions } from '../mock/point.js';
+import { formatDate, getArrayForType } from '../utils/point.js';
 import SmartView from './smart.js';
 import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
@@ -35,7 +36,7 @@ const createSiteEditPointTemplate = (point) => {
     .join('');
 
   //создание разметки для дополнительных опций
-  const offersOfType = ALL_OFFERS.find((element) => element.type === type.toLowerCase()).offers;
+  const offersOfType = getArrayForType(TYPE_WITH_OFFERS, type.toLowerCase());
 
   const createOfferTemplate = (offer, index) => {
     let check = '';
@@ -67,7 +68,7 @@ const createSiteEditPointTemplate = (point) => {
     return `<img class="event__photo" src="${photo.src}" alt="${photo.description}">`;
   };
 
-  const photoTemplate = DESCRIOTION.find((element) => element.name === description.name).pictures
+  const photoTemplate = descriptions.find((element) => element.name === description.name).pictures
     .map((photo) => createPhotoTemplate(photo))
     .join('');
 
@@ -75,7 +76,7 @@ const createSiteEditPointTemplate = (point) => {
     return `${description}`;
   };
 
-  const descriptionTemplate = DESCRIOTION.find((element) => element.name === description.name).description
+  const descriptionTemplate = descriptions.find((element) => element.name === description.name).description
     .map((description) => createDescriptionTemplate(description))
     .join(' ');
 
@@ -177,6 +178,7 @@ export default class EditPoint extends SmartView {
     this._editClickHandler = this._editClickHandler.bind(this);
     this._typeClickHandler = this._typeClickHandler.bind(this);
     this._cityClickHandler = this._cityClickHandler.bind(this);
+    this._priceClickHandler = this._priceClickHandler.bind(this);
 
     this._dueDateFromChangeHandler = this._dueDateFromChangeHandler.bind(this);
     this._dueDateToChangeHandler = this._dueDateToChangeHandler.bind(this);
@@ -205,6 +207,9 @@ export default class EditPoint extends SmartView {
     this.getElement()
       .querySelector('.event__input--destination')
       .addEventListener('change', this._cityClickHandler);
+    this.getElement()
+      .querySelector('.event__input--price')
+      .addEventListener('change', this._priceClickHandler);
   }
 
   _validityFormForCity(evt) {
@@ -291,7 +296,7 @@ export default class EditPoint extends SmartView {
   }
 
   _cityClickHandler(evt) {
-    if (evt.target.value && DESCRIOTION.find((element) => element.name === evt.target.value)) {
+    if (evt.target.value && descriptions.find((element) => element.name === evt.target.value)) {
       evt.preventDefault();
       this.updateData({
         description: Object.assign(
@@ -304,6 +309,13 @@ export default class EditPoint extends SmartView {
     else {
       this._validityFormForCity(evt);
     }
+  }
+
+  _priceClickHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      basePrice: evt.target.value,
+    });
   }
 
   setFormSubmitHandler(callback) {

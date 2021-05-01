@@ -1,14 +1,9 @@
-import { COUNT_PHOTO, DESCRIOTIONS, MAX_SIZE_PHOTO , MAX_SIZE_DESCRIPTION } from './const.js';
-import { TYPES, ALL_OFFERS } from '../const.js';
+import { COUNT_PHOTO, DESCRIPTIONS, MAX_SIZE_PHOTO, MAX_SIZE_DESCRIPTION, CITIES, TYPE_WITH_OFFERS } from './const.js';
+import { getArrayForType } from '../utils/point.js';
+import { TYPES } from '../const.js';
 import { getRandomNumber, getRandomArray, getRandomElementFromArray } from './utils.js';
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
-
-//поиск удобств в зависимости от типа
-const getArrayForType = (array, type) => {
-  const i = array.find((element) => element.type === type);
-  return getRandomArray(i.offers);
-};
 
 //генерация фото
 const photos = new Array(COUNT_PHOTO).fill('http://picsum.photos/248/152?r=').map((photo, index) => photo + index);
@@ -17,58 +12,36 @@ const photos = new Array(COUNT_PHOTO).fill('http://picsum.photos/248/152?r=').ma
 const generatePhoto = () => {
   return {
     src: getRandomElementFromArray(photos),
-    description: getRandomElementFromArray(DESCRIOTIONS, MAX_SIZE_DESCRIPTION),
+    description: getRandomElementFromArray(DESCRIPTIONS, MAX_SIZE_DESCRIPTION),
   };
 };
 
 //генерация описания
-const DESCRIOTION = [
-  {
-    'description': getRandomArray(DESCRIOTIONS, MAX_SIZE_DESCRIPTION),
-    'name': 'Amsterdam',
+const generateDescription = (city) => {
+  return {
+    'description': getRandomArray(DESCRIPTIONS, MAX_SIZE_DESCRIPTION),
+    'name': city,
     'pictures': new Array(getRandomNumber(1, MAX_SIZE_PHOTO)).fill().map(generatePhoto),
-  },
-  {
-    'description': getRandomArray(DESCRIOTIONS),
-    'name': 'Chamonix',
-    'pictures': new Array(getRandomNumber(1, MAX_SIZE_PHOTO)).fill().map(generatePhoto),
-  },
-  {
-    'description': getRandomArray(DESCRIOTIONS),
-    'name': 'Geneva',
-    'pictures': new Array(getRandomNumber(1, MAX_SIZE_PHOTO)).fill().map(generatePhoto),
-  },
-  {
-    'description': getRandomArray(DESCRIOTIONS),
-    'name': 'Paris',
-    'pictures': new Array(getRandomNumber(1, MAX_SIZE_PHOTO)).fill().map(generatePhoto),
-  },
-  {
-    'description': getRandomArray(DESCRIOTIONS),
-    'name': 'Berlin',
-    'pictures': new Array(getRandomNumber(1, MAX_SIZE_PHOTO)).fill().map(generatePhoto),
-  },
-  {
-    'description': getRandomArray(DESCRIOTIONS),
-    'name': 'Dresden',
-    'pictures': new Array(getRandomNumber(1, MAX_SIZE_PHOTO)).fill().map(generatePhoto),
-  },
-];
+  };
+};
+
+const descriptions = CITIES.map((city) => generateDescription(city));
 
 export const generatePoint = () => {
   const dateFrom = dayjs().add(getRandomNumber(-20, 20), 'day').format('YYYY-MM-DDTHH:mm:ss.SSS') + 'Z';
   const dateTo = dayjs(dateFrom).add(getRandomNumber(30, 160), 'minute').format('YYYY-MM-DDTHH:mm:ss.SSS') + 'Z';
   const type = getRandomElementFromArray(TYPES);
+  const offersOfType = getArrayForType(TYPE_WITH_OFFERS, type.toLowerCase());
   return {
     basePrice: getRandomNumber(100, 1000),
     dateFrom,
     dateTo,
-    description: getRandomElementFromArray(DESCRIOTION),
+    description: getRandomElementFromArray(descriptions),
     id: nanoid(),
     isFavorite: Boolean(getRandomNumber(0, 1)),
-    offers: getArrayForType(ALL_OFFERS, type.toLowerCase()),
+    offers:getRandomArray(offersOfType),
     type,
   };
 };
 
-export { DESCRIOTION };
+export {descriptions };

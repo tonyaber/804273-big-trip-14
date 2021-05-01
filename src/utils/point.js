@@ -47,4 +47,13 @@ const sortTime = (pointA, pointB) => dayjs(pointB.dateTo).diff(dayjs(pointB.date
 
 const sortPrice = (pointA, pointB) => pointB.basePrice - pointA.basePrice;
 
-export { formatDate, calculateDuration, sortDay, sortTime, sortPrice };
+//поиск удобств в зависимости от типа
+const getArrayForType = (array, type) => {
+  for (const key in array) {
+    if (key === type) {
+      return array[key];
+    }
+  }
+};
+
+export { formatDate, calculateDuration, sortDay, sortTime, sortPrice, getArrayForType };
