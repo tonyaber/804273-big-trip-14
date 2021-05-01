@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import * as minMax from 'dayjs/plugin/minMax';
 import AbstractView from './abstract.js';
-import { sortDay } from '../utils/point.js';
+import { sortDay } from '../utils/sort.js';
 
 dayjs.extend(minMax);
 

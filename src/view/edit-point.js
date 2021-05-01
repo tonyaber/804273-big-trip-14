@@ -1,5 +1,5 @@
 import { TYPES} from '../const.js';
-import {CITIES, TYPE_WITH_OFFERS } from '../mock/const.js';
+import { CITIES, TYPE_WITH_OFFERS } from '../mock/const.js';
 import { descriptions } from '../mock/point.js';
 import { formatDate, getArrayForType } from '../utils/point.js';
 import SmartView from './smart.js';
@@ -220,8 +220,8 @@ export default class EditPoint extends SmartView {
 
   _validityFormForDate() {
     dayjs(this._point.dateTo).diff(dayjs(this._point.dateFrom)) < 0 ?
-      this.getElement().querySelector('#event-end-time').setCustomValidity('Измените время. Начало поездки не может быть позже окончания') :
-      this.getElement().querySelector('#event-end-time').setCustomValidity('');
+      this.getElement().querySelector('#event-start-time').setCustomValidity('Измените время. Начало поездки не может быть позже окончания') :
+      this.getElement().querySelector('#event-start-time').setCustomValidity('');
   }
 
   _formSubmitHandler(evt) {
@@ -255,7 +255,7 @@ export default class EditPoint extends SmartView {
           dateFormat: 'd/m/Y H:i',
           enableTime: true,
           allowInput: true,
-          defaultDate: [''],
+          defaultDate: dayjs(this._point.dateFrom).format('DD/MM/YYYY HH:mm'),
           onClose: this._dueDateFromChangeHandler,
         },
       );
@@ -276,7 +276,7 @@ export default class EditPoint extends SmartView {
           dateFormat: 'd/m/Y H:i',
           enableTime: true,
           allowInput: true,
-          defaultDate: [''],
+          defaultDate: dayjs(this._point.dateTo).format('DD/MM/YYYY HH:mm'),
           onClose: this._dueDateToChangeHandler,
         },
       );

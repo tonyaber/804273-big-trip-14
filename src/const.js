@@ -17,8 +17,9 @@ const Mode = {
 };
 
 const SortListChecked = {
-  DAY: 'checked',
-  TIME: '',
-  PRICE: '',
+  DAY: true,
+  TIME: false,
+  PRICE: false,
 };
+
 export { TYPES, CITIES, RenderPosition, POINT_COUNT, FILTERS, Mode, SortListChecked };

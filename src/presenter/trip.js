@@ -1,5 +1,5 @@
 import { renderElement, updateItem, remove } from '../utils/render.js';
-import { sortDay, sortTime, sortPrice } from '../utils/point.js';
+import { sortDay, sortTime, sortPrice } from '../utils/sort.js';
 import TripInfoView from '../view/trip-info.js';
 import NavigationView from '../view/menu.js';
 import PriceView from '../view/price.js';
