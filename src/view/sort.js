@@ -1,10 +1,12 @@
 import AbstractView from './abstract.js';
 import { SortListChecked } from '../const.js';
 
+const prunSorting = 5;
+
 const createSiteSortTemplate = () => {
   return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
             <div class="trip-sort__item  trip-sort__item--day">
-              <input id="sort-day" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-day" ${SortListChecked.DAY}>
+              <input id="sort-day" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-day" ${SortListChecked.DAY ? 'checked' : ''}>
               <label class="trip-sort__btn" for="sort-day">Day</label>
             </div>
 
@@ -14,12 +16,12 @@ const createSiteSortTemplate = () => {
             </div>
 
             <div class="trip-sort__item  trip-sort__item--time">
-              <input id="sort-time" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-time" ${SortListChecked.TIME}>
+              <input id="sort-time" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-time" ${SortListChecked.TIME ? 'checked' : ''}>
               <label class="trip-sort__btn" for="sort-time">Time</label>
             </div>
 
             <div class="trip-sort__item  trip-sort__item--price">
-              <input id="sort-price" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-price" ${SortListChecked.PRICE}>
+              <input id="sort-price" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-price" ${SortListChecked.PRICE ? 'checked' : ''}>
               <label class="trip-sort__btn" for="sort-price">Price</label>
             </div>
 
@@ -45,7 +47,7 @@ export default class Sort extends AbstractView {
     evt.preventDefault();
 
     Object.keys(SortListChecked).
-      forEach((key) => evt.target.value.substr(5) === key.toLowerCase() ? SortListChecked[key] = 'checked' : SortListChecked[key] = '');
+      forEach((key) => SortListChecked[key] = (evt.target.value.substr(prunSorting) === key.toLowerCase()));
 
     this._callback.sortTypeChange(evt.target.value);
   }

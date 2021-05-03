@@ -3,7 +3,7 @@ import Abstract from './abstract.js';
 export default class Smart extends Abstract {
   constructor() {
     super();
-    this._data = {};
+    this._point = {};
   }
 
   updateData(update) {

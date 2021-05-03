@@ -1,4 +1,5 @@
-import { TYPES, CITIES, ALL_OFFERS, OFFERS_CLASS_NAME } from '../const.js';
+import { TYPES, OFFERS_CLASS_NAME } from '../const.js';
+import { ALL_OFFERS, CITIES } from '../mock/const.js';
 import { formatDate } from '../utils/point.js';
 import AbstractView from './abstract.js';
 

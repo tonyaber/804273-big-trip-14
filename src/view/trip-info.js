@@ -1,17 +1,16 @@
 import dayjs from 'dayjs';
 import * as minMax from 'dayjs/plugin/minMax';
 import AbstractView from './abstract.js';
+import { sortDay } from '../utils/sort.js';
 
 dayjs.extend(minMax);
 
 const createSiteTripInfoTemplate = (points) => {
   //массив со всех городов
-  const cities = points.map((element) => element.description.name);
+  let cities = points.sort(sortDay).map((element) => element.description.name);
 
-  //массив всех городов без повторов
-  let citiesNotRepeat;
-  cities.length <= 3 ? citiesNotRepeat = Array.from(new Set(cities)).join(' &mdash; ')
-    : citiesNotRepeat = `${Array.from(new Set(cities)).slice(0, 1)} — ... — ${Array.from(new Set(cities)).slice(-1)}`;
+  cities.length <= 3 ? cities.join(' &mdash; ')
+    : cities = `${cities.slice(-1)} — ... — ${cities.slice(0, 1)}`;
 
   //первая дата с массива всех дат
   const dateFrom = points.map((element) => dayjs(element.dateFrom));
@@ -22,7 +21,7 @@ const createSiteTripInfoTemplate = (points) => {
   const dateToTemplate = dayjs.max(dateTo).format('MMM DD');
 
   return `<div class="trip-info__main">
-            <h1 class="trip-info__title">${citiesNotRepeat}</h1>
+            <h1 class="trip-info__title">${cities}</h1>
 
             <p class="trip-info__dates">${dateFromTemplate}&nbsp;&mdash;&nbsp;${dateToTemplate}</p>
           </div>`;
