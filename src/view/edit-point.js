@@ -212,18 +212,6 @@ export default class EditPoint extends SmartView {
       .addEventListener('change', this._priceClickHandler);
   }
 
-  _validityFormForCity(evt) {
-    CITIES.some((element) => element === evt.target.value) ?
-      evt.target.setCustomValidity('') :
-      evt.target.setCustomValidity('Выберите город из доступного списка');
-  }
-
-  _validityFormForDate() {
-    dayjs(this._point.dateTo).diff(dayjs(this._point.dateFrom)) < 0 ?
-      this.getElement().querySelector('#event-start-time').setCustomValidity('Измените время. Начало поездки не может быть позже окончания') :
-      this.getElement().querySelector('#event-start-time').setCustomValidity('');
-  }
-
   _formSubmitHandler(evt) {
     evt.preventDefault();
     this._callback.formSubmit(this._point);
@@ -238,6 +226,29 @@ export default class EditPoint extends SmartView {
     evt.preventDefault();
     this.updateData({
       type: evt.target.value,
+    });
+  }
+
+  _cityClickHandler(evt) {
+    if (evt.target.value && descriptions.find((element) => element.name === evt.target.value)) {
+      evt.preventDefault();
+      this.updateData({
+        description: Object.assign(
+          {},
+          this._point.description,
+          { name: evt.target.value },
+        ),
+      });
+    }
+    else {
+      this._validityFormForCity(evt);
+    }
+  }
+
+  _priceClickHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      basePrice: evt.target.value,
     });
   }
 
@@ -295,27 +306,16 @@ export default class EditPoint extends SmartView {
     });
   }
 
-  _cityClickHandler(evt) {
-    if (evt.target.value && descriptions.find((element) => element.name === evt.target.value)) {
-      evt.preventDefault();
-      this.updateData({
-        description: Object.assign(
-          {},
-          this._point.description,
-          { name: evt.target.value },
-        ),
-      });
-    }
-    else {
-      this._validityFormForCity(evt);
-    }
+  _validityFormForCity(evt) {
+    CITIES.some((city) => city === evt.target.value) ?
+      evt.target.setCustomValidity('') :
+      evt.target.setCustomValidity('Выберите город из доступного списка');
   }
 
-  _priceClickHandler(evt) {
-    evt.preventDefault();
-    this.updateData({
-      basePrice: evt.target.value,
-    });
+  _validityFormForDate() {
+    dayjs(this._point.dateTo).diff(dayjs(this._point.dateFrom)) < 0 ?
+      this.getElement().querySelector('#event-start-time').setCustomValidity('Измените время. Начало поездки не может быть позже окончания') :
+      this.getElement().querySelector('#event-start-time').setCustomValidity('');
   }
 
   setFormSubmitHandler(callback) {

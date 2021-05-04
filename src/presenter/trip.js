@@ -37,25 +37,6 @@ export default class Trip {
     this._renderTrip();
   }
 
-  _sortPointsDefault() {
-    this._points.sort(sortDay);
-  }
-
-  _sortPoints(sortType) {
-    switch (sortType) {
-      case 'sort-time':
-        this._points.sort(sortTime);
-        break;
-      case 'sort-price':
-        this._points.sort(sortPrice);
-        break;
-      default:
-        this._sortPointsDefault();
-    }
-
-    this._currentSortType = sortType;
-  }
-
   _handlePointFavorite(updatedPoint) {
     this._points = updateItem(this._points, updatedPoint);
     this._pointPresenter[updatedPoint.id].init(updatedPoint);
@@ -78,6 +59,25 @@ export default class Trip {
     this._renderPoints();
   }
 
+  _sortPointsDefault() {
+    this._points.sort(sortDay);
+  }
+
+  _sortPoints(sortType) {
+    switch (sortType) {
+      case 'sort-time':
+        this._points.sort(sortTime);
+        break;
+      case 'sort-price':
+        this._points.sort(sortPrice);
+        break;
+      default:
+        this._sortPointsDefault();
+    }
+
+    this._currentSortType = sortType;
+  }
+
   _renderList() {
     renderElement(this._tripContainer, this._listComponent, RenderPosition.BEFOREEND);
   }
@@ -96,11 +96,6 @@ export default class Trip {
 
   _renderFilters() {
     renderElement(this._tripFilterContainer, this._filterComponent, RenderPosition.BEFOREEND);
-  }
-
-  _renderSort() {
-    renderElement(this._tripContainer, this._sortComponent, RenderPosition.AFTERBEGIN);
-    this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 
   _renderPoint(point) {
@@ -142,6 +137,9 @@ export default class Trip {
     this._renderSort();
     this._sortPointsDefault();
     this._renderPoints();
-
+  }
+  _renderSort() {
+    renderElement(this._tripContainer, this._sortComponent, RenderPosition.AFTERBEGIN);
+    this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 }
