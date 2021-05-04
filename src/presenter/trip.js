@@ -37,28 +37,6 @@ export default class Trip {
     this._renderTrip();
   }
 
-  _handlePointFavorite(updatedPoint) {
-    this._points = updateItem(this._points, updatedPoint);
-    this._pointPresenter[updatedPoint.id].init(updatedPoint);
-  }
-
-  _handleModeChange() {
-    Object
-      .values(this._pointPresenter)
-      .forEach((presenter) => presenter.resetView());
-  }
-
-  _handleSortTypeChange(sortType) {
-    if (this._currentSortType === sortType) {
-      return;
-    }
-    this._sortPoints(sortType);
-    this._clearSort();
-    this._renderSort();
-    this._clearPoint();
-    this._renderPoints();
-  }
-
   _sortPointsDefault() {
     this._points.sort(sortDay);
   }
@@ -138,8 +116,31 @@ export default class Trip {
     this._sortPointsDefault();
     this._renderPoints();
   }
+
   _renderSort() {
     renderElement(this._tripContainer, this._sortComponent, RenderPosition.AFTERBEGIN);
     this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
+  }
+
+  _handlePointFavorite(updatedPoint) {
+    this._points = updateItem(this._points, updatedPoint);
+    this._pointPresenter[updatedPoint.id].init(updatedPoint);
+  }
+
+  _handleModeChange() {
+    Object
+      .values(this._pointPresenter)
+      .forEach((presenter) => presenter.resetView());
+  }
+
+  _handleSortTypeChange(sortType) {
+    if (this._currentSortType === sortType) {
+      return;
+    }
+    this._sortPoints(sortType);
+    this._clearSort();
+    this._renderSort();
+    this._clearPoint();
+    this._renderPoints();
   }
 }
