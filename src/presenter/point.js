@@ -2,6 +2,7 @@ import EditPointView from '../view/edit-point.js';
 import PointView from '../view/point.js';
 import { RenderPosition, Mode } from '../const.js';
 import { replace, remove, renderElement } from '../utils/render.js';
+import { UserAction, UpdateType } from '../const.js';
 
 export default class Point {
   constructor(tripContainer, changeData, changeMode) {
@@ -18,10 +19,12 @@ export default class Point {
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
     this._handleUneditClick = this._handleUneditClick.bind(this);
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
 
   init(point) {
     this._point = point;
+    this._prevPoint = point;
 
     const prevPointComponent = this._pointComponent;
     const prevPointEditComponent = this._pointEditComponent;
@@ -33,6 +36,7 @@ export default class Point {
     this._pointComponent.setEditClickHandler(this._handleEditClick);
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointEditComponent.setEditClickHandler(this._handleUneditClick);
+    this._pointEditComponent.setDeleteClickHandler(this._handleDeleteClick);
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
       renderElement(this._tripContainer, this._pointComponent, RenderPosition.BEFOREEND);
@@ -77,6 +81,8 @@ export default class Point {
 
   _handleFavoriteClick() {
     this._changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.MAJOR,
       Object.assign(
         {},
         this._point,
@@ -92,17 +98,29 @@ export default class Point {
   }
 
   _handleUneditClick() {
+    this._pointEditComponent.reset(this._point);
     this._replaceFormToCard();
   }
 
   _handleFormSubmit(point) {
     this._replaceFormToCard();
-    this._changeData(point);
+    this._changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.MAJOR,
+      point);
+  }
+  _handleDeleteClick(point) {
+    this._changeData(
+      UserAction.DELETE_POINT,
+      UpdateType.MAJOR,
+      point,
+    );
   }
 
   _escKeyDownHandler(evt) {
     if (evt.key === 'Escape' && evt.target.type !== 'text') {
       evt.preventDefault();
+      this._pointEditComponent.reset(this._point);
       this._replaceFormToCard();
     }
   }

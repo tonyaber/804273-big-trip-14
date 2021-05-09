@@ -171,6 +171,7 @@ export default class EditPoint extends SmartView {
   constructor(point) {
     super();
     this._point = point;
+    this._prevPoint = point;
     this._datepickerFrom = null;
     this._datepickerTo = null;
 
@@ -179,6 +180,7 @@ export default class EditPoint extends SmartView {
     this._typeClickHandler = this._typeClickHandler.bind(this);
     this._cityClickHandler = this._cityClickHandler.bind(this);
     this._priceClickHandler = this._priceClickHandler.bind(this);
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
 
     this._dueDateFromChangeHandler = this._dueDateFromChangeHandler.bind(this);
     this._dueDateToChangeHandler = this._dueDateToChangeHandler.bind(this);
@@ -190,12 +192,23 @@ export default class EditPoint extends SmartView {
     return createSiteEditPointTemplate(this._point);
   }
 
+  reset(point) {
+    this.updateData(
+      point,
+    );
+  }
+
   restoreHandlers() {
     this._setInnerHandlers();
     this._setDatepickerFrom();
     this._setDatepickerTo();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setEditClickHandler(this._callback.editClick);
+    this.setDeleteClickHandler(this._callback.deleteClick);
+  }
+
+  removeElement() {
+    super.removeElement();
   }
 
   _setInnerHandlers() {
@@ -316,6 +329,16 @@ export default class EditPoint extends SmartView {
     this.updateData({
       basePrice: evt.target.value,
     });
+  }
+
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(this._point);
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formDeleteClickHandler);
   }
 
   setFormSubmitHandler(callback) {
