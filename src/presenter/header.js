@@ -5,7 +5,7 @@ import PriceView from '../view/price.js';
 import { RenderPosition } from '../const.js';
 
 export default class Header {
-  constructor( tripInfoContainer, tripFilterContainer, siteNavigationContainer, pointsModel) {
+  constructor(tripInfoContainer, tripFilterContainer, siteNavigationContainer, pointsModel) {
     this._tripInfoContainer = tripInfoContainer;
     this._tripFilterContainer = tripFilterContainer;
     this._tripNavigationContainer = siteNavigationContainer;
@@ -13,10 +13,14 @@ export default class Header {
 
     this._navigationComponent = new NavigationView();
 
- }
+  }
 
   init() {
     this._renderHeader();
+  }
+
+  _getPoints() {
+    return this._pointsModel.getPoints();
   }
 
   _renderTripInfo() {
@@ -40,3 +44,4 @@ export default class Header {
     this._renderPrice();
     this._renderNavigation();
   }
+}

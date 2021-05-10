@@ -1,43 +1,33 @@
 import { renderElement, remove } from '../utils/render.js';
 import { sortDay, sortTime, sortPrice } from '../utils/sort.js';
-import TripInfoView from '../view/trip-info.js';
-import NavigationView from '../view/menu.js';
-import PriceView from '../view/price.js';
-import FiltersView from '../view/filters.js';
 import SortView from '../view/sort.js';
 import ListView from '../view/list.js';
 import EmptyListView from '../view/empty-list.js';
 import PointPresenter from './point.js';
-//import { filter } from '../utils/filter.js';
+import { filterPoint } from '../utils/filter.js';
 import { RenderPosition, UpdateType, UserAction } from '../const.js';
 
 export default class Trip {
-  constructor(tripContainer, tripInfoContainer, tripFilterContainer, siteNavigationContainer, pointsModel) {
+  constructor(tripContainer, pointsModel, filterModel) {
     this._tripContainer = tripContainer;
-    this._tripInfoContainer = tripInfoContainer;
-    this._tripFilterContainer = tripFilterContainer;
-    this._tripNavigationContainer = siteNavigationContainer;
+
     this._pointsModel = pointsModel;
-    //this._filterModel = filterModel;
+    this._filterModel = filterModel;
 
     this._listComponent = new ListView();
-    this._navigationComponent = new NavigationView();
-    this._filterComponent = new FiltersView();
     this._emptyListComponent = new EmptyListView();
 
     this._pointPresenter = {};
     this._currentSortType = 'sort-day';
     this._sortComponent = null;
-    this._tripInfoComponent = null;
 
-    //this._handlePointChange = this._handlePointChange.bind(this);
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
     this._pointsModel.addObserver(this._handleModelEvent);
-   //this._filterModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -45,17 +35,17 @@ export default class Trip {
     this._renderTrip();
   }
   _getPoints() {
-   // const filterType = this._filterModel.getFilter();
-   // const points = this._pointsModel.getPoints();
-   // const filtredPoints = filter[filterType](points);
+    const filterType = this._filterModel.getFilter();
+    const points = this._pointsModel.getPoints();
+    const filtredPoints = filterPoint[filterType](points);
 
     switch (this._currentSortType) {
       case 'sort-time':
-        return this._pointsModel.getPoints().slice().sort(sortTime);
+        return filtredPoints.sort(sortTime);
       case 'sort-price':
-        return this._pointsModel.getPoints().slice().sort(sortPrice);
+        return filtredPoints.sort(sortPrice);
     }
-    return this._pointsModel.getPoints().slice().sort(sortDay);
+    return filtredPoints.sort(sortDay);
   }
   _sortPointsDefault() {
     return this._pointsModel.getPoints().slice().sort(sortDay);
@@ -78,22 +68,6 @@ export default class Trip {
 
   _renderList() {
     renderElement(this._tripContainer, this._listComponent, RenderPosition.BEFOREEND);
-  }
-
-  _renderTripInfo() {
-    renderElement(this._tripInfoContainer, this._tripInfoComponent, RenderPosition.BEFOREEND);
-  }
-
-  _renderPrice() {
-    renderElement(this._tripInfoContainer, this._priceComponent, RenderPosition.BEFOREEND);
-  }
-
-  _renderNavigation() {
-    renderElement(this._tripNavigationContainer, this._navigationComponent, RenderPosition.BEFOREEND);
-  }
-
-  _renderFilters() {
-    renderElement(this._tripFilterContainer, this._filterComponent, RenderPosition.BEFOREEND);
   }
 
   _renderPoint(point) {
@@ -127,13 +101,7 @@ export default class Trip {
       this._renderEmptyList();
       return;
     }
-    if (this._tripInfoComponent === null) {
-      this._tripInfoComponent = new TripInfoView(points);
-      this._priceComponent = new PriceView(points);
-      this._renderTripInfo();
-      this._renderPrice();
-      this._renderNavigation();
-      //this._renderFilters();
+    if (this._sortComponent === null) {
       this._renderSort();
       this._sortPointsDefault();
       this._renderPoints(points);
