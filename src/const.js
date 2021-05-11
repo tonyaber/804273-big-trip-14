@@ -9,7 +9,7 @@ const RenderPosition = {
   BEFOREEND: 'beforeend',
 };
 
-const POINT_COUNT = 20;
+const POINT_COUNT = 3;
 
 const Mode = {
   DEFAULT: 'DEFAULT',

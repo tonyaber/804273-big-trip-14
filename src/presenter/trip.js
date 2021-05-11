@@ -51,21 +51,6 @@ export default class Trip {
     return this._pointsModel.getPoints().slice().sort(sortDay);
   }
 
-  /*_sortPoints(sortType) {
-    switch (sortType) {
-      case 'sort-time':
-        this._points.sort(sortTime);
-        break;
-      case 'sort-price':
-        this._points.sort(sortPrice);
-        break;
-      default:
-        this._sortPointsDefault();
-    }
-
-    this._currentSortType = sortType;
-  }*/
-
   _renderList() {
     renderElement(this._tripContainer, this._listComponent, RenderPosition.BEFOREEND);
   }
@@ -111,7 +96,6 @@ export default class Trip {
   }
 
   _renderSort() {
-    //renderElement(this._tripContainer, this._sortComponent, RenderPosition.AFTERBEGIN);
     if (this._sortComponent !== null) {
       this._sortComponent = null;
     }
@@ -120,19 +104,6 @@ export default class Trip {
     this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
     renderElement(this._tripContainer, this._sortComponent, RenderPosition.AFTERBEGIN);
   }
-
-  /*_clearBoard(resetSortType = false) {
-    Object
-      .values(this._pointPresenter)
-      .forEach((presenter) => presenter.destroy());
-    this._pointPresenter = {};
-
-    remove(this._sortComponent);
-
-    if (resetSortType) {
-      this._currentSortType = 'sort-day';
-    }
-  }*/
 
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
@@ -151,11 +122,7 @@ export default class Trip {
   _handleModelEvent(updateType, point) {
     switch (updateType) {
       case UpdateType.PATCH:
-        // - обновить часть списка (например, когда поменялось описание)
         this._pointPresenter[point.id].init(point);
-        break;
-      case UpdateType.MINOR:
-        // - обновить список (например, когда задача ушла в архив)
         break;
       case UpdateType.MAJOR:
         this._clearPoint();
@@ -163,11 +130,6 @@ export default class Trip {
         break;
     }
   }
-  /*
-  _handlePointChange(updatedPoint) {
-    //this._points = updateItem(this._points, updatedPoint);
-    this._pointPresenter[updatedPoint.id].init(updatedPoint);
-  }*/
 
   _handleModeChange() {
     Object
@@ -179,13 +141,8 @@ export default class Trip {
     if (this._currentSortType === sortType) {
       return;
     }
-    //this._sortPoints(sortType);
     this._currentSortType = sortType;
     this._clearPoint();
     this._renderTrip();
-    //this._clearSort();
-    //this._renderSort();
-    // this._clearPoint();
-    //this._renderPoints();
   }
 }

@@ -1,4 +1,4 @@
-import { renderElement } from '../utils/render.js';
+import { renderElement, replace } from '../utils/render.js';
 import TripInfoView from '../view/trip-info.js';
 import NavigationView from '../view/menu.js';
 import PriceView from '../view/price.js';
@@ -11,12 +11,39 @@ export default class Header {
     this._tripNavigationContainer = siteNavigationContainer;
     this._pointsModel = pointsModel;
 
+    this._tripInfoComponent = null;
+    this._priceComponent = null;
+
+    this._handleModelEvent = this._handleModelEvent.bind(this);
+
     this._navigationComponent = new NavigationView();
+
+    this._pointsModel.addObserver(this._handleModelEvent);
 
   }
 
   init() {
-    this._renderHeader();
+    const points = this._getPoints();
+    const prevTripInfoComponent = this._tripInfoComponent;
+    const prevPriceComponent = this._priceComponent;
+
+    if (prevTripInfoComponent === null) {
+      this._tripInfoComponent = new TripInfoView(points);
+      this._priceComponent = new PriceView(points);
+      this.__renderHeader();
+      return;
+    }
+    this._tripInfoComponent = new TripInfoView(points);
+    this._priceComponent = new PriceView(points);
+    replace(this._tripInfoComponent, prevTripInfoComponent);
+    replace(this._priceComponent, prevPriceComponent);
+    this.__renderHeader();
+  }
+
+  __renderHeader() {
+    this._renderTripInfo();
+    this._renderPrice();
+    this._renderNavigation();
   }
 
   _getPoints() {
@@ -35,13 +62,7 @@ export default class Header {
     renderElement(this._tripNavigationContainer, this._navigationComponent, RenderPosition.BEFOREEND);
   }
 
-  _renderHeader() {
-    const points = this._getPoints();
-
-    this._tripInfoComponent = new TripInfoView(points);
-    this._priceComponent = new PriceView(points);
-    this._renderTripInfo();
-    this._renderPrice();
-    this._renderNavigation();
+  _handleModelEvent() {
+    this.init();
   }
 }

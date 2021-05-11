@@ -32,12 +32,8 @@ const headerPresenter = new HeaderPresenter(siteTripInfoElement, siteFiltersElem
 headerPresenter.init();
 
 const filterPresenter = new FilterPresenter(siteFiltersElement, filterModel, pointsModel);
-
+filterPresenter.init();
 
 const tripPresenter = new TripPresenter(siteEventsElement, pointsModel, filterModel);
-filterPresenter.init();
-//const filterPresenter = new FilterPresenter(siteHeaderElement, filterModel, pointsModel);
-
-//filterPresenter.init();
 tripPresenter.init();
 
