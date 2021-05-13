@@ -201,8 +201,6 @@ export default class EditPoint extends SmartView {
     this._dueDateToChangeHandler = this._dueDateToChangeHandler.bind(this);
 
     this._setInnerHandlers();
-
-
   }
 
   getTemplate() {
@@ -210,10 +208,10 @@ export default class EditPoint extends SmartView {
   }
 
   reset(point) {
-    this.updateData(
+    this.updatePoint(
       point,
     );
-    this._offers = point.offers;
+    this._offers = this._point.offers;
   }
 
   restoreHandlers() {
@@ -324,9 +322,15 @@ export default class EditPoint extends SmartView {
 
   _typeClickHandler(evt) {
     evt.preventDefault();
+    this.updateData(
+      {
+        offers:[],
+      },
+    ),
     this.updateData({
       type: evt.target.value,
     });
+    this._offers = [];
   }
 
   _cityClickHandler(evt) {
@@ -356,9 +360,11 @@ export default class EditPoint extends SmartView {
     evt.preventDefault();
     if (evt.target.checked) {
       this._offers.push(OFFERS[evt.target.name.substr(12)]);
-      this.updateData({
-        offers: this._offers,
-      });
+      this.updateData(Object.assign(
+        {},
+        this._point,
+        {offers: this._offers},
+      ));
     }
     else {
       this._index = this._offers.findIndex((point) => point.name === OFFERS[evt.target.name.substr(12)].name);
@@ -366,9 +372,11 @@ export default class EditPoint extends SmartView {
         ...this._offers.slice(0, this._index),
         ...this._offers.slice(this._index + 1),
       ];
-      this.updateData({
-        offers: this._offers,
-      });
+      this.updateData(Object.assign(
+        {},
+        this._point,
+        { offers: this._offers },
+      ));
     }
   }
 

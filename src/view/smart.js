@@ -18,6 +18,14 @@ export default class Smart extends Abstract {
     this.updateElement();
   }
 
+  updatePoint(update) {
+    if (!update) {
+      return;
+    }
+    this._point = JSON.parse(JSON.stringify(update));
+    this.updateElement();
+  }
+
   updateElement() {
     const prevElement = this.getElement();
     const parent = prevElement.parentElement;
