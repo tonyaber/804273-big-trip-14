@@ -1,5 +1,5 @@
 import { TYPES} from '../const.js';
-import { CITIES, TYPE_WITH_OFFERS } from '../mock/const.js';
+import { CITIES, TYPE_WITH_OFFERS, OFFERS} from '../mock/const.js';
 import { descriptions } from '../mock/point.js';
 import { formatDate, getArrayForType } from '../utils/point.js';
 import SmartView from './smart.js';
@@ -38,7 +38,7 @@ const createSiteEditPointTemplate = (point) => {
   //создание разметки для дополнительных опций
   const offersOfType = getArrayForType(TYPE_WITH_OFFERS, type.toLowerCase());
 
-  const createOfferTemplate = (offer, index) => {
+  const createOfferTemplate = (offer) => {
     let check = '';
 
     if (offers.some((element) => element.title === offer.title)) {
@@ -47,11 +47,11 @@ const createSiteEditPointTemplate = (point) => {
 
     return `<div class="event__offer-selector">
               <input class="event__offer-checkbox  visually-hidden"
-                id="event-offer-${index}-${id}"
+                id="event-offer-${id}-${offer.name}"
                 type="checkbox"
-                name="event-offer-${index}"
+                name="event-offer-${offer.name}"
                 ${check}>
-              <label class="event__offer-label" for="event-offer-${index}-${id}">
+              <label class="event__offer-label" for="event-offer-${id}-${offer.name}">
               <span class="event__offer-title">${offer.title}</span>
               &plus;&euro;&nbsp;
               <span class="event__offer-price">${offer.price}</span>
@@ -59,26 +59,54 @@ const createSiteEditPointTemplate = (point) => {
              </div>`;
   };
 
-  const offerTemplate = offersOfType
-    .map((offer, index) => createOfferTemplate(offer, index))
-    .join('');
+  const offersTamplate = () => {
+    if (offersOfType === null || offersOfType === undefined || !offersOfType.length) {
+      return '';
+    }
+    const offerTemplate = offersOfType
+      .map((offer) => createOfferTemplate(offer))
+      .join('');
 
-  //создание разметки для фото
+    return `<section class="event__section  event__section--offers">
+                    <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+
+                    <div class="event__available-offers">
+                      ${offerTemplate}
+                    </div>
+                  </section>`;
+  };
+
   const createPhotoTemplate = (photo) => {
     return `<img class="event__photo" src="${photo.src}" alt="${photo.description}">`;
   };
-
-  const photoTemplate = descriptions.find((element) => element.name === description.name).pictures
-    .map((photo) => createPhotoTemplate(photo))
-    .join('');
 
   const createDescriptionTemplate = (description) => {
     return `${description}`;
   };
 
-  const descriptionTemplate = descriptions.find((element) => element.name === description.name).description
-    .map((description) => createDescriptionTemplate(description))
-    .join(' ');
+  const descriptionsTemplate = () => {
+    if (description===null||description===undefined||description.name==='') {
+      return '';
+    }
+
+    const photoTemplate = descriptions.find((element) => element.name === description.name).pictures
+      .map((photo) => createPhotoTemplate(photo))
+      .join('');
+
+    const descriptionTemplate = descriptions.find((element) => element.name === description.name).description
+      .map((description) => createDescriptionTemplate(description))
+      .join(' ');
+
+    return `<section class="event__section  event__section--destination">
+                    <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+                    <p class="event__destination-description">${descriptionTemplate}</p>
+                    <div class="event__photos-container">
+                      <div class="event__photos-tape">
+                        ${photoTemplate}
+                      </div>
+                    </div>
+                    </section>`;
+  };
 
   return `<li class="trip-events__item">
               <form class="event event--edit" action="#" method="post">
@@ -145,23 +173,8 @@ const createSiteEditPointTemplate = (point) => {
                   </button>
                 </header>
                 <section class="event__details">
-                  <section class="event__section  event__section--offers">
-                    <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
-                    <div class="event__available-offers">
-                      ${offerTemplate}
-                    </div>
-                  </section>
-
-                  <section class="event__section  event__section--destination">
-                    <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-                    <p class="event__destination-description">${descriptionTemplate}</p>
-                    <div class="event__photos-container">
-                      <div class="event__photos-tape">
-                        ${photoTemplate}
-                      </div>
-                    </div>
-                    </section>
+                  ${offersTamplate()}
+                  ${descriptionsTemplate()}
                 </section>
               </form>
             </li>`;
@@ -171,9 +184,9 @@ export default class EditPoint extends SmartView {
   constructor(point) {
     super();
     this._point = point;
-    this._prevPoint = point;
     this._datepickerFrom = null;
     this._datepickerTo = null;
+    this._offers = getArrayForType(TYPE_WITH_OFFERS, this._point.type.toLowerCase());
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._editClickHandler = this._editClickHandler.bind(this);
@@ -181,11 +194,14 @@ export default class EditPoint extends SmartView {
     this._cityClickHandler = this._cityClickHandler.bind(this);
     this._priceClickHandler = this._priceClickHandler.bind(this);
     this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
+    this._offerClickHandler = this._offerClickHandler.bind(this);
 
     this._dueDateFromChangeHandler = this._dueDateFromChangeHandler.bind(this);
     this._dueDateToChangeHandler = this._dueDateToChangeHandler.bind(this);
 
     this._setInnerHandlers();
+
+
   }
 
   getTemplate() {
@@ -223,6 +239,9 @@ export default class EditPoint extends SmartView {
     this.getElement()
       .querySelector('.event__input--price')
       .addEventListener('change', this._priceClickHandler);
+    this.getElement()
+      .querySelector('.event__available-offers')
+      .addEventListener('change', this._offerClickHandler);
   }
 
   _setDatepickerFrom() {
@@ -327,8 +346,22 @@ export default class EditPoint extends SmartView {
   _priceClickHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      basePrice: evt.target.value,
+      basePrice: Number(evt.target.value),
     });
+  }
+
+  _offerClickHandler(evt) {
+    evt.preventDefault();
+    if (evt.target.checked) {
+      this._point.offers.push(OFFERS[evt.target.name.substr(12)]);
+    }
+    else {
+      this._index = this._point.offers.findIndex((point) => point.name === OFFERS[evt.target.name.substr(12)].name);
+      this._point.offers = [
+        ...this._point.offers.slice(0, this._index),
+        ...this._point.offers.slice(this._index + 1),
+      ];
+    }
   }
 
   _formDeleteClickHandler(evt) {

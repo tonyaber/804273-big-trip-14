@@ -1,12 +1,9 @@
 import AbstractView from './abstract.js';
-import { SortListChecked } from '../const.js';
 
-const prunSorting = 5;
-
-const createSiteSortTemplate = () => {
+const createSiteSortTemplate = (currentSortValue) => {
   return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
             <div class="trip-sort__item  trip-sort__item--day">
-              <input id="sort-day" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-day" ${SortListChecked.DAY ? 'checked' : ''}>
+              <input id="sort-day" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-day" ${currentSortValue ==='sort-day' ? 'checked' : ''}>
               <label class="trip-sort__btn" for="sort-day">Day</label>
             </div>
 
@@ -16,12 +13,12 @@ const createSiteSortTemplate = () => {
             </div>
 
             <div class="trip-sort__item  trip-sort__item--time">
-              <input id="sort-time" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-time" ${SortListChecked.TIME ? 'checked' : ''}>
+              <input id="sort-time" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-time" ${currentSortValue === 'sort-time'? 'checked' : ''}>
               <label class="trip-sort__btn" for="sort-time">Time</label>
             </div>
 
             <div class="trip-sort__item  trip-sort__item--price">
-              <input id="sort-price" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-price" ${SortListChecked.PRICE ? 'checked' : ''}>
+              <input id="sort-price" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-price" ${currentSortValue ==='sort-price' ? 'checked' : ''}>
               <label class="trip-sort__btn" for="sort-price">Price</label>
             </div>
 
@@ -33,22 +30,19 @@ const createSiteSortTemplate = () => {
 };
 
 export default class Sort extends AbstractView {
-  constructor() {
+  constructor(currentSortValue) {
     super();
-
+    this._currentSortValue = currentSortValue;
     this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
   }
 
   getTemplate() {
-    return createSiteSortTemplate();
+    return createSiteSortTemplate(this._currentSortValue);
   }
 
   _sortTypeChangeHandler(evt) {
     evt.preventDefault();
-
-    Object.keys(SortListChecked).
-      forEach((key) => SortListChecked[key] = (evt.target.value.substr(prunSorting) === key.toLowerCase()));
-
+    this._currentSortValue = evt.target.value;
     this._callback.sortTypeChange(evt.target.value);
   }
 

@@ -4,7 +4,6 @@ import { generatePoint } from './mock/point.js';
 import { RenderPosition, POINT_COUNT } from './const.js';
 import HeaderPresenter from './presenter/header.js';
 import PointsModel from './model/point.js';
-//import FilterView from './view/filters.js';
 import FilterModel from './model/filter.js';
 import TripPresenter from './presenter/trip.js';
 import FilterPresenter from './presenter/filter.js';
@@ -37,3 +36,7 @@ filterPresenter.init();
 const tripPresenter = new TripPresenter(siteEventsElement, pointsModel, filterModel);
 tripPresenter.init();
 
+document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
+  evt.preventDefault();
+  tripPresenter.createPoint();
+});
