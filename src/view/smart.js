@@ -10,7 +10,6 @@ export default class Smart extends Abstract {
     if (!update) {
       return;
     }
-    //!!Ошибка. Должно быть this._data, но так не работает, this._data не меняет this._point
     this._point = Object.assign(
       {},
       this._point,

@@ -7,10 +7,10 @@ dayjs.extend(minMax);
 
 const createSiteTripInfoTemplate = (points) => {
   //массив со всех городов
-  let cities = points.sort(sortDay).map((city) => city.description.name);
+  const cities = points.sort(sortDay).map((city) => city.description.name);
 
-  cities.length <= 3 ? cities.join(' &mdash; ')
-    : cities = `${cities.slice(-1)} — ... — ${cities.slice(0, 1)}`;
+  const citiesTemplate = cities.length <= 3 ? cities.join(' &mdash; ')
+    : `${cities.slice(-1)} &mdash; ... &mdash; ${cities.slice(0, 1)}`;
 
   //первая дата с массива всех дат
   const dateFrom = points.map((point) => dayjs(point.dateFrom));
@@ -21,7 +21,7 @@ const createSiteTripInfoTemplate = (points) => {
   const dateToTemplate = dayjs.max(dateTo).format('MMM DD');
 
   return `<div class="trip-info__main">
-            <h1 class="trip-info__title">${cities}</h1>
+            <h1 class="trip-info__title">${citiesTemplate}</h1>
 
             <p class="trip-info__dates">${dateFromTemplate}&nbsp;&mdash;&nbsp;${dateToTemplate}</p>
           </div>`;

@@ -111,7 +111,6 @@ export default class Trip {
   }
 
   _handleViewAction(actionType, updateType, update) {
-
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this._pointsModel.updatePoint(updateType, update);
@@ -145,7 +144,6 @@ export default class Trip {
   }
 
   _handleSortTypeChange(sortType) {
-
     if (this._currentSortType === sortType) {
       return;
     }

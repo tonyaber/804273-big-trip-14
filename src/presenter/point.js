@@ -107,8 +107,10 @@ export default class Point {
     this._changeData(
       UserAction.UPDATE_POINT,
       UpdateType.MAJOR,
-      point);
+      point,
+    );
   }
+
   _handleDeleteClick(point) {
     this._changeData(
       UserAction.DELETE_POINT,
@@ -118,7 +120,7 @@ export default class Point {
   }
 
   _escKeyDownHandler(evt) {
-    if (evt.key === 'Escape' && evt.target.type !== 'text') {
+    if (evt.key === 'Escape' && evt.target.type !== 'text' && evt.target.type !== 'number') {
       evt.preventDefault();
       this._pointEditComponent.reset(this._point);
       this._replaceFormToCard();

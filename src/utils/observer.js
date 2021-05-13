@@ -15,13 +15,14 @@ export default class Observer {
   _notify(event, payload) {
     this._observers.forEach((observer) => observer(event, payload));
   }
+
   getElement() {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
     }
-
     return this._element;
   }
+
   removeElement() {
     this._element = null;
   }

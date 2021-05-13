@@ -19,7 +19,6 @@ export default class Header {
     this._navigationComponent = new NavigationView();
 
     this._pointsModel.addObserver(this._handleModelEvent);
-
   }
 
   init() {
@@ -33,10 +32,13 @@ export default class Header {
       this.__renderHeader();
       return;
     }
+
     this._tripInfoComponent = new TripInfoView(points);
     this._priceComponent = new PriceView(points);
+
     replace(this._tripInfoComponent, prevTripInfoComponent);
     replace(this._priceComponent, prevPriceComponent);
+
     this.__renderHeader();
   }
 

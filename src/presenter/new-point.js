@@ -21,6 +21,7 @@ export default class PointNew {
     }
 
     this._pointNewComponent = new PointNewView();
+
     this._pointNewComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointNewComponent.setDeleteClickHandler(this._handleDeleteClick);
 

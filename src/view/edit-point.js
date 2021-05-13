@@ -163,7 +163,7 @@ const createSiteEditPointTemplate = (point) => {
                       <span class="visually-hidden">Price</span>
                       &euro;
                     </label>
-                    <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
+                    <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${basePrice}">
                   </div>
 
                   <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -184,9 +184,10 @@ export default class EditPoint extends SmartView {
   constructor(point) {
     super();
     this._point = point;
+    this._offers = this._point.offers.slice();
+
     this._datepickerFrom = null;
     this._datepickerTo = null;
-    this._offers = getArrayForType(TYPE_WITH_OFFERS, this._point.type.toLowerCase());
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._editClickHandler = this._editClickHandler.bind(this);
@@ -212,6 +213,7 @@ export default class EditPoint extends SmartView {
     this.updateData(
       point,
     );
+    this._offers = point.offers;
   }
 
   restoreHandlers() {
@@ -346,21 +348,27 @@ export default class EditPoint extends SmartView {
   _priceClickHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      basePrice: Number(evt.target.value),
+      basePrice: evt.target.value,
     });
   }
 
   _offerClickHandler(evt) {
     evt.preventDefault();
     if (evt.target.checked) {
-      this._point.offers.push(OFFERS[evt.target.name.substr(12)]);
+      this._offers.push(OFFERS[evt.target.name.substr(12)]);
+      this.updateData({
+        offers: this._offers,
+      });
     }
     else {
-      this._index = this._point.offers.findIndex((point) => point.name === OFFERS[evt.target.name.substr(12)].name);
-      this._point.offers = [
-        ...this._point.offers.slice(0, this._index),
-        ...this._point.offers.slice(this._index + 1),
+      this._index = this._offers.findIndex((point) => point.name === OFFERS[evt.target.name.substr(12)].name);
+      this._offers = [
+        ...this._offers.slice(0, this._index),
+        ...this._offers.slice(this._index + 1),
       ];
+      this.updateData({
+        offers: this._offers,
+      });
     }
   }
 

@@ -14,7 +14,6 @@ const pointsModel = new PointsModel();
 pointsModel.setPoints(points);
 const filterModel = new FilterModel();
 
-
 //создаем макет шапки сайта
 const siteHeaderElement = document.querySelector('.trip-main');
 renderElement(siteHeaderElement, new TripInfoHeaderView(), RenderPosition.AFTERBEGIN);
