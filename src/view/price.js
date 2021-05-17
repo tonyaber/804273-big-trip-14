@@ -2,9 +2,9 @@ import AbstractView from './abstract.js';
 const createSitePriceTemplate = (points) => {
 
   //считаем базовою стоимость всех поездок
-  const basePrice = points.
-    map((point) => point.basePrice).
-    reduce((accumulator, price) => Number(accumulator) + Number(price));
+  const basePrice = points
+    .map((point) => point.basePrice)
+    .reduce((accumulator, price) => Number(accumulator) + Number(price));
 
   //считаем стоимость дополнительных опций
   const offersPrice = points

@@ -32,6 +32,7 @@ const calculateDuration = (start, end) => {
   return `${minutes}M`;
 };
 
+
 //поиск удобств в зависимости от типа
 const getArrayForType = (array, type) => {
   for (const key in array) {

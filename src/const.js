@@ -9,7 +9,7 @@ const RenderPosition = {
   BEFOREEND: 'beforeend',
 };
 
-const POINT_COUNT = 3;
+const POINT_COUNT = 20;
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -39,4 +39,9 @@ const FilterType = {
   PAST: 'past',
 };
 
-export { TYPES, CITIES, RenderPosition, POINT_COUNT, FILTERS, Mode, SortListChecked, UserAction, UpdateType, FilterType };
+const MenuItem = {
+  TABLE: 'TABLE',
+  STATS: 'STATS',
+};
+
+export { TYPES, CITIES, RenderPosition, POINT_COUNT, FILTERS, Mode, SortListChecked, UserAction, UpdateType, FilterType, MenuItem };
