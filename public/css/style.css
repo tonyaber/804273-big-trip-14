@@ -86,7 +86,7 @@ main {
   width: 1200px;
   padding: 0 10px;
   margin: 0 auto; }
-  .page-body__container::after {
+  .page-body__container-for-line::after {
     content: "";
     position: absolute;
     z-index: -1;

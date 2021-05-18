@@ -48,7 +48,6 @@ const renderMoneyChart = (moneyCtx, trip) => {
             display: false,
             drawBorder: false,
           },
-          barThickness: 44,
         }],
         xAxes: [{
           ticks: {
@@ -116,7 +115,6 @@ const renderTypeChart = (typeCtx, trip) => {
             display: false,
             drawBorder: false,
           },
-          barThickness: 44,
         }],
         xAxes: [{
           ticks: {
@@ -168,7 +166,7 @@ const renderTimeChart = (timeCtx, trip) => {
       },
       title: {
         display: true,
-        text: 'TYPE',
+        text: 'TIME',
         fontColor: '#000000',
         fontSize: 23,
         position: 'left',
@@ -184,7 +182,6 @@ const renderTimeChart = (timeCtx, trip) => {
             display: false,
             drawBorder: false,
           },
-          barThickness: 44,
         }],
         xAxes: [{
           ticks: {
@@ -275,10 +272,16 @@ export default class Statistics extends SmartView {
     const trip = TYPES.map((item, index) => ({ type: item, money: money[index], types: types[index], time: time[index] }));
 
     const moneyCtx = this.getElement().querySelector('.statistics__chart--money');
-    this._moneyCart = renderMoneyChart(moneyCtx, trip);
     const typeCtx = this.getElement().querySelector('.statistics__chart--transport');
-    this._typeCart = renderTypeChart(typeCtx, trip);
     const timeCtx = this.getElement().querySelector('.statistics__chart--time');
+
+    const BAR_HEIGHT = 55;
+    moneyCtx.height = BAR_HEIGHT * TYPES.length;
+    typeCtx.height = BAR_HEIGHT * TYPES.length;
+    timeCtx.height = BAR_HEIGHT * TYPES.length;
+
+    this._moneyCart = renderMoneyChart(moneyCtx, trip);
+    this._typeCart = renderTypeChart(typeCtx, trip);
     this._timeCart = renderTimeChart(timeCtx, trip);
   }
 }

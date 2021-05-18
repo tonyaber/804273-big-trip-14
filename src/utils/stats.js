@@ -1,20 +1,20 @@
 import dayjs from 'dayjs';
 
 const countMoney = (points, type) => {
-  const money = points.filter((point) => point.type === type);
+  const money = points.filter((point) => point.type.toLowerCase() === type.toLowerCase());
   if (!money.length) {
     return 0;
   }
   return money.map((point) => point.basePrice)
-    .reduce((accumulator, price) => accumulator + price);
+    .reduce((accumulator, price) => Number(accumulator) + Number(price));
 };
 
 const countTypes = (points, type) => {
-  return points.filter((point) => point.type === type).length;
+  return points.filter((point) => point.type.toLowerCase() === type.toLowerCase()).length;
 };
 
 const countTime = (points, type) => {
-  const time = points.filter((point) => point.type === type);
+  const time = points.filter((point) => point.type.toLowerCase() === type.toLowerCase());
   if (!time.length) {
     return 0;
   }
@@ -23,7 +23,7 @@ const countTime = (points, type) => {
 };
 
 const formatTime = (millisecond) => {
-  const quantityMinutes = millisecond / 60000;
+  const quantityMinutes = Math.round(millisecond / 60000);
   let days = Math.floor(quantityMinutes / 1440);
   let hours = (quantityMinutes >= 1440) ?
     Math.floor(quantityMinutes % 1440 / 60) : Math.floor(quantityMinutes / 60);

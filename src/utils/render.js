@@ -111,4 +111,16 @@ const updateItem = (items, update) => {
   ];
 };
 
-export { renderElement, replace, createElement, remove, updateItem };
+const showClass = (container, classToAdd) => {
+  for (let i = 0; i < container.length; i++) {
+    container[i].classList.add(classToAdd);
+  }
+};
+
+const hideClass = (container, classToRemove) => {
+  for (let i = 0; i < container.length; i++) {
+    container[i].classList.remove(classToRemove);
+  }
+};
+
+export { renderElement, replace, createElement, remove, updateItem, showClass, hideClass };

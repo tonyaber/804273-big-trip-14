@@ -1,10 +1,10 @@
 import AbstractView from './abstract.js';
 import { MenuItem } from '../const.js';
-//trip-tabs__btn--active
-const createSiteMenuTemplate = () => {
+
+const createSiteMenuTemplate = (check) => {
   return `<nav class="trip-controls__trip-tabs  trip-tabs">
-            <a class="trip-tabs__btn" href="#" id="${MenuItem.TABLE}">Table</a>
-            <a class="trip-tabs__btn" id="${MenuItem.STATS}" href="#">Stats</a>
+            <a class="trip-tabs__btn ${MenuItem.TABLE === check ? 'trip-tabs__btn--active' : ''} " href="#" id="${MenuItem.TABLE}">Table</a>
+            <a class="trip-tabs__btn ${MenuItem.STATS === check ? 'trip-tabs__btn--active' : ''} " id="${MenuItem.STATS}" href="#">Stats</a>
           </nav>`;
 };
 
@@ -13,16 +13,17 @@ export default class Menu extends AbstractView {
     super();
 
     this._menuClickHandler = this._menuClickHandler.bind(this);
+    this._checkedElement = MenuItem.TABLE;
   }
 
   getTemplate() {
-    return createSiteMenuTemplate();
+    return createSiteMenuTemplate(this._checkedElement);
   }
 
   _menuClickHandler(evt) {
     evt.preventDefault();
+    this._checkedElement = evt.target.id;
     this._callback.menuClick(evt.target.id);
-
   }
 
   setMenuClickHandler(callback) {
@@ -37,5 +38,4 @@ export default class Menu extends AbstractView {
       item.checked = true;
     }
   }
-
 }

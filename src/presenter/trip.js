@@ -44,6 +44,8 @@ export default class Trip {
 
     this._pointsModel.removeObserver(this._handleModelEvent);
     this._filterModel.removeObserver(this._handleModelEvent);
+
+    this._clearSort();
   }
 
   createPoint() {
@@ -51,6 +53,7 @@ export default class Trip {
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this._pointNewPresenter.init();
   }
+
   _getPoints() {
     const filterType = this._filterModel.getFilter();
     const points = this._pointsModel.getPoints();
