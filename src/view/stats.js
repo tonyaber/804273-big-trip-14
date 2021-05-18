@@ -1,68 +1,18 @@
 import SmartView from './smart.js';
 import Chart from 'chart.js';
 import { TYPES } from '../const.js';
-import dayjs from 'dayjs';
+import { countMoney, countTypes, countTime, formatTime } from '../utils/stats.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-const countMoney = (points, type, obj) => {
-  const money = points.filter((point) => point.type === type);
-  if (!money.length) {
-    return obj[type] = 0;
-  }
-  return obj[type] = money.map((point) => point.basePrice)
-    .reduce((accumulator, price) => accumulator + price);
-};
-
-const countTripsByType = (points, type, obj) => {
-  return obj[type] = points.filter((point) => point.type === type).length;
-};
-
-const countTime = (points, type, obj) => {
-  const time = points.filter((point) => point.type === type);
-  if (!time.length) {
-    return obj[type] = 0;
-  }
-  return obj[type] = time.map((point) => dayjs(point.dateTo).diff(dayjs(point.dateFrom)))
-    .reduce((accumulator, time) => accumulator + time);
-};
-
-const formatTime = (millisecond)=>{
-  const quantityMinutes = millisecond/60000;
-  let days = Math.floor(quantityMinutes / 1440);
-  let hours = (quantityMinutes >= 1440) ?
-    Math.floor(quantityMinutes % 1440 / 60) : Math.floor(quantityMinutes / 60);
-  let minutes = (quantityMinutes >= 60) ? (quantityMinutes % 60) : quantityMinutes;
-
-  if (days < 10) days = '0' + days;
-  if (hours < 10) hours = '0' + hours;
-  if (minutes < 10) minutes = '0' + minutes;
-
-  if (days > 0) {
-    return `${days}D ${hours}H ${minutes}M`;
-  }
-  if (hours > 0) {
-    return `${hours}H ${minutes}M`;
-  }
-  return `${minutes}M`;
-}
-
-const typesWithPrice = {};
-
-// Рассчитаем высоту канваса в зависимости от того, сколько данных в него будет передаваться
-const BAR_HEIGHT = 55;
-//typeCtx.height = BAR_HEIGHT * 5;
-//timeCtx.height = BAR_HEIGHT * 5;
-
-const renderMoneyChart = (moneyCtx, points) => {
-  //moneyCtx.height = BAR_HEIGHT * 5;
-  TYPES.map((type) => countMoney(points, type, typesWithPrice));
+const renderMoneyChart = (moneyCtx, trip) => {
+  trip.sort((a, b) => b.money - a.money);
   return new Chart(moneyCtx, {
-    plugins: Object.keys(typesWithPrice),
+    plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
-      labels: TYPES,
+      labels: trip.map((point) => point.type),
       datasets: [{
-        data:Object.values(typesWithPrice),
+        data: trip.map((point) => point.money),
         backgroundColor: '#ffffff',
         hoverBackgroundColor: '#ffffff',
         anchor: 'start',
@@ -77,7 +27,7 @@ const renderMoneyChart = (moneyCtx, points) => {
           color: '#000000',
           anchor: 'end',
           align: 'start',
-          formatter: (typesWithPrice) => '€ '+ typesWithPrice,
+          formatter: (val) => '€ ' + val,
         },
       },
       title: {
@@ -122,15 +72,15 @@ const renderMoneyChart = (moneyCtx, points) => {
   });
 };
 
-const renderTypeChart = (typeCtx, points) => {
-  TYPES.map((type) => countTripsByType(points, type, typesWithPrice));
+const renderTypeChart = (typeCtx, trip) => {
+  trip.sort((a, b) => b.types - a.types);
   return new Chart(typeCtx, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
-      labels: Object.keys(typesWithPrice),
+      labels: trip.map((point)=>point.type),
       datasets: [{
-        data: Object.values(typesWithPrice),
+        data: trip.map((point)=>point.types),
         backgroundColor: '#ffffff',
         hoverBackgroundColor: '#ffffff',
         anchor: 'start',
@@ -145,7 +95,7 @@ const renderTypeChart = (typeCtx, points) => {
           color: '#000000',
           anchor: 'end',
           align: 'start',
-          formatter: (typesWithPrice) => typesWithPrice + 'x',
+          formatter: (val) => val + 'x',
         },
       },
       title: {
@@ -190,16 +140,15 @@ const renderTypeChart = (typeCtx, points) => {
   });
 };
 
-const renderTimeChart = (timeCtx, points) => {
-  TYPES.map((type) => countTime(points, type, typesWithPrice));
-  console.log(typesWithPrice)
+const renderTimeChart = (timeCtx, trip) => {
+  trip.sort((a, b) => b.time - a.time);
   return new Chart(timeCtx, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
-      labels: Object.keys(typesWithPrice),
+      labels: trip.map((point)=>point.type),
       datasets: [{
-        data: Object.values(typesWithPrice),
+        data: trip.map((point)=>point.time),
         backgroundColor: '#ffffff',
         hoverBackgroundColor: '#ffffff',
         anchor: 'start',
@@ -214,7 +163,7 @@ const renderTimeChart = (timeCtx, points) => {
           color: '#000000',
           anchor: 'end',
           align: 'start',
-          formatter: (typesWithPrice) => formatTime(typesWithPrice),
+          formatter: (val) => formatTime(val),
         },
       },
       title: {
@@ -258,7 +207,6 @@ const renderTimeChart = (timeCtx, points) => {
     },
   });
 };
-
 
 const createStatisticsTemplate = () => {
   return `<section class="statistics">
@@ -321,12 +269,16 @@ export default class Statistics extends SmartView {
     if (this._timeCart !== null) {
       this._timeCart = null;
     }
+    const money = TYPES.map((type) => countMoney(this._points, type));
+    const types = TYPES.map((type) => countTypes(this._points, type));
+    const time = TYPES.map((type) => countTime(this._points, type));
+    const trip = TYPES.map((item, index) => ({ type: item, money: money[index], types: types[index], time: time[index] }));
 
     const moneyCtx = this.getElement().querySelector('.statistics__chart--money');
-    this._moneyCart = renderMoneyChart(moneyCtx, this._points);
+    this._moneyCart = renderMoneyChart(moneyCtx, trip);
     const typeCtx = this.getElement().querySelector('.statistics__chart--transport');
-    this._typeCart = renderTypeChart(typeCtx, this._points);
+    this._typeCart = renderTypeChart(typeCtx, trip);
     const timeCtx = this.getElement().querySelector('.statistics__chart--time');
-    this._timeCart = renderTimeChart(timeCtx, this._points);
+    this._timeCart = renderTimeChart(timeCtx, trip);
   }
 }

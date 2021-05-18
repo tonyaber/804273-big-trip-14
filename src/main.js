@@ -1,4 +1,4 @@
-import { renderElement } from './utils/render.js';
+import { renderElement, remove} from './utils/render.js';
 import TripInfoHeaderView from './view/trip-info-header.js';
 import SiteMenuView from './view/menu.js';
 import StatisticsView from './view/stats.js';
@@ -38,28 +38,27 @@ const filterPresenter = new FilterPresenter(siteFiltersElement, filterModel, poi
 filterPresenter.init();
 
 const tripPresenter = new TripPresenter(siteEventsElement, pointsModel, filterModel);
-//tripPresenter.init();
+
+let statisticsComponent = null;
 
 document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
   evt.preventDefault();
   tripPresenter.createPoint();
 });
 
-renderElement(siteEventsElement, new StatisticsView(pointsModel.getPoints()), RenderPosition.BEFOREEND);
-
 const handleSiteMenuClick = (menuItem) => {
   switch (menuItem) {
     case MenuItem.TABLE:
       tripPresenter.init();
-      // Показать доску
-      // Скрыть статистику
+      remove(statisticsComponent);
       break;
     case MenuItem.STATS:
       tripPresenter.destroy();
-      // Скрыть доску
-      // Показать статистику
+      statisticsComponent = new StatisticsView(pointsModel.getPoints());
+      renderElement(siteEventsElement, statisticsComponent, RenderPosition.BEFOREEND);
       break;
   }
 };
 
 siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
+tripPresenter.init();
