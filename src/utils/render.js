@@ -111,16 +111,24 @@ const updateItem = (items, update) => {
   ];
 };
 
-const showClass = (container, classToAdd) => {
-  for (let i = 0; i < container.length; i++) {
-    container[i].classList.add(classToAdd);
+const show = (buttonNewPoint, filters, pageBodyContainer, buttonHeaderTable, buttonHeaderStats) => {
+  buttonNewPoint.disabled = false;
+  filters.forEach((filter) => filter.disabled = false);
+  buttonHeaderTable.classList.add('trip-tabs__btn--active');
+  buttonHeaderStats.classList.remove('trip-tabs__btn--active');
+  for (let i = 0; i < pageBodyContainer.length; i++) {
+    pageBodyContainer[i].classList.add('page-body__container-for-line');
   }
 };
 
-const hideClass = (container, classToRemove) => {
-  for (let i = 0; i < container.length; i++) {
-    container[i].classList.remove(classToRemove);
+const hide = (buttonNewPoint, filters, pageBodyContainer, buttonHeaderTable, buttonHeaderStats) => {
+  buttonHeaderTable.classList.remove('trip-tabs__btn--active');
+  buttonHeaderStats.classList.add('trip-tabs__btn--active');
+  buttonNewPoint.disabled = true;
+  filters.forEach((filter) => filter.disabled = true);
+  for (let i = 0; i < pageBodyContainer.length; i++) {
+    pageBodyContainer[i].classList.remove('page-body__container-for-line');
   }
 };
 
-export { renderElement, replace, createElement, remove, updateItem, showClass, hideClass };
+export { renderElement, replace, createElement, remove, updateItem, show, hide };

@@ -1,4 +1,4 @@
-import { renderElement, remove, showClass, hideClass} from './utils/render.js';
+import { renderElement, remove, show, hide} from './utils/render.js';
 import TripInfoHeaderView from './view/trip-info-header.js';
 import SiteMenuView from './view/menu.js';
 import StatisticsView from './view/stats.js';
@@ -11,9 +11,6 @@ import TripPresenter from './presenter/trip.js';
 import FilterPresenter from './presenter/filter.js';
 
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
-
-const buttonNewPoint = document.querySelector('.trip-main__event-add-btn');
-const pageBodyContainer = document.querySelectorAll('.page-body__container');
 
 const pointsModel = new PointsModel();
 pointsModel.setPoints(points);
@@ -49,25 +46,25 @@ document.querySelector('.trip-main__event-add-btn').addEventListener('click', (e
   tripPresenter.createPoint();
 });
 
+const buttonNewPoint = document.querySelector('.trip-main__event-add-btn');
+const filters = document.querySelectorAll('.trip-filters__filter-input');
+const pageBodyContainer = document.querySelectorAll('.page-body__container');
+const buttonHeaderTable = document.querySelector('#TABLE');
+const buttonHeaderStats = document.querySelector('#STATS');
+
 const handleSiteMenuClick = (menuItem) => {
   switch (menuItem) {
     case MenuItem.TABLE:
       tripPresenter.init();
-
       remove(statisticsComponent);
-
-      buttonNewPoint.disabled = false;
-      showClass(pageBodyContainer, 'page-body__container-for-line');
+      show(buttonNewPoint, filters, pageBodyContainer, buttonHeaderTable, buttonHeaderStats);
       break;
     case MenuItem.STATS:
       tripPresenter.destroy();
       remove(statisticsComponent);
-
       statisticsComponent = new StatisticsView(pointsModel.getPoints());
       renderElement(siteEventsElement, statisticsComponent, RenderPosition.BEFOREEND);
-
-      buttonNewPoint.disabled = true;
-      hideClass(pageBodyContainer, 'page-body__container-for-line');
+      hide(buttonNewPoint, filters, pageBodyContainer, buttonHeaderTable, buttonHeaderStats);
       break;
   }
 };
