@@ -1,6 +1,6 @@
 import SmartView from './smart.js';
 import Chart from 'chart.js';
-import { TYPES } from '../const.js';
+import { TYPES, BAR_HEIGHT } from '../const.js';
 import { countMoney, countTypes, countTime, formatTime } from '../utils/stats.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
@@ -16,6 +16,7 @@ const renderMoneyChart = (moneyCtx, trip) => {
         backgroundColor: '#ffffff',
         hoverBackgroundColor: '#ffffff',
         anchor: 'start',
+        minBarLength: 50,
       }],
     },
     options: {
@@ -58,7 +59,6 @@ const renderMoneyChart = (moneyCtx, trip) => {
             display: false,
             drawBorder: false,
           },
-          minBarLength: 50,
         }],
       },
       legend: {
@@ -83,6 +83,7 @@ const renderTypeChart = (typeCtx, trip) => {
         backgroundColor: '#ffffff',
         hoverBackgroundColor: '#ffffff',
         anchor: 'start',
+        minBarLength: 50,
       }],
     },
     options: {
@@ -125,7 +126,6 @@ const renderTypeChart = (typeCtx, trip) => {
             display: false,
             drawBorder: false,
           },
-          minBarLength: 50,
         }],
       },
       legend: {
@@ -150,6 +150,7 @@ const renderTimeChart = (timeCtx, trip) => {
         backgroundColor: '#ffffff',
         hoverBackgroundColor: '#ffffff',
         anchor: 'start',
+        minBarLength: 50,
       }],
     },
     options: {
@@ -192,7 +193,6 @@ const renderTimeChart = (timeCtx, trip) => {
             display: false,
             drawBorder: false,
           },
-          minBarLength: 50,
         }],
       },
       legend: {
@@ -275,7 +275,6 @@ export default class Statistics extends SmartView {
     const typeCtx = this.getElement().querySelector('.statistics__chart--transport');
     const timeCtx = this.getElement().querySelector('.statistics__chart--time');
 
-    const BAR_HEIGHT = 55;
     moneyCtx.height = BAR_HEIGHT * TYPES.length;
     typeCtx.height = BAR_HEIGHT * TYPES.length;
     timeCtx.height = BAR_HEIGHT * TYPES.length;
