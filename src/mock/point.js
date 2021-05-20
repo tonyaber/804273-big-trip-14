@@ -26,7 +26,6 @@ const generateDescription = (city) => {
 };
 
 const descriptions = CITIES.map((city) => generateDescription(city));
-
 export const generatePoint = () => {
   const dateFrom = dayjs().add(getRandomNumber(-28800, 28800), 'minute').format('YYYY-MM-DDTHH:mm:ss.SSS') + 'Z';
   const dateTo = dayjs(dateFrom).add(getRandomNumber(30, 160), 'minute').format('YYYY-MM-DDTHH:mm:ss.SSS') + 'Z';

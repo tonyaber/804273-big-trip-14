@@ -6,7 +6,6 @@ const createSitePointTemplate = (point) => {
   const { dateFrom, dateTo, basePrice, isFavorite, type, offers, description } = point;
 
   //определение длины поездки
-
   const durationTemplate = calculateDuration(dayjs(dateFrom), dayjs(dateTo));
 
   //создание списка дополнительных опций

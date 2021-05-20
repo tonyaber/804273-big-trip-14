@@ -79,6 +79,9 @@ const createElement = (template) => {
  * @param component - DOM-элемент, который удаляем
  */
 const remove = (component) => {
+  if (component === null) {
+    return;
+  }
   if (!(component instanceof Abstract)) {
     throw new Error('Can remove only components');
   }
@@ -108,4 +111,24 @@ const updateItem = (items, update) => {
   ];
 };
 
-export { renderElement, replace, createElement, remove, updateItem };
+const show = (buttonNewPoint, filters, pageBodyContainer, buttonHeaderTable, buttonHeaderStats) => {
+  buttonNewPoint.disabled = false;
+  filters.forEach((filter) => filter.disabled = false);
+  buttonHeaderTable.classList.add('trip-tabs__btn--active');
+  buttonHeaderStats.classList.remove('trip-tabs__btn--active');
+  for (let i = 0; i < pageBodyContainer.length; i++) {
+    pageBodyContainer[i].classList.add('page-body__container-for-line');
+  }
+};
+
+const hide = (buttonNewPoint, filters, pageBodyContainer, buttonHeaderTable, buttonHeaderStats) => {
+  buttonHeaderTable.classList.remove('trip-tabs__btn--active');
+  buttonHeaderStats.classList.add('trip-tabs__btn--active');
+  buttonNewPoint.disabled = true;
+  filters.forEach((filter) => filter.disabled = true);
+  for (let i = 0; i < pageBodyContainer.length; i++) {
+    pageBodyContainer[i].classList.remove('page-body__container-for-line');
+  }
+};
+
+export { renderElement, replace, createElement, remove, updateItem, show, hide };
