@@ -2,6 +2,15 @@ const POINT_COUNT = 20;
 
 const BAR_HEIGHT = 55;
 
+const NUMBER_OF_SIGNS_FOR_TRIM = 12;
+
+const TimeForFormat = {
+  MILLISECOND: 60000,
+  DAY: 1440,
+  MINUTE: 60,
+  STEP: 10,
+};
+
 const TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Transport', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
 
 const CITIES = ['Amsterdam', 'Chamonix', 'Geneva', 'Paris', 'Berlin', 'Dresden'];
@@ -46,4 +55,10 @@ const MenuItem = {
   STATS: 'STATS',
 };
 
-export { TYPES, BAR_HEIGHT, CITIES, RenderPosition, POINT_COUNT, FILTERS, Mode, SortListChecked, UserAction, UpdateType, FilterType, MenuItem };
+const SortType = {
+  TIME: 'sort-time',
+  PRICE: 'sort-price',
+  DAY: 'sort-day',
+};
+
+export { SortType, TYPES, BAR_HEIGHT, CITIES, RenderPosition, TimeForFormat, NUMBER_OF_SIGNS_FOR_TRIM, POINT_COUNT, FILTERS, Mode, SortListChecked, UserAction, UpdateType, FilterType, MenuItem };

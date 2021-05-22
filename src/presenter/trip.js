@@ -6,7 +6,7 @@ import EmptyListView from '../view/empty-list.js';
 import PointPresenter from './point.js';
 import PointNewPresenter from './new-point.js';
 import { filterPoint } from '../utils/filter.js';
-import { RenderPosition, UpdateType, UserAction, FilterType} from '../const.js';
+import { RenderPosition, UpdateType, UserAction, FilterType, SortType } from '../const.js';
 
 export default class Trip {
   constructor(tripContainer, pointsModel, filterModel) {
@@ -19,7 +19,7 @@ export default class Trip {
     this._emptyListComponent = new EmptyListView();
 
     this._pointPresenter = {};
-    this._currentSortType = 'sort-day';
+    this._currentSortType = SortType.DAY;
     this._sortComponent = null;
 
     this._handleViewAction = this._handleViewAction.bind(this);
@@ -38,7 +38,7 @@ export default class Trip {
   }
 
   destroy() {
-    this._clearPoint({resetRenderedPointCount: true, resetSortType: true});
+    this._clearPoint({ resetRenderedPointCount: true, resetSortType: true });
 
     remove(this._listComponent);
 
@@ -48,8 +48,14 @@ export default class Trip {
     this._clearSort();
   }
 
+  renderSortDefault() {
+    this._clearSort();
+    this._currentSortType = SortType.DAY;
+    this._renderSort();
+  }
+
   createPoint() {
-    this._currentSortType = 'sort-day';
+    this._currentSortType = SortType.DAY;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this._pointNewPresenter.init();
   }
@@ -60,9 +66,9 @@ export default class Trip {
     const filtredPoints = filterPoint[filterType](points);
 
     switch (this._currentSortType) {
-      case 'sort-time':
+      case SortType.TIME:
         return filtredPoints.sort(sortTime);
-      case 'sort-price':
+      case SortType.PRICE:
         return filtredPoints.sort(sortPrice);
     }
     return filtredPoints.sort(sortDay);
@@ -122,7 +128,7 @@ export default class Trip {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this._pointsModel.updatePoint(updateType, update);
+        this._pointsModel.newPoint(updateType, update);
         break;
       case UserAction.ADD_POINT:
         this._pointsModel.addPoint(updateType, update);

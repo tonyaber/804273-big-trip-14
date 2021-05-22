@@ -1,5 +1,5 @@
-import { TYPES} from '../const.js';
-import { CITIES, TYPE_WITH_OFFERS, OFFERS} from '../mock/const.js';
+import { TYPES, NUMBER_OF_SIGNS_FOR_TRIM} from '../const.js';
+import { CITIES, TYPE_WITH_OFFERS, OFFERS } from '../mock/const.js';
 import { descriptions } from '../mock/point.js';
 import { formatDate, getArrayForType } from '../utils/point.js';
 import SmartView from './smart.js';
@@ -85,7 +85,7 @@ const createSiteEditPointTemplate = (point) => {
   };
 
   const descriptionsTemplate = () => {
-    if (description===null||description===undefined||description.name==='') {
+    if (description === null || description === undefined || description.name === '') {
       return '';
     }
 
@@ -208,7 +208,7 @@ export default class EditPoint extends SmartView {
   }
 
   reset(point) {
-    this.updatePoint(
+    this.newPoint(
       point,
     );
     this._offers = this._point.offers;
@@ -324,7 +324,7 @@ export default class EditPoint extends SmartView {
     evt.preventDefault();
     this.updateData(
       {
-        offers:[],
+        offers: [],
       },
     ),
     this.updateData({
@@ -359,15 +359,15 @@ export default class EditPoint extends SmartView {
   _offerClickHandler(evt) {
     evt.preventDefault();
     if (evt.target.checked) {
-      this._offers.push(OFFERS[evt.target.name.substr(12)]);
+      this._offers.push(OFFERS[evt.target.name.substr(NUMBER_OF_SIGNS_FOR_TRIM)]);
       this.updateData(Object.assign(
         {},
         this._point,
-        {offers: this._offers},
+        { offers: this._offers },
       ));
     }
     else {
-      this._index = this._offers.findIndex((point) => point.name === OFFERS[evt.target.name.substr(12)].name);
+      this._index = this._offers.findIndex((point) => point.name === OFFERS[evt.target.name.substr(NUMBER_OF_SIGNS_FOR_TRIM)].name);
       this._offers = [
         ...this._offers.slice(0, this._index),
         ...this._offers.slice(this._index + 1),

@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { TimeForFormat } from '../const.js';
 
 const countMoney = (points, type) => {
   const money = points.filter((point) => point.type.toLowerCase() === type.toLowerCase());
@@ -23,15 +24,15 @@ const countTime = (points, type) => {
 };
 
 const formatTime = (millisecond) => {
-  const quantityMinutes = Math.round(millisecond / 60000);
-  let days = Math.floor(quantityMinutes / 1440);
-  let hours = (quantityMinutes >= 1440) ?
-    Math.floor(quantityMinutes % 1440 / 60) : Math.floor(quantityMinutes / 60);
-  let minutes = (quantityMinutes >= 60) ? (quantityMinutes % 60) : quantityMinutes;
+  const quantityMinutes = Math.round(millisecond / TimeForFormat.MILLISECOND);
+  let days = Math.floor(quantityMinutes / TimeForFormat.DAY);
+  let hours = (quantityMinutes >= TimeForFormat.DAY) ?
+    Math.floor(quantityMinutes % TimeForFormat.DAY / TimeForFormat.MINUTE) : Math.floor(quantityMinutes / TimeForFormat.MINUTE);
+  let minutes = (quantityMinutes >= TimeForFormat.MINUTE) ? (quantityMinutes % TimeForFormat.MINUTE) : quantityMinutes;
 
-  if (days < 10) days = '0' + days;
-  if (hours < 10) hours = '0' + hours;
-  if (minutes < 10) minutes = '0' + minutes;
+  if (days < TimeForFormat.STEP) days = '0' + days;
+  if (hours < TimeForFormat.STEP) hours = '0' + hours;
+  if (minutes < TimeForFormat.STEP) minutes = '0' + minutes;
 
   if (days > 0) {
     return `${days}D ${hours}H ${minutes}M`;

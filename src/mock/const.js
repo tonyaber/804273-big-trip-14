@@ -12,10 +12,10 @@ const OFFERS = {
     'price': 60,
     'name': 'radio',
   },
-  'non_smoking': {
+  'nonSmoking': {
     'title': 'Non-smoking driver',
     'price': 30,
-    'name': 'non_smoking',
+    'name': 'nonSmoking',
   },
   'conditioning': {
     'title': 'Air conditioning',
@@ -127,10 +127,10 @@ const OFFERS = {
     'price': 60,
     'name': 'vegetarian',
   },
-  'local_kitchen': {
+  'localKitchen': {
     'title': 'Local kitchen',
     'price': 80,
-    'name': 'local_kitchen',
+    'name': 'localKitchen',
   },
   'snack': {
     'title': 'Quick snack',
@@ -145,16 +145,16 @@ const OFFERS = {
 };
 
 const TYPE_WITH_OFFERS = {
-  'taxi': [OFFERS.radio, OFFERS.non_smoking, OFFERS.conditioning],
+  'taxi': [OFFERS.radio, OFFERS.nonSmoking, OFFERS.conditioning],
   'bus': [OFFERS.conditioning, OFFERS.wc, OFFERS.armchair, OFFERS.tv, OFFERS.canteen, OFFERS.coffe],
   'train': [OFFERS.conditioning, OFFERS.armchair, OFFERS.tv, OFFERS.canteen, OFFERS.coffe],
   'ship': [OFFERS.music, OFFERS.restaurant, OFFERS.guid, OFFERS.canteen],
   'transport': [OFFERS.ship, OFFERS.taxi, OFFERS.train, OFFERS.bus],
-  'drive': [OFFERS.non_smoking, OFFERS.conditioning, OFFERS.electric, OFFERS.trailer],
+  'drive': [OFFERS.nonSmoking, OFFERS.conditioning, OFFERS.electric, OFFERS.trailer],
   'flight': [OFFERS.armchair, OFFERS.tv, OFFERS.canteen, OFFERS.coffe],
   'check-in': [OFFERS.view, OFFERS.balcony, OFFERS.breakfast, OFFERS.child, OFFERS.pet],
-  'sightseeing': [OFFERS.guid, OFFERS.photography, OFFERS.heliicopter, OFFERS.local_kitchen],
-  'restaurant': [OFFERS.vegetarian, OFFERS.local_kitchen, OFFERS.snack, OFFERS.coffe],
+  'sightseeing': [OFFERS.guid, OFFERS.photography, OFFERS.heliicopter, OFFERS.localKitchen],
+  'restaurant': [OFFERS.vegetarian, OFFERS.localKitchen, OFFERS.snack, OFFERS.coffe],
 };
 
 const DESCRIPTIONS = [
