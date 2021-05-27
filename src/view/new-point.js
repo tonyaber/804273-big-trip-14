@@ -6,13 +6,21 @@ import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import dayjs from 'dayjs';
 
 const BLANK_POINT = {
-  basePrice: '',
+  basePrice: '100',
   dateFrom: dayjs(),
   dateTo: dayjs().add(60, 'minute'),
   type: 'taxi',
   description:{
-    name: '',
+    name: 'Chamonix',
+    description: 'Chamonix, in a middle of Europe, for those who value comfort and coziness, full of of cozy canteens where you can try the best coffee in the Middle East, a perfect place to stay with a family, famous for its crowded street markets with the best street food in Asia.',
+    pictures: [
+      {
+        description: 'Chamonix parliament building',
+        src: 'http://picsum.photos/300/200?r=0.8973497000725617',
+      },
+    ],
   },
+  isFavorite: false,
 };
 
 const createSiteNewPointTemplate = (city, offers, point) => {
@@ -349,7 +357,11 @@ export default class NewPoint extends SmartView{
         description: Object.assign(
           {},
           this._point.description,
-          { name: evt.target.value },
+          {
+            name: evt.target.value,
+            description: this._city.find((city)=>city.name===evt.target.value).description,
+            pictures: this._city.find((city) => city.name === evt.target.value).pictures,
+          },
         ),
       });
     }
