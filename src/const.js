@@ -42,6 +42,7 @@ const UserAction = {
 const UpdateType = {
   PATCH: 'PATCH',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
 };
 
 const FilterType = {

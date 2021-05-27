@@ -6,7 +6,7 @@ import StatisticsView from '../view/stats.js';
 import { RenderPosition, MenuItem } from '../const.js';
 
 export default class Header {
-  constructor(tripInfoContainer, tripFilterContainer, siteNavigationContainer, siteEventsElement, pointsModel, tripPresenter, filterPresenter) {
+  constructor(tripInfoContainer, tripFilterContainer, siteNavigationContainer, siteEventsElement, pointsModel, tripPresenter, filterPresenter, api) {
     this._tripInfoContainer = tripInfoContainer;
     this._tripFilterContainer = tripFilterContainer;
     this._siteNavigationContainer = siteNavigationContainer;
@@ -14,6 +14,7 @@ export default class Header {
     this._pointsModel = pointsModel;
     this._tripPresenter = tripPresenter;
     this._filterPresenter = filterPresenter;
+    this._api = api;
 
     this._tripInfoComponent = null;
     this._priceComponent = null;
@@ -35,23 +36,24 @@ export default class Header {
     const points = this._getPoints();
     const prevTripInfoComponent = this._tripInfoComponent;
     const prevPriceComponent = this._priceComponent;
-    const prevsiteMenuComponent = this._siteMenuComponent;
 
+    if (!points.length) {
+      this._siteMenuComponent = new SiteMenuView();
+      this._renderSiteMenu();
+      return;
+    }
     if (prevTripInfoComponent === null) {
       this._tripInfoComponent = new TripInfoView(points);
       this._priceComponent = new PriceView(points);
-      this._siteMenuComponent = new SiteMenuView();
       this.__renderHeader();
       return;
     }
 
     this._tripInfoComponent = new TripInfoView(points);
     this._priceComponent = new PriceView(points);
-    this._siteMenuComponent = new SiteMenuView();
 
     replace(this._tripInfoComponent, prevTripInfoComponent);
     replace(this._priceComponent, prevPriceComponent);
-    replace(this._siteMenuComponent, prevsiteMenuComponent);
 
     this.__renderHeader();
   }
@@ -59,7 +61,6 @@ export default class Header {
   __renderHeader() {
     this._renderTripInfo();
     this._renderPrice();
-    this._renderSiteMenu();
   }
 
   _getPoints() {

@@ -5,10 +5,12 @@ import { replace, remove, renderElement } from '../utils/render.js';
 import { UserAction, UpdateType } from '../const.js';
 
 export default class Point {
-  constructor(tripContainer, changeData, changeMode) {
+  constructor(tripContainer, changeData, changeMode, city, offers) {
     this._tripContainer = tripContainer;
     this._changeData = changeData;
     this._changeMode = changeMode;
+    this._city = city;
+    this._offers = offers;
 
     this._pointComponent = null;
     this._pointEditComponent = null;
@@ -30,7 +32,7 @@ export default class Point {
     const prevPointEditComponent = this._pointEditComponent;
 
     this._pointComponent = new PointView(point);
-    this._pointEditComponent = new EditPointView(point);
+    this._pointEditComponent = new EditPointView(point, this._city, this._offers);
 
     this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._pointComponent.setEditClickHandler(this._handleEditClick);

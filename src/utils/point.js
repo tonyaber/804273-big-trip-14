@@ -40,7 +40,7 @@ const calculateDuration = (start, end) => {
 //поиск удобств в зависимости от типа
 const getArrayForType = (array, type) => {
   for (const key in array) {
-    if (key === type) {
+    if (array[key].type === type) {
       return array[key];
     }
   }
