@@ -26,12 +26,15 @@ export default class Trip {
     this._sortComponent = null;
     this._isLoading = true;
 
+    this._city = [];
+    this._offers = [];
+
+    this._currentSortType = SortType.DAY;
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
-    this._pointNewPresenter = new PointNewPresenter(this._listComponent, this._handleViewAction);
   }
 
   init() {
@@ -59,7 +62,7 @@ export default class Trip {
   }
 
   createPoint() {
-    this._currentSortType = SortType.DAY;
+    this._pointNewPresenter = new PointNewPresenter(this._listComponent, this._handleViewAction, this._city, this._offers);
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this._pointNewPresenter.init();
   }
@@ -105,7 +108,6 @@ export default class Trip {
   }
 
   _clearPoint() {
-    this._pointNewPresenter.destroy();
     Object
       .values(this._pointPresenter)
       .forEach((presenter) => presenter.destroy());
@@ -123,15 +125,15 @@ export default class Trip {
       return;
     }
     const points = this._getPoints();
-    const city = this._getCity();
-    const offers = this._getOffers();
+    this._city = this._getCity();
+    this._offers = this._getOffers();
     if (!points.length) {
       this._renderEmptyList();
       return;
     }
     this._clearSort();
     this._renderSort();
-    this._renderPoints(points, city, offers);
+    this._renderPoints(points, this._city, this._offers);
   }
 
   _renderSort() {
@@ -151,16 +153,19 @@ export default class Trip {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this._pointsModel.updatePoint(updateType, update);
         this._api.updatePoint(update).then((response) => {
           this._pointsModel.updatePoint(updateType, response);
         });
         break;
       case UserAction.ADD_POINT:
-        this._pointsModel.addPoint(updateType, update);
+        this._api.addPoint(update).then((response) => {
+          this._pointsModel.addPoint(updateType, response);
+        });
         break;
       case UserAction.DELETE_POINT:
-        this._pointsModel.deletePoint(updateType, update);
+        this._api.deletePoint(update).then(() => {
+          this._pointsModel.deletePoint(updateType, update);
+        });
         break;
     }
   }

@@ -1,6 +1,4 @@
-import { TYPES } from '../const.js';
-import { CITIES, TYPE_WITH_OFFERS, OFFERS} from '../mock/const.js';
-import { descriptions } from '../mock/point.js';
+import { NUMBER_OF_SIGNS_FOR_TRIM } from '../const.js';
 import { formatDate, getArrayForType} from '../utils/point.js';
 import SmartView from './smart.js';
 import flatpickr from 'flatpickr';
@@ -12,19 +10,13 @@ const BLANK_POINT = {
   dateFrom: dayjs(),
   dateTo: dayjs().add(60, 'minute'),
   type: 'taxi',
-  offers: [
-    {
-      price: 0,
-    },
-  ],
   description:{
     name: '',
   },
 };
 
-const createSiteNewPointTemplate = (point) => {
-  const { dateFrom, dateTo, type, offers, basePrice, description} = point;
-
+const createSiteNewPointTemplate = (city, offers, point) => {
+  const { dateFrom, dateTo, type, basePrice, description} = point;
   //создание разметки для поля type
   const createTypeTemplate = (typeRadio) => {
     return `<div class="event__type-item">
@@ -42,32 +34,35 @@ const createSiteNewPointTemplate = (point) => {
             </div>`;
   };
 
-  const TypeTemplate = TYPES
+  const TypeTemplate = offers
+    .map((offer) => offer.type)
     .map((type) => createTypeTemplate(type))
     .join('');
 
   //создание разметки для поля город
-  const cityTemplate = CITIES
+  const cityTemplate = city
+    .map((city) => city.name)
     .map((city) => `<option value="${city}"></option>`)
     .join('');
 
   //создание разметки для дополнительных опций
-  const offersOfType = getArrayForType(TYPE_WITH_OFFERS, type.toLowerCase());
+  const offersOfType = getArrayForType(offers, type);
 
-  const createOfferTemplate = (offer) => {
+
+  const createOfferTemplate = (offer, index) => {
     let check = '';
 
-    if (offers.some((element) => element.title === offer.title)) {
+    if (point.offers.some((element) => element.title === offer.title)) {
       check = 'checked';
     }
 
     return `<div class="event__offer-selector">
               <input class="event__offer-checkbox  visually-hidden"
-                id="event-offer-${offer.name}"
+                id="event-offer-${index}"
                 type="checkbox"
-                name="event-offer-${offer.name}"
+                name="event-offer-${offer.title}"
                 ${check}>
-              <label class="event__offer-label" for="event-offer-${offer.name}">
+              <label class="event__offer-label" for="event-offer-${index}">
               <span class="event__offer-title">${offer.title}</span>
               &plus;&euro;&nbsp;
               <span class="event__offer-price">${offer.price}</span>
@@ -76,11 +71,16 @@ const createSiteNewPointTemplate = (point) => {
   };
 
   const offersTamplate = () => {
-    if (offersOfType === null || offersOfType === undefined || !offersOfType.length) {
-      return '';
+    if (!offersOfType.offers.length) {
+      return `<section class="event__section  event__section--offers">
+              <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+              <div class="event__available-offers">
+              </div>
+        </section>`;
     }
-    const offerTemplate = offersOfType
-      .map((offer) => createOfferTemplate(offer))
+
+    const offerTemplate = offersOfType.offers
+      .map((offer, index) => createOfferTemplate(offer, index))
       .join('');
 
     return `<section class="event__section  event__section--offers">
@@ -96,22 +96,16 @@ const createSiteNewPointTemplate = (point) => {
     return `<img class="event__photo" src="${photo.src}" alt="${photo.description}">`;
   };
 
-  const createDescriptionTemplate = (description) => {
-    return `${description}`;
-  };
-
   const descriptionsTemplate = () => {
     if (description === null || description === undefined || description.name === '') {
       return '';
     }
 
-    const photoTemplate = descriptions.find((element) => element.name === description.name).pictures
+    const photoTemplate = city.find((element) => element.name === description.name).pictures
       .map((photo) => createPhotoTemplate(photo))
       .join('');
 
-    const descriptionTemplate = descriptions.find((element) => element.name === description.name).description
-      .map((description) => createDescriptionTemplate(description))
-      .join(' ');
+    const descriptionTemplate = city.find((element) => element.name === description.name).description;
 
     return `<section class="event__section  event__section--destination">
                     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
@@ -147,10 +141,10 @@ const createSiteNewPointTemplate = (point) => {
                        ${type}
                     </label>
                     <input class="event__input  event__input--destination"
-                      id="event-destination}" type="text"
+                      id="event-destination" type="text"
                       name="event-destination"
                       value="${description.name}"
-                      list="destination-list-1">
+                      list="destination-list">
                     <datalist id="destination-list">
                       ${cityTemplate}
                     </datalist>
@@ -193,9 +187,14 @@ const createSiteNewPointTemplate = (point) => {
 };
 
 export default class NewPoint extends SmartView{
-  constructor(point = BLANK_POINT) {
+  constructor(city, offers, point = BLANK_POINT) {
     super();
     this._point = point;
+    this._city = city;
+    this._offers = [];
+    this._offersAll = offers;
+    this._offersOfPoint = getArrayForType(this._offersAll, this._point.type).offers;
+
     this._datepickerFrom = null;
     this._datepickerTo = null;
     this._point.offers = [];
@@ -215,7 +214,7 @@ export default class NewPoint extends SmartView{
   }
 
   getTemplate() {
-    return createSiteNewPointTemplate(this._point);
+    return createSiteNewPointTemplate(this._city, this._offersAll, this._point);
   }
 
   reset(point) {
@@ -296,7 +295,7 @@ export default class NewPoint extends SmartView{
   }
 
   _validityFormForCity(evt) {
-    CITIES.some((city) => city === evt.target.value) ?
+    this._city.map((city) => city.name).some((city) => city === evt.target.value) ?
       evt.target.setCustomValidity('') :
       evt.target.setCustomValidity('Выберите город из доступного списка');
   }
@@ -331,13 +330,20 @@ export default class NewPoint extends SmartView{
 
   _typeClickHandler(evt) {
     evt.preventDefault();
+    this.updateData(
+      {
+        offers: [],
+      },
+    ),
     this.updateData({
       type: evt.target.value,
     });
+    this._offers = [];
+    this._offersOfPoint = getArrayForType(this._offersAll, this._point.type).offers;
   }
 
   _cityClickHandler(evt) {
-    if (evt.target.value && descriptions.find((element) => element.name === evt.target.value)) {
+    if (evt.target.value && this._city.find((element) => element.name === evt.target.value)) {
       evt.preventDefault();
       this.updateData({
         description: Object.assign(
@@ -362,14 +368,24 @@ export default class NewPoint extends SmartView{
   _offerClickHandler(evt) {
     evt.preventDefault();
     if (evt.target.checked) {
-      this._point.offers.push(OFFERS[evt.target.name.substr(12)]);
+      this._offers.push(this._offersOfPoint.find((offer) => offer.title === evt.target.name.substr(NUMBER_OF_SIGNS_FOR_TRIM)));
+      this.updateData(Object.assign(
+        {},
+        this._point,
+        { offers: this._offers },
+      ));
     }
     else {
-      this._index = this._point.offers.findIndex((point) => point.name === OFFERS[evt.target.name.substr(12)].name);
-      this._point.offers = [
-        ...this._point.offers.slice(0, this._index),
-        ...this._point.offers.slice(this._index + 1),
+      this._index = this._offers.findIndex((point) => point.title === evt.target.name.substr(NUMBER_OF_SIGNS_FOR_TRIM));
+      this._offers = [
+        ...this._offers.slice(0, this._index),
+        ...this._offers.slice(this._index + 1),
       ];
+      this.updateData(Object.assign(
+        {},
+        this._point,
+        { offers: this._offers },
+      ));
     }
   }
 

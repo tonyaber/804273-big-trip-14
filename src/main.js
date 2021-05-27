@@ -52,21 +52,10 @@ Promise.all([
   getPoints,
   getCity,
   getOffers,
-]).then((points) => {
-  pointsModel.setCity(points[1]);
-  pointsModel.setOffers(points[2]);
-  pointsModel.setPoints(UpdateType.INIT, points[0]);
-
-});
-/*
-api.getPoints()
+])
   .then((points) => {
-    console.log(points)
-    pointsModel.setPoints(UpdateType.INIT, points);
-
-  })*/
-  /*
-  .catch(() => {
-    console.log('np')
-    pointsModel.setPoints(UpdateType.INIT, []);
-  });*/
+    pointsModel.setCity(points[1]);
+    pointsModel.setOffers(points[2]);
+    pointsModel.setPoints(UpdateType.INIT, points[0]);
+  })
+  .catch(() => pointsModel.setPoints(UpdateType.INIT, []));

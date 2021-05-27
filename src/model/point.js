@@ -102,8 +102,8 @@ export default class Point extends Observer {
       point,
       {
         'base_price': Number(point.basePrice),
-        'date_from': point.dateFrom ,
-        'date_to': point.dateTo ,
+        'date_from': new Date(point.dateFrom) ,
+        'date_to': new Date(point.dateTo) ,
         'is_favorite': point.isFavorite,
         destination: point.description,
       },
