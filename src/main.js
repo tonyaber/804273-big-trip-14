@@ -8,7 +8,6 @@ import TripPresenter from './presenter/trip.js';
 import FilterPresenter from './presenter/filter.js';
 import Api from './api.js';
 
-//const points = new Array(POINT_COUNT).fill().map(generatePoint);
 const AUTHORIZATION = 'Basic fvfvf5451v7f5v4h';
 const END_POINT = 'https://14.ecmascript.pages.academy/big-trip/';
 
@@ -16,8 +15,6 @@ const api = new Api(END_POINT, AUTHORIZATION);
 
 const pointsModel = new PointsModel();
 const filterModel = new FilterModel();
-//pointsModel.setPoints(points);
-
 
 //создаем макет шапки сайта
 const siteHeaderElement = document.querySelector('.trip-main');
@@ -41,7 +38,6 @@ document.querySelector('.trip-main__event-add-btn').addEventListener('click', (e
   evt.preventDefault();
   tripPresenter.createPoint();
 });
-
 
 tripPresenter.init();
 
