@@ -4,6 +4,8 @@ const BAR_HEIGHT = 55;
 
 const NUMBER_OF_SIGNS_FOR_TRIM = 12;
 
+const SHAKE_ANIMATION_TIMEOUT = 600;
+
 const TimeForFormat = {
   MILLISECOND: 60000,
   DAY: 1440,
@@ -11,9 +13,11 @@ const TimeForFormat = {
   STEP: 10,
 };
 
-const TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Transport', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
-
-const CITIES = ['Amsterdam', 'Chamonix', 'Geneva', 'Paris', 'Berlin', 'Dresden'];
+const State = {
+  SAVING: 'SAVING',
+  DELETING: 'DELETING',
+  ABORTING: 'ABORTING',
+};
 
 const FILTERS = ['Everything', 'Future', 'Past'];
 
@@ -62,4 +66,4 @@ const SortType = {
   DAY: 'sort-day',
 };
 
-export { SortType, TYPES, BAR_HEIGHT, CITIES, RenderPosition, TimeForFormat, NUMBER_OF_SIGNS_FOR_TRIM, POINT_COUNT, FILTERS, Mode, SortListChecked, UserAction, UpdateType, FilterType, MenuItem };
+export { SortType, BAR_HEIGHT, SHAKE_ANIMATION_TIMEOUT, State, RenderPosition, TimeForFormat, NUMBER_OF_SIGNS_FOR_TRIM, POINT_COUNT, FILTERS, Mode, SortListChecked, UserAction, UpdateType, FilterType, MenuItem };

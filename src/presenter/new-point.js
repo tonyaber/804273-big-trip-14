@@ -39,6 +39,18 @@ export default class PointNew {
     });
   }
 
+  setAborting() {
+    const resetFormState = () => {
+      this._pointNewComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this._taskEditComponent.shake(resetFormState);
+  }
+
   destroy() {
     if (this._pointNewComponent === null) {
       return;

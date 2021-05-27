@@ -2,12 +2,7 @@ import EditPointView from '../view/edit-point.js';
 import PointView from '../view/point.js';
 import { RenderPosition, Mode } from '../const.js';
 import { replace, remove, renderElement } from '../utils/render.js';
-import { UserAction, UpdateType } from '../const.js';
-
-export const State = {
-  SAVING: 'SAVING',
-  DELETING: 'DELETING',
-};
+import { UserAction, UpdateType, State } from '../const.js';
 
 export default class Point {
   constructor(tripContainer, changeData, changeMode, city, offers) {
@@ -75,6 +70,13 @@ export default class Point {
   }
 
   setViewState(state) {
+    const resetFormState = () => {
+      this._pointEditComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
     switch (state) {
       case State.SAVING:
         this._pointEditComponent.updateData({
@@ -87,6 +89,10 @@ export default class Point {
           isDisabled: true,
           isDeleting: true,
         });
+        break;
+      case State.ABORTING:
+        this._pointComponent.shake(resetFormState);
+        this._pointEditComponent.shake(resetFormState);
         break;
     }
   }

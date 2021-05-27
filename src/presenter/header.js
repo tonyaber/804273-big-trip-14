@@ -19,6 +19,7 @@ export default class Header {
     this._tripInfoComponent = null;
     this._priceComponent = null;
     this._statisticsComponent = null;
+    this._offers = [];
 
     this._buttonNewPoint = null;
     this._pageBodyContainer = null;
@@ -34,6 +35,7 @@ export default class Header {
 
   init() {
     const points = this._getPoints();
+    this._offers = this._getOffers();
     const prevTripInfoComponent = this._tripInfoComponent;
     const prevPriceComponent = this._priceComponent;
 
@@ -56,6 +58,10 @@ export default class Header {
     replace(this._priceComponent, prevPriceComponent);
 
     this.__renderHeader();
+  }
+
+  _getOffers() {
+    return this._pointsModel.getOffers();
   }
 
   __renderHeader() {
@@ -101,7 +107,7 @@ export default class Header {
       case MenuItem.STATS:
         this._tripPresenter.destroy();
         remove(this._statisticsComponent);
-        this._statisticsComponent = new StatisticsView(this._pointsModel.getPoints());
+        this._statisticsComponent = new StatisticsView(this._pointsModel.getPoints(), this._offers);
         renderElement(this._siteEventsElement, this._statisticsComponent, RenderPosition.BEFOREEND);
         hide(this._buttonNewPoint, this._pageBodyContainer, this._buttonHeaderTable, this._buttonHeaderStats);
         this._filterPresenter.blockFilters();
