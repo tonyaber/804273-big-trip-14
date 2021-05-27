@@ -32,6 +32,12 @@ export default class PointNew {
     document.querySelector('.trip-main__event-add-btn').disabled = true;
   }
 
+  setSaving() {
+    this._pointNewComponent.updateData({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
 
   destroy() {
     if (this._pointNewComponent === null) {

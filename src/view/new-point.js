@@ -24,19 +24,19 @@ const BLANK_POINT = {
 };
 
 const createSiteNewPointTemplate = (city, offers, point) => {
-  const { dateFrom, dateTo, type, basePrice, description} = point;
+  const { dateFrom, dateTo, type, basePrice, description, isDisabled, isSaving} = point;
   //создание разметки для поля type
   const createTypeTemplate = (typeRadio) => {
     return `<div class="event__type-item">
-              <input id="event-type-${typeRadio.toLowerCase()}"
+              <input id="event-type-${typeRadio}"
                 class="event__type-input  visually-hidden"
                 type="radio"
                 name="event-type"
-                value="${typeRadio.toLowerCase()}"
+                value="${typeRadio}"
                 ${(typeRadio === type) ? 'checked' : ''}>
               <label class="event__type-label
-                event__type-label--${typeRadio.toLowerCase()}"
-                for="event-type-${typeRadio.toLowerCase()}">
+                event__type-label--${typeRadio}"
+                for="event-type-${typeRadio}">
                   ${typeRadio[0].toUpperCase() + typeRadio.slice(1)}
               </label>
             </div>`;
@@ -56,8 +56,7 @@ const createSiteNewPointTemplate = (city, offers, point) => {
   //создание разметки для дополнительных опций
   const offersOfType = getArrayForType(offers, type);
 
-
-  const createOfferTemplate = (offer, index) => {
+  const createOfferTemplate = (offer, index, isDisabled) => {
     let check = '';
 
     if (point.offers.some((element) => element.title === offer.title)) {
@@ -69,7 +68,8 @@ const createSiteNewPointTemplate = (city, offers, point) => {
                 id="event-offer-${index}"
                 type="checkbox"
                 name="event-offer-${offer.title}"
-                ${check}>
+                ${check}
+                ${isDisabled ? 'disabled' : ''}>
               <label class="event__offer-label" for="event-offer-${index}">
               <span class="event__offer-title">${offer.title}</span>
               &plus;&euro;&nbsp;
@@ -88,7 +88,7 @@ const createSiteNewPointTemplate = (city, offers, point) => {
     }
 
     const offerTemplate = offersOfType.offers
-      .map((offer, index) => createOfferTemplate(offer, index))
+      .map((offer, index) => createOfferTemplate(offer, index, isDisabled))
       .join('');
 
     return `<section class="event__section  event__section--offers">
@@ -105,10 +105,6 @@ const createSiteNewPointTemplate = (city, offers, point) => {
   };
 
   const descriptionsTemplate = () => {
-    if (description === null || description === undefined || description.name === '') {
-      return '';
-    }
-
     const photoTemplate = city.find((element) => element.name === description.name).pictures
       .map((photo) => createPhotoTemplate(photo))
       .join('');
@@ -134,7 +130,7 @@ const createSiteNewPointTemplate = (city, offers, point) => {
                       <span class="visually-hidden">Choose event type</span>
                       <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
                     </label>
-                    <input class="event__type-toggle  visually-hidden" id="event-type-toggle" type="checkbox">
+                    <input class="event__type-toggle  visually-hidden" id="event-type-toggle" type="checkbox" ${isDisabled ? 'disabled' : ''}>
 
                     <div class="event__type-list">
                       <fieldset class="event__type-group">
@@ -152,7 +148,8 @@ const createSiteNewPointTemplate = (city, offers, point) => {
                       id="event-destination" type="text"
                       name="event-destination"
                       value="${description.name}"
-                      list="destination-list">
+                      list="destination-list"
+                      ${isDisabled ? 'disabled' : ''}>
                     <datalist id="destination-list">
                       ${cityTemplate}
                     </datalist>
@@ -165,14 +162,16 @@ const createSiteNewPointTemplate = (city, offers, point) => {
                       id="event-start-time"
                       type="text"
                       name="event-start-time"
-                      value="${formatDate(dateFrom)}">
+                      value="${formatDate(dateFrom)}"
+                      ${isDisabled ? 'disabled' : ''}>
                     &mdash;
                     <label class="visually-hidden" for="event-end-time">To</label>
                     <input class="event__input  event__input--time"
                       id="event-end-time"
                       type="text"
                       name="event-end-time"
-                      value="${formatDate(dateTo)}">
+                      value="${formatDate(dateTo)}"
+                      ${isDisabled ? 'disabled' : ''}>
                   </div>
 
                   <div class="event__field-group  event__field-group--price">
@@ -180,11 +179,20 @@ const createSiteNewPointTemplate = (city, offers, point) => {
                       <span class="visually-hidden">Price</span>
                       &euro;
                     </label>
-                    <input class="event__input  event__input--price" id="event-price" type="number" name="event-price" value="${basePrice}">
+                    <input class="event__input  event__input--price"
+                      id="event-price"
+                      type="number"
+                      name="event-price"
+                      value="${basePrice}"
+                      ${isDisabled ? 'disabled' : ''}>
                   </div>
 
-                  <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-                  <button class="event__reset-btn" type="reset">Cancel</button>
+                  <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>
+                     ${isSaving ? 'Saving...' : 'Save'}
+                   </button>
+                  <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>
+                    Cancel
+                  </button>
                 </header>
                 <section class="event__details">
                   ${offersTamplate()}

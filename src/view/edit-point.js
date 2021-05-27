@@ -6,18 +6,19 @@ import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import dayjs from 'dayjs';
 
 const createSiteEditPointTemplate = (point, city, offers) => {
-  const { dateFrom, dateTo, basePrice, type, description, id } = point;
+  const { dateFrom, dateTo, basePrice, type, description, id, isDisabled, isDeleting, isSaving} = point;
+
   //создание разметки для поля type
   const createTypeTemplate = (typeRadio) => {
     return `<div class="event__type-item">
-              <input id="event-type-${typeRadio.toLowerCase()}-${id}"
+              <input id="event-type-${typeRadio}-${id}"
                 class="event__type-input  visually-hidden"
                 type="radio"
                 name="event-type"
-                value="${typeRadio.toLowerCase()}"
+                value="${typeRadio}"
                 ${(typeRadio === type) ? 'checked' : ''}>
-              <label class="event__type-label  event__type-label--${typeRadio.toLowerCase()}"
-                for="event-type-${typeRadio.toLowerCase()}-${id}">
+              <label class="event__type-label  event__type-label--${typeRadio}"
+                for="event-type-${typeRadio}-${id}">
                 ${typeRadio[0].toUpperCase() + typeRadio.slice(1)}
               </label>
             </div>`;
@@ -37,7 +38,7 @@ const createSiteEditPointTemplate = (point, city, offers) => {
   //создание разметки для дополнительных опций
   const offersOfType = getArrayForType(offers, type);
 
-  const createOfferTemplate = (offer, index) => {
+  const createOfferTemplate = (offer, index, isDisabled) => {
     let check = '';
     if (point.offers.some((element) => element.title === offer.title)) {
       check = 'checked';
@@ -48,7 +49,8 @@ const createSiteEditPointTemplate = (point, city, offers) => {
                 id="event-offer-${id}-${index}"
                 type="checkbox"
                 name="event-offer-${offer.title}"
-                ${check}>
+                ${check}
+                ${isDisabled ? 'disabled' : ''}>
               <label class="event__offer-label" for="event-offer-${id}-${index}">
               <span class="event__offer-title">${offer.title}</span>
               &plus;&euro;&nbsp;
@@ -67,7 +69,7 @@ const createSiteEditPointTemplate = (point, city, offers) => {
     }
 
     const offerTemplate = offersOfType.offers
-      .map((offer,index) => createOfferTemplate(offer,index))
+      .map((offer, index) => createOfferTemplate(offer, index, isDisabled))
       .join('');
 
     return `<section class="event__section  event__section--offers">
@@ -84,10 +86,6 @@ const createSiteEditPointTemplate = (point, city, offers) => {
   };
 
   const descriptionsTemplate = () => {
-    if (description === null || description === undefined || description.name === '') {
-      return '';
-    }
-
     const photoTemplate = city.find((element) => element.name === description.name).pictures
       .map((photo) => createPhotoTemplate(photo))
       .join('');
@@ -113,7 +111,7 @@ const createSiteEditPointTemplate = (point, city, offers) => {
                       <span class="visually-hidden">Choose event type</span>
                       <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
                     </label>
-                    <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox">
+                    <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox" ${isDisabled ? 'disabled' : ''}>
 
                     <div class="event__type-list">
                       <fieldset class="event__type-group">
@@ -132,7 +130,8 @@ const createSiteEditPointTemplate = (point, city, offers) => {
                       type="text"
                       name="event-destination"
                       value="${description.name}"
-                      list="destination-list-1">
+                      list="destination-list-1"
+                      ${isDisabled ? 'disabled' : ''}>
                     <datalist id="destination-list-1">
                       ${cityTemplate}
                     </datalist>
@@ -145,14 +144,16 @@ const createSiteEditPointTemplate = (point, city, offers) => {
                       id="event-start-time"
                       type="text"
                       name="event-start-time"
-                      value="${formatDate(dateFrom)}">
+                      value="${formatDate(dateFrom)}"
+                      ${isDisabled ? 'disabled' : ''}>
                     &mdash;
                     <label class="visually-hidden" for="event-end-time">To</label>
                     <input class="event__input  event__input--time"
                       id="event-end-time"
                       type="text"
                       name="event-end-time"
-                      value="${formatDate(dateTo)}">
+                      value="${formatDate(dateTo)}"
+                      ${isDisabled ? 'disabled' : ''}>
                   </div>
 
                   <div class="event__field-group  event__field-group--price">
@@ -160,11 +161,21 @@ const createSiteEditPointTemplate = (point, city, offers) => {
                       <span class="visually-hidden">Price</span>
                       &euro;
                     </label>
-                    <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${basePrice}">
+                    <input
+                      class="event__input  event__input--price"
+                      id="event-price-1"
+                      type="number"
+                      name="event-price"
+                      value="${basePrice}"
+                      ${isDisabled ? 'disabled' : ''}>
                   </div>
 
-                  <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-                  <button class="event__reset-btn" type="reset">Delete</button>
+                  <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>
+                    ${isSaving ? 'Saving...' : 'Save'}
+                  </button>
+                  <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>
+                    ${isDeleting ? 'Deleting...' : 'Delete'}
+                  </button>
                   <button class="event__rollup-btn" type="button">
                     <span class="visually-hidden">Open event</span>
                   </button>
@@ -180,7 +191,7 @@ const createSiteEditPointTemplate = (point, city, offers) => {
 export default class EditPoint extends SmartView {
   constructor(point, city, offers) {
     super();
-    this._point = point;
+    this._point = this._data = EditPoint.parsePointToData(point);
     this._offers = this._point.offers.slice();
     this._city = city;
     this._offersAll = offers;
@@ -209,7 +220,7 @@ export default class EditPoint extends SmartView {
 
   reset(point) {
     this.newPoint(
-      point,
+      EditPoint.parsePointToData(point),
     );
     this._offers = this._point.offers;
   }
@@ -312,12 +323,12 @@ export default class EditPoint extends SmartView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(this._point);
+    this._callback.formSubmit(EditPoint.parseDataToPoint(this._point));
   }
 
   _editClickHandler(evt) {
     evt.preventDefault();
-    this._callback.editClick(this._point);
+    this._callback.editClick(EditPoint.parseDataToPoint(this._point));
   }
 
   _typeClickHandler(evt) {
@@ -399,5 +410,26 @@ export default class EditPoint extends SmartView {
   setEditClickHandler(callback) {
     this._callback.editClick = callback;
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._editClickHandler);
+  }
+  static parsePointToData(point) {
+    return Object.assign(
+      {},
+      point,
+      {
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      },
+    );
+  }
+
+  static parseDataToPoint(point) {
+    point = Object.assign({}, point);
+
+    delete point.isDisabled;
+    delete point.isSaving;
+    delete point.isDeleting;
+
+    return point;
   }
 }

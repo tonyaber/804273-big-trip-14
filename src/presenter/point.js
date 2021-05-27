@@ -4,6 +4,11 @@ import { RenderPosition, Mode } from '../const.js';
 import { replace, remove, renderElement } from '../utils/render.js';
 import { UserAction, UpdateType } from '../const.js';
 
+export const State = {
+  SAVING: 'SAVING',
+  DELETING: 'DELETING',
+};
+
 export default class Point {
   constructor(tripContainer, changeData, changeMode, city, offers) {
     this._tripContainer = tripContainer;
@@ -50,7 +55,8 @@ export default class Point {
     }
 
     if (this._mode === Mode.EDITING) {
-      replace(this._pointkEditComponent, prevPointEditComponent);
+      replace(this._pointComponent, prevPointEditComponent);
+      this._mode = Mode.DEFAULT;
     }
 
     remove(prevPointComponent);
@@ -65,6 +71,23 @@ export default class Point {
   resetView() {
     if (this._mode !== Mode.DEFAULT) {
       this._replaceFormToCard();
+    }
+  }
+
+  setViewState(state) {
+    switch (state) {
+      case State.SAVING:
+        this._pointEditComponent.updateData({
+          isDisabled: true,
+          isSaving: true,
+        });
+        break;
+      case State.DELETING:
+        this._pointEditComponent.updateData({
+          isDisabled: true,
+          isDeleting: true,
+        });
+        break;
     }
   }
 
@@ -105,7 +128,7 @@ export default class Point {
   }
 
   _handleFormSubmit(point) {
-    this._replaceFormToCard();
+    //this._replaceFormToCard();
     this._changeData(
       UserAction.UPDATE_POINT,
       UpdateType.MAJOR,
