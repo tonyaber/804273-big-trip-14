@@ -28,6 +28,7 @@ export default class Trip {
 
     this._city = [];
     this._offers = [];
+    this._pointNewPresenter;
 
     this._currentSortType = SortType.DAY;
     this._handleViewAction = this._handleViewAction.bind(this);
@@ -188,7 +189,7 @@ export default class Trip {
   }
 
   _handleModeChange() {
-    this._pointNewPresenter.destroy();
+    // this._pointNewPresenter.destroy();
     Object
       .values(this._pointPresenter)
       .forEach((presenter) => presenter.resetView());

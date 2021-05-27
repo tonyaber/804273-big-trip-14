@@ -18,7 +18,7 @@ const createSiteEditPointTemplate = (point, city, offers) => {
                 ${(typeRadio === type) ? 'checked' : ''}>
               <label class="event__type-label  event__type-label--${typeRadio.toLowerCase()}"
                 for="event-type-${typeRadio.toLowerCase()}-${id}">
-                ${typeRadio}
+                ${typeRadio[0].toUpperCase() + typeRadio.slice(1)}
               </label>
             </div>`;
   };

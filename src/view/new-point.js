@@ -29,7 +29,7 @@ const createSiteNewPointTemplate = (city, offers, point) => {
               <label class="event__type-label
                 event__type-label--${typeRadio.toLowerCase()}"
                 for="event-type-${typeRadio.toLowerCase()}">
-                  ${typeRadio}
+                  ${typeRadio[0].toUpperCase() + typeRadio.slice(1)}
               </label>
             </div>`;
   };
