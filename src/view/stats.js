@@ -77,9 +77,9 @@ const renderTypeChart = (typeCtx, trip) => {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
-      labels: trip.map((point)=>point.type),
+      labels: trip.map((point) => point.type),
       datasets: [{
-        data: trip.map((point)=>point.types),
+        data: trip.map((point) => point.types),
         backgroundColor: '#ffffff',
         hoverBackgroundColor: '#ffffff',
         anchor: 'start',
@@ -144,9 +144,9 @@ const renderTimeChart = (timeCtx, trip) => {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
-      labels: trip.map((point)=>point.type),
+      labels: trip.map((point) => point.type),
       datasets: [{
-        data: trip.map((point)=>point.time),
+        data: trip.map((point) => point.time),
         backgroundColor: '#ffffff',
         hoverBackgroundColor: '#ffffff',
         anchor: 'start',
@@ -258,10 +258,10 @@ export default class Statistics extends SmartView {
   }
 
   _setCharts() {
-    if (this._moneyCart == !null) {
+    if (this._moneyCart !== null) {
       this._moneyCart = null;
     }
-    if (this._typeCart == !null) {
+    if (this._typeCart !== null) {
       this._typeCart = null;
     }
     if (this._timeCart !== null) {
