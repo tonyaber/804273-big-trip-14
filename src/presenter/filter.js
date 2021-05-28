@@ -32,8 +32,10 @@ export default class Filter {
       this._filtersComponent = document.querySelectorAll('.trip-filters__filter-input');
       return;
     }
+
     replace(this._filterComponent, prevFilterComponent);
     remove(prevFilterComponent);
+
     this._filtersComponent = document.querySelectorAll('.trip-filters__filter-input');
   }
 

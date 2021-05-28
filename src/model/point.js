@@ -4,7 +4,7 @@ export default class Point extends Observer {
   constructor() {
     super();
     this._points = [];
-    this._city = [];
+    this._cities = [];
     this._offers = [];
   }
 
@@ -13,8 +13,8 @@ export default class Point extends Observer {
     this._notify(updateType);
   }
 
-  setCity(city) {
-    this._city = city.slice();
+  setCity(cities) {
+    this._cities = cities.slice();
   }
 
   setOffers(offers) {
@@ -26,7 +26,7 @@ export default class Point extends Observer {
   }
 
   getCity() {
-    return this._city;
+    return this._cities;
   }
 
   getOffers() {
@@ -86,7 +86,6 @@ export default class Point extends Observer {
       },
     );
 
-    // Ненужные ключи мы удаляем
     delete adaptedPoint.base_price;
     delete adaptedPoint.date_from;
     delete adaptedPoint.date_to;
@@ -108,7 +107,7 @@ export default class Point extends Observer {
         destination: point.description,
       },
     );
-    // Ненужные ключи мы удаляем
+
     delete adaptedPoint.basePrice;
     delete adaptedPoint.dateFrom;
     delete adaptedPoint.dateTo;

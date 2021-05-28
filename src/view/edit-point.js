@@ -5,10 +5,10 @@ import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import dayjs from 'dayjs';
 
-const createSiteEditPointTemplate = (point, city, offers) => {
+const createSiteEditPointTemplate = (point, cities, offers) => {
   const { dateFrom, dateTo, basePrice, type, description, id, isDisabled, isDeleting, isSaving} = point;
 
-  //создание разметки для поля type
+  //создание разметки
   const createTypeTemplate = (typeRadio) => {
     return `<div class="event__type-item">
               <input id="event-type-${typeRadio}-${id}"
@@ -23,20 +23,6 @@ const createSiteEditPointTemplate = (point, city, offers) => {
               </label>
             </div>`;
   };
-
-  const typeTemplate = offers
-    .map((offer) => offer.type)
-    .map((type) => createTypeTemplate(type))
-    .join('');
-
-  //создание разметки для поля город
-  const cityTemplate = city
-    .map((city) => city.name)
-    .map((city) => `<option value="${city}"></option>`)
-    .join('');
-
-  //создание разметки для дополнительных опций
-  const offersOfType = getArrayForType(offers, type);
 
   const createOfferTemplate = (offer, index, isDisabled) => {
     let check = '';
@@ -59,16 +45,15 @@ const createSiteEditPointTemplate = (point, city, offers) => {
              </div>`;
   };
 
-  const offersTamplate = () => {
+  const createOffersTemplate = () => {
     if (!offersOfType.offers.length) {
       return `<section class="event__section  event__section--offers">
-              <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-              <div class="event__available-offers">
-              </div>
+            <div class="event__available-offers">
+            </div>
         </section>`;
     }
 
-    const offerTemplate = offersOfType.offers
+    const offersTemplate = offersOfType.offers
       .map((offer, index) => createOfferTemplate(offer, index, isDisabled))
       .join('');
 
@@ -76,31 +61,47 @@ const createSiteEditPointTemplate = (point, city, offers) => {
                     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
                     <div class="event__available-offers">
-                      ${offerTemplate}
+                      ${offersTemplate}
                     </div>
                   </section>`;
   };
 
-  const createPhotoTemplate = (photo) => {
-    return `<img class="event__photo" src="${photo.src}" alt="${photo.description}">`;
-  };
+  const createDescriptionsTemplate = () => {
+    if (!point.description.description.length) {
+      return '';
+    }
 
-  const descriptionsTemplate = () => {
-    const photoTemplate = city.find((element) => element.name === description.name).pictures
-      .map((photo) => createPhotoTemplate(photo))
+    const photosTemplate = cities.find((city) => city.name === description.name).pictures
+      .map((photo) => createPhotosTemplate(photo))
       .join('');
 
-    const descriptionTemplate = city.find((element) => element.name === description.name).description;
+    const descriptionsTemplate = cities.find((city) => city.name === description.name).description;
 
     return `<section class="event__section  event__section--destination">
                     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-                    <p class="event__destination-description">${descriptionTemplate}</p>
+                    <p class="event__destination-description">${descriptionsTemplate}</p>
                     <div class="event__photos-container">
                       <div class="event__photos-tape">
-                        ${photoTemplate}
+                        ${photosTemplate}
                       </div>
                     </div>
                     </section>`;
+  };
+
+  const typesTemplate = offers
+    .map((offer) => offer.type)
+    .map((type) => createTypeTemplate(type))
+    .join('');
+
+  const citiesTemplate = cities
+    .map((city) => city.name)
+    .map((city) => `<option value="${city}"></option>`)
+    .join('');
+
+  const offersOfType = getArrayForType(offers, type);
+
+  const createPhotosTemplate = (photo) => {
+    return `<img class="event__photo" src="${photo.src}" alt="${photo.description}">`;
   };
 
   return `<li class="trip-events__item">
@@ -116,7 +117,7 @@ const createSiteEditPointTemplate = (point, city, offers) => {
                     <div class="event__type-list">
                       <fieldset class="event__type-group">
                         <legend class="visually-hidden">Event type</legend>
-                        ${typeTemplate}
+                        ${typesTemplate}
                       </fieldset>
                     </div>
                   </div>
@@ -133,7 +134,7 @@ const createSiteEditPointTemplate = (point, city, offers) => {
                       list="destination-list-1"
                       ${isDisabled ? 'disabled' : ''}>
                     <datalist id="destination-list-1">
-                      ${cityTemplate}
+                      ${citiesTemplate}
                     </datalist>
                   </div>
 
@@ -167,6 +168,7 @@ const createSiteEditPointTemplate = (point, city, offers) => {
                       type="number"
                       name="event-price"
                       value="${basePrice}"
+                      min="0" step="1"
                       ${isDisabled ? 'disabled' : ''}>
                   </div>
 
@@ -181,19 +183,19 @@ const createSiteEditPointTemplate = (point, city, offers) => {
                   </button>
                 </header>
                 <section class="event__details">
-                  ${offersTamplate()}
-                  ${descriptionsTemplate()}
+                  ${createOffersTemplate()}
+                  ${createDescriptionsTemplate()}
                 </section>
               </form>
             </li>`;
 };
 
 export default class EditPoint extends SmartView {
-  constructor(point, city, offers) {
+  constructor(point, cities, offers) {
     super();
     this._point = this._data = EditPoint.parsePointToData(point);
     this._offers = this._point.offers.slice();
-    this._city = city;
+    this._cities = cities;
     this._offersAll = offers;
     this._offersOfPoint = getArrayForType(this._offersAll, this._point.type).offers;
 
@@ -215,7 +217,7 @@ export default class EditPoint extends SmartView {
   }
 
   getTemplate() {
-    return createSiteEditPointTemplate(this._point, this._city,this._offersAll);
+    return createSiteEditPointTemplate(this._point, this._cities, this._offersAll);
   }
 
   reset(point) {
@@ -298,7 +300,7 @@ export default class EditPoint extends SmartView {
   }
 
   _validityFormForCity(evt) {
-    this._city.map((city)=>city.name).some((city) => city === evt.target.value) ?
+    this._cities.map((city)=>city.name).some((city) => city === evt.target.value) ?
       evt.target.setCustomValidity('') :
       evt.target.setCustomValidity('Выберите город из доступного списка');
   }
@@ -346,7 +348,7 @@ export default class EditPoint extends SmartView {
   }
 
   _cityClickHandler(evt) {
-    if (evt.target.value && this._city.find((element) => element.name === evt.target.value)) {
+    if (evt.target.value && this._cities.find((city) => city.name === evt.target.value)) {
       evt.preventDefault();
       this.updateData({
         description: Object.assign(
@@ -411,6 +413,7 @@ export default class EditPoint extends SmartView {
     this._callback.editClick = callback;
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._editClickHandler);
   }
+
   static parsePointToData(point) {
     return Object.assign(
       {},
