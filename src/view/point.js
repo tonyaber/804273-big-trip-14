@@ -5,9 +5,6 @@ import { calculateDuration } from '../utils/point.js';
 const createSitePointTemplate = (point) => {
   const { dateFrom, dateTo, basePrice, isFavorite, type, offers, description } = point;
 
-  //определение длины поездки
-  const durationTemplate = calculateDuration(dayjs(dateFrom), dayjs(dateTo));
-
   //создание списка дополнительных опций
   const createOffers = (offer) => {
     return `<li class="event__offer">
@@ -17,6 +14,10 @@ const createSitePointTemplate = (point) => {
             </li>`;
   };
 
+  //определение длины поездки
+  const durationTemplate = calculateDuration(dayjs(dateFrom), dayjs(dateTo));
+
+  //шаблон дополнительных опций
   const OffersTemplate = offers
     .map((offer) => createOffers(offer))
     .join('');

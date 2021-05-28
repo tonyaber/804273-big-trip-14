@@ -2,23 +2,25 @@ import dayjs from 'dayjs';
 import { TimeForFormat } from '../const.js';
 
 const countMoney = (points, type) => {
-  const money = points.filter((point) => point.type.toLowerCase() === type.toLowerCase());
-  if (!money.length) {
+  const moneys = points.filter((point) => point.type.toLowerCase() === type.toLowerCase());
+
+  if (!moneys.length) {
     return 0;
   }
-  return money.map((point) => point.basePrice)
+
+  return moneys.map((point) => point.basePrice)
     .reduce((accumulator, price) => Number(accumulator) + Number(price));
 };
 
-const countTypes = (points, type) => {
-  return points.filter((point) => point.type.toLowerCase() === type.toLowerCase()).length;
-};
+const countTypes = (points, type) => points.filter((point) => point.type.toLowerCase() === type.toLowerCase()).length;
 
 const countTime = (points, type) => {
   const time = points.filter((point) => point.type.toLowerCase() === type.toLowerCase());
+
   if (!time.length) {
     return 0;
   }
+
   return time.map((point) => dayjs(point.dateTo).diff(dayjs(point.dateFrom)))
     .reduce((accumulator, time) => accumulator + time);
 };
@@ -30,9 +32,15 @@ const formatTime = (millisecond) => {
     Math.floor(quantityMinutes % TimeForFormat.DAY / TimeForFormat.MINUTE) : Math.floor(quantityMinutes / TimeForFormat.MINUTE);
   let minutes = (quantityMinutes >= TimeForFormat.MINUTE) ? (quantityMinutes % TimeForFormat.MINUTE) : quantityMinutes;
 
-  if (days < TimeForFormat.STEP) days = '0' + days;
-  if (hours < TimeForFormat.STEP) hours = '0' + hours;
-  if (minutes < TimeForFormat.STEP) minutes = '0' + minutes;
+  if (days < TimeForFormat.STEP) {
+    days = '0' + days;
+  }
+  if (hours < TimeForFormat.STEP) {
+    hours = '0' + hours;
+  }
+  if (minutes < TimeForFormat.STEP) {
+    minutes = '0' + minutes;
+  }
 
   if (days > 0) {
     return `${days}D ${hours}H ${minutes}M`;

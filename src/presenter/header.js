@@ -44,16 +44,14 @@ export default class Header {
       this._renderSiteMenu();
       return;
     }
-    if (prevTripInfoComponent === null) {
-      this._tripInfoComponent = new TripInfoView(points);
-      this._priceComponent = new PriceView(points);
-      this.__renderHeader();
-      return;
-    }
 
     this._tripInfoComponent = new TripInfoView(points);
     this._priceComponent = new PriceView(points);
 
+    if (prevTripInfoComponent === null) {
+      this.__renderHeader();
+      return;
+    }
     replace(this._tripInfoComponent, prevTripInfoComponent);
     replace(this._priceComponent, prevPriceComponent);
 
@@ -99,17 +97,22 @@ export default class Header {
     switch (menuItem) {
       case MenuItem.TABLE:
         this._tripPresenter.init();
+
         remove(this._statisticsComponent);
         show(this._buttonNewPoint, this._pageBodyContainer, this._buttonHeaderTable, this._buttonHeaderStats);
+
         this._filterPresenter.unblockFilters();
         this._tripPresenter.renderSortDefault();
         break;
       case MenuItem.STATS:
         this._tripPresenter.destroy();
         remove(this._statisticsComponent);
+
         this._statisticsComponent = new StatisticsView(this._pointsModel.getPoints(), this._offers);
+
         renderElement(this._siteEventsElement, this._statisticsComponent, RenderPosition.BEFOREEND);
         hide(this._buttonNewPoint, this._pageBodyContainer, this._buttonHeaderTable, this._buttonHeaderStats);
+
         this._filterPresenter.blockFilters();
         break;
     }

@@ -1,7 +1,6 @@
 import dayjs from 'dayjs';
 import { TimeForFormat } from '../const.js';
 
-
 const formatDate = (date) => {
   return dayjs(date).format('DD/MM/YY HH:mm');
 };
@@ -23,9 +22,15 @@ const calculateDuration = (start, end) => {
   let minutes = (quantityMinutes >= TimeForFormat.MINUTE) ?
     (quantityMinutes % TimeForFormat.MINUTE) : quantityMinutes;
 
-  if (days < TimeForFormat.STEP) days = '0' + days;
-  if (hours < TimeForFormat.STEP) hours = '0' + hours;
-  if (minutes < TimeForFormat.STEP) minutes = '0' + minutes;
+  if (days < TimeForFormat.STEP) {
+    days = '0' + days;
+  }
+  if (hours < TimeForFormat.STEP) {
+    hours = '0' + hours;
+  }
+  if (minutes < TimeForFormat.STEP) {
+    minutes = '0' + minutes;
+  }
 
   if (days > 0) {
     return `${days}D ${hours}H ${minutes}M`;

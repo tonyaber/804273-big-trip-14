@@ -5,15 +5,17 @@ import { replace, remove, renderElement } from '../utils/render.js';
 import { UserAction, UpdateType, State } from '../const.js';
 
 export default class Point {
-  constructor(tripContainer, changeData, changeMode, city, offers) {
+  constructor(tripContainer, changeData, changeMode, cities, offers) {
     this._tripContainer = tripContainer;
     this._changeData = changeData;
     this._changeMode = changeMode;
-    this._city = city;
+    this._cities = cities;
     this._offers = offers;
 
     this._pointComponent = null;
     this._pointEditComponent = null;
+    this._prevPointComponent = null;
+    this._prevPointEditComponent = null;
     this._mode = Mode.DEFAULT;
 
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
@@ -28,11 +30,11 @@ export default class Point {
     this._point = point;
     this._prevPoint = point;
 
-    const prevPointComponent = this._pointComponent;
-    const prevPointEditComponent = this._pointEditComponent;
+    this._prevPointComponent = this._pointComponent;
+    this._prevPointEditComponent = this._pointEditComponent;
 
     this._pointComponent = new PointView(point);
-    this._pointEditComponent = new EditPointView(point, this._city, this._offers);
+    this._pointEditComponent = new EditPointView(this._point, this._cities, this._offers);
 
     this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._pointComponent.setEditClickHandler(this._handleEditClick);
@@ -40,22 +42,22 @@ export default class Point {
     this._pointEditComponent.setEditClickHandler(this._handleUneditClick);
     this._pointEditComponent.setDeleteClickHandler(this._handleDeleteClick);
 
-    if (prevPointComponent === null || prevPointEditComponent === null) {
+    if (this._prevPointComponent === null || this._prevPointEditComponent === null) {
       renderElement(this._tripContainer, this._pointComponent, RenderPosition.BEFOREEND);
       return;
     }
 
     if (this._mode === Mode.DEFAULT) {
-      replace(this._pointComponent, prevPointComponent);
+      replace(this._pointComponent, this._prevPointComponent);
     }
 
     if (this._mode === Mode.EDITING) {
-      replace(this._pointComponent, prevPointEditComponent);
+      replace(this._pointComponent, this._prevPointEditComponent);
       this._mode = Mode.DEFAULT;
     }
 
-    remove(prevPointComponent);
-    remove(prevPointEditComponent);
+    remove(this._prevPointComponent);
+    remove(this._prevPointEditComponent);
   }
 
   destroy() {
@@ -65,6 +67,7 @@ export default class Point {
 
   resetView() {
     if (this._mode !== Mode.DEFAULT) {
+      this._pointEditComponent.reset(this._point);
       this._replaceFormToCard();
     }
   }
@@ -77,6 +80,7 @@ export default class Point {
         isDeleting: false,
       });
     };
+
     switch (state) {
       case State.SAVING:
         this._pointEditComponent.updateData({
@@ -134,7 +138,6 @@ export default class Point {
   }
 
   _handleFormSubmit(point) {
-    //this._replaceFormToCard();
     this._changeData(
       UserAction.UPDATE_POINT,
       UpdateType.MAJOR,

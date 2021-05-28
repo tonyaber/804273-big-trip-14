@@ -270,10 +270,10 @@ export default class Statistics extends SmartView {
 
     const offers = this._offers.map((offer) => offer.type.toUpperCase());
 
-    const money = offers.map((type) => countMoney(this._points, type));
+    const moneys = offers.map((type) => countMoney(this._points, type));
     const types = offers.map((type) => countTypes(this._points, type));
     const time = offers.map((type) => countTime(this._points, type));
-    const trip = offers.map((item, index) => ({ type: item, money: money[index], types: types[index], time: time[index] }));
+    const trip = offers.map((item, index) => ({ type: item, money: moneys[index], types: types[index], time: time[index] }));
 
     const moneyCtx = this.getElement().querySelector('.statistics__chart--money');
     const typeCtx = this.getElement().querySelector('.statistics__chart--transport');

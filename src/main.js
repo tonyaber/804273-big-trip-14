@@ -11,13 +11,19 @@ import Api from './api.js';
 const AUTHORIZATION = 'Basic fvfvf5451v7f5v4h';
 const END_POINT = 'https://14.ecmascript.pages.academy/big-trip/';
 
+const siteHeaderElement = document.querySelector('.trip-main');
+
 const api = new Api(END_POINT, AUTHORIZATION);
 
 const pointsModel = new PointsModel();
 const filterModel = new FilterModel();
 
+const getPoints = api.getPoints();
+const getCity = api.getCity();
+const getOffers = api.getOffers();
+
 //создаем макет шапки сайта
-const siteHeaderElement = document.querySelector('.trip-main');
+
 renderElement(siteHeaderElement, new TripInfoHeaderView(), RenderPosition.AFTERBEGIN);
 
 //находим динамичные элементы для добавления информации
@@ -41,9 +47,6 @@ document.querySelector('.trip-main__event-add-btn').addEventListener('click', (e
 
 tripPresenter.init();
 
-const getPoints = api.getPoints();
-const getCity = api.getCity();
-const getOffers = api.getOffers();
 Promise.all([
   getPoints,
   getCity,

@@ -6,6 +6,18 @@ const NUMBER_OF_SIGNS_FOR_TRIM = 12;
 
 const SHAKE_ANIMATION_TIMEOUT = 600;
 
+const Method = {
+  GET: 'GET',
+  PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE',
+};
+
+const SuccessHTTPStatusRange = {
+  MIN: 200,
+  MAX: 299,
+};
+
 const TimeForFormat = {
   MILLISECOND: 60000,
   DAY: 1440,
@@ -66,4 +78,4 @@ const SortType = {
   DAY: 'sort-day',
 };
 
-export { SortType, BAR_HEIGHT, SHAKE_ANIMATION_TIMEOUT, State, RenderPosition, TimeForFormat, NUMBER_OF_SIGNS_FOR_TRIM, POINT_COUNT, FILTERS, Mode, SortListChecked, UserAction, UpdateType, FilterType, MenuItem };
+export { SortType, BAR_HEIGHT, Method, SuccessHTTPStatusRange ,SHAKE_ANIMATION_TIMEOUT, State, RenderPosition, TimeForFormat, NUMBER_OF_SIGNS_FOR_TRIM, POINT_COUNT, FILTERS, Mode, SortListChecked, UserAction, UpdateType, FilterType, MenuItem };

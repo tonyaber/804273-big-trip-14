@@ -3,10 +3,10 @@ import { remove, renderElement } from '../utils/render.js';
 import { UserAction, UpdateType, RenderPosition } from '../const.js';
 
 export default class PointNew {
-  constructor(pointListContainer, changeData, city, offers) {
+  constructor(pointListContainer, changeData, cities, offers) {
     this._pointListContainer = pointListContainer;
     this._changeData = changeData;
-    this._city = city;
+    this._cities = cities;
     this._offers = offers;
 
     this._pointNewComponent = null;
@@ -21,7 +21,7 @@ export default class PointNew {
       return;
     }
 
-    this._pointNewComponent = new PointNewView(this._city, this._offers);
+    this._pointNewComponent = new PointNewView(this._cities, this._offers);
 
     this._pointNewComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointNewComponent.setDeleteClickHandler(this._handleDeleteClick);
