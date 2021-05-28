@@ -1,12 +1,13 @@
 import PointNewView from '../view/new-point';
-import { nanoid } from 'nanoid';
 import { remove, renderElement } from '../utils/render.js';
 import { UserAction, UpdateType, RenderPosition } from '../const.js';
 
 export default class PointNew {
-  constructor(pointListContainer, changeData) {
+  constructor(pointListContainer, changeData, city, offers) {
     this._pointListContainer = pointListContainer;
     this._changeData = changeData;
+    this._city = city;
+    this._offers = offers;
 
     this._pointNewComponent = null;
 
@@ -20,7 +21,7 @@ export default class PointNew {
       return;
     }
 
-    this._pointNewComponent = new PointNewView();
+    this._pointNewComponent = new PointNewView(this._city, this._offers);
 
     this._pointNewComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointNewComponent.setDeleteClickHandler(this._handleDeleteClick);
@@ -31,6 +32,24 @@ export default class PointNew {
     document.querySelector('.trip-main__event-add-btn').disabled = true;
   }
 
+  setSaving() {
+    this._pointNewComponent.updateData({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this._pointNewComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this._taskEditComponent.shake(resetFormState);
+  }
 
   destroy() {
     if (this._pointNewComponent === null) {
@@ -48,7 +67,7 @@ export default class PointNew {
     this._changeData(
       UserAction.ADD_POINT,
       UpdateType.MAJOR,
-      Object.assign({ id: nanoid() }, point),
+      point,
     );
     this.destroy();
   }

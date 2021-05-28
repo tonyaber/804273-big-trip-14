@@ -1,6 +1,6 @@
 import SmartView from './smart.js';
 import Chart from 'chart.js';
-import { TYPES, BAR_HEIGHT } from '../const.js';
+import { BAR_HEIGHT } from '../const.js';
 import { countMoney, countTypes, countTime, formatTime } from '../utils/stats.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
@@ -224,10 +224,11 @@ const createStatisticsTemplate = () => {
 };
 
 export default class Statistics extends SmartView {
-  constructor(points) {
+  constructor(points, offers) {
     super();
 
     this._points = points;
+    this._offers = offers;
     this._moneyCart = null;
     this._typeCart = null;
     this._timeCard = null;
@@ -266,18 +267,21 @@ export default class Statistics extends SmartView {
     if (this._timeCart !== null) {
       this._timeCart = null;
     }
-    const money = TYPES.map((type) => countMoney(this._points, type));
-    const types = TYPES.map((type) => countTypes(this._points, type));
-    const time = TYPES.map((type) => countTime(this._points, type));
-    const trip = TYPES.map((item, index) => ({ type: item, money: money[index], types: types[index], time: time[index] }));
+
+    const offers = this._offers.map((offer) => offer.type.toUpperCase());
+
+    const money = offers.map((type) => countMoney(this._points, type));
+    const types = offers.map((type) => countTypes(this._points, type));
+    const time = offers.map((type) => countTime(this._points, type));
+    const trip = offers.map((item, index) => ({ type: item, money: money[index], types: types[index], time: time[index] }));
 
     const moneyCtx = this.getElement().querySelector('.statistics__chart--money');
     const typeCtx = this.getElement().querySelector('.statistics__chart--transport');
     const timeCtx = this.getElement().querySelector('.statistics__chart--time');
 
-    moneyCtx.height = BAR_HEIGHT * TYPES.length;
-    typeCtx.height = BAR_HEIGHT * TYPES.length;
-    timeCtx.height = BAR_HEIGHT * TYPES.length;
+    moneyCtx.height = BAR_HEIGHT * offers.length;
+    typeCtx.height = BAR_HEIGHT * offers.length;
+    timeCtx.height = BAR_HEIGHT * offers.length;
 
     this._moneyCart = renderMoneyChart(moneyCtx, trip);
     this._typeCart = renderTypeChart(typeCtx, trip);

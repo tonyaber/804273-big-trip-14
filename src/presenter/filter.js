@@ -4,12 +4,14 @@ import { filterPoint } from '../utils/filter.js';
 import { FilterType, UpdateType, RenderPosition } from '../const.js';
 
 export default class Filter {
-  constructor(filterContainer, filterModel, pointsModel) {
+  constructor(filterContainer, filterModel, pointsModel, tripPresenter) {
     this._filterContainer = filterContainer;
     this._filterModel = filterModel;
     this._pointsModel = pointsModel;
+    this._tripPresenter = tripPresenter;
 
     this._filterComponent = null;
+    this._filtersComponent = null;
 
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleFilterTypeChange = this._handleFilterTypeChange.bind(this);
@@ -27,11 +29,20 @@ export default class Filter {
 
     if (prevFilterComponent === null) {
       renderElement(this._filterContainer, this._filterComponent, RenderPosition.BEFOREEND);
+      this._filtersComponent = document.querySelectorAll('.trip-filters__filter-input');
       return;
     }
-
     replace(this._filterComponent, prevFilterComponent);
     remove(prevFilterComponent);
+    this._filtersComponent = document.querySelectorAll('.trip-filters__filter-input');
+  }
+
+  blockFilters() {
+    this._filtersComponent.forEach((filter) => filter.disabled = true);
+  }
+
+  unblockFilters() {
+    this._filtersComponent.forEach((filter) => filter.disabled = false);
   }
 
   _handleModelEvent() {
@@ -44,6 +55,7 @@ export default class Filter {
     }
 
     this._filterModel.setFilter(UpdateType.MAJOR, filterType);
+    this._tripPresenter.renderSortDefault();
   }
 
   _getFilters() {
@@ -52,17 +64,14 @@ export default class Filter {
     return [
       {
         type: FilterType.EVERYTHING,
-        name: 'everything',
         count: filterPoint[FilterType.EVERYTHING](points).length,
       },
       {
         type: FilterType.FUTURE,
-        name: 'future',
         count: filterPoint[FilterType.FUTURE](points).length,
       },
       {
         type: FilterType.PAST,
-        name: 'past',
         count: filterPoint[FilterType.PAST](points).length,
       },
     ];

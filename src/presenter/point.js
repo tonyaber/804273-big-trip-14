@@ -2,13 +2,15 @@ import EditPointView from '../view/edit-point.js';
 import PointView from '../view/point.js';
 import { RenderPosition, Mode } from '../const.js';
 import { replace, remove, renderElement } from '../utils/render.js';
-import { UserAction, UpdateType } from '../const.js';
+import { UserAction, UpdateType, State } from '../const.js';
 
 export default class Point {
-  constructor(tripContainer, changeData, changeMode) {
+  constructor(tripContainer, changeData, changeMode, city, offers) {
     this._tripContainer = tripContainer;
     this._changeData = changeData;
     this._changeMode = changeMode;
+    this._city = city;
+    this._offers = offers;
 
     this._pointComponent = null;
     this._pointEditComponent = null;
@@ -30,7 +32,7 @@ export default class Point {
     const prevPointEditComponent = this._pointEditComponent;
 
     this._pointComponent = new PointView(point);
-    this._pointEditComponent = new EditPointView(point);
+    this._pointEditComponent = new EditPointView(point, this._city, this._offers);
 
     this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._pointComponent.setEditClickHandler(this._handleEditClick);
@@ -48,7 +50,8 @@ export default class Point {
     }
 
     if (this._mode === Mode.EDITING) {
-      replace(this._pointkEditComponent, prevPointEditComponent);
+      replace(this._pointComponent, prevPointEditComponent);
+      this._mode = Mode.DEFAULT;
     }
 
     remove(prevPointComponent);
@@ -63,6 +66,34 @@ export default class Point {
   resetView() {
     if (this._mode !== Mode.DEFAULT) {
       this._replaceFormToCard();
+    }
+  }
+
+  setViewState(state) {
+    const resetFormState = () => {
+      this._pointEditComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+    switch (state) {
+      case State.SAVING:
+        this._pointEditComponent.updateData({
+          isDisabled: true,
+          isSaving: true,
+        });
+        break;
+      case State.DELETING:
+        this._pointEditComponent.updateData({
+          isDisabled: true,
+          isDeleting: true,
+        });
+        break;
+      case State.ABORTING:
+        this._pointComponent.shake(resetFormState);
+        this._pointEditComponent.shake(resetFormState);
+        break;
     }
   }
 
@@ -103,7 +134,7 @@ export default class Point {
   }
 
   _handleFormSubmit(point) {
-    this._replaceFormToCard();
+    //this._replaceFormToCard();
     this._changeData(
       UserAction.UPDATE_POINT,
       UpdateType.MAJOR,

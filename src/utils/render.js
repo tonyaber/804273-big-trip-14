@@ -111,9 +111,8 @@ const updateItem = (items, update) => {
   ];
 };
 
-const show = (buttonNewPoint, filters, pageBodyContainer, buttonHeaderTable, buttonHeaderStats) => {
+const show = (buttonNewPoint, pageBodyContainer, buttonHeaderTable, buttonHeaderStats) => {
   buttonNewPoint.disabled = false;
-  filters.forEach((filter) => filter.disabled = false);
   buttonHeaderTable.classList.add('trip-tabs__btn--active');
   buttonHeaderStats.classList.remove('trip-tabs__btn--active');
   for (let i = 0; i < pageBodyContainer.length; i++) {
@@ -121,11 +120,10 @@ const show = (buttonNewPoint, filters, pageBodyContainer, buttonHeaderTable, but
   }
 };
 
-const hide = (buttonNewPoint, filters, pageBodyContainer, buttonHeaderTable, buttonHeaderStats) => {
+const hide = (buttonNewPoint, pageBodyContainer, buttonHeaderTable, buttonHeaderStats) => {
   buttonHeaderTable.classList.remove('trip-tabs__btn--active');
   buttonHeaderStats.classList.add('trip-tabs__btn--active');
   buttonNewPoint.disabled = true;
-  filters.forEach((filter) => filter.disabled = true);
   for (let i = 0; i < pageBodyContainer.length; i++) {
     pageBodyContainer[i].classList.remove('page-body__container-for-line');
   }

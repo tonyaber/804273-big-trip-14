@@ -1,6 +1,4 @@
-import { TYPES } from '../const.js';
-import { CITIES, TYPE_WITH_OFFERS, OFFERS} from '../mock/const.js';
-import { descriptions } from '../mock/point.js';
+import { NUMBER_OF_SIGNS_FOR_TRIM } from '../const.js';
 import { formatDate, getArrayForType} from '../utils/point.js';
 import SmartView from './smart.js';
 import flatpickr from 'flatpickr';
@@ -8,66 +6,71 @@ import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import dayjs from 'dayjs';
 
 const BLANK_POINT = {
-  basePrice: '',
+  basePrice: '100',
   dateFrom: dayjs(),
   dateTo: dayjs().add(60, 'minute'),
   type: 'taxi',
-  offers: [
-    {
-      price: 0,
-    },
-  ],
   description:{
-    name: '',
+    name: 'Chamonix',
+    description: 'Chamonix, in a middle of Europe, for those who value comfort and coziness, full of of cozy canteens where you can try the best coffee in the Middle East, a perfect place to stay with a family, famous for its crowded street markets with the best street food in Asia.',
+    pictures: [
+      {
+        description: 'Chamonix parliament building',
+        src: 'http://picsum.photos/300/200?r=0.8973497000725617',
+      },
+    ],
   },
+  isFavorite: false,
 };
 
-const createSiteNewPointTemplate = (point) => {
-  const { dateFrom, dateTo, type, offers, basePrice, description} = point;
-
+const createSiteNewPointTemplate = (city, offers, point) => {
+  const { dateFrom, dateTo, type, basePrice, description, isDisabled, isSaving} = point;
   //создание разметки для поля type
   const createTypeTemplate = (typeRadio) => {
     return `<div class="event__type-item">
-              <input id="event-type-${typeRadio.toLowerCase()}"
+              <input id="event-type-${typeRadio}"
                 class="event__type-input  visually-hidden"
                 type="radio"
                 name="event-type"
-                value="${typeRadio.toLowerCase()}"
+                value="${typeRadio}"
                 ${(typeRadio === type) ? 'checked' : ''}>
               <label class="event__type-label
-                event__type-label--${typeRadio.toLowerCase()}"
-                for="event-type-${typeRadio.toLowerCase()}">
-                  ${typeRadio}
+                event__type-label--${typeRadio}"
+                for="event-type-${typeRadio}">
+                  ${typeRadio[0].toUpperCase() + typeRadio.slice(1)}
               </label>
             </div>`;
   };
 
-  const TypeTemplate = TYPES
+  const TypeTemplate = offers
+    .map((offer) => offer.type)
     .map((type) => createTypeTemplate(type))
     .join('');
 
   //создание разметки для поля город
-  const cityTemplate = CITIES
+  const cityTemplate = city
+    .map((city) => city.name)
     .map((city) => `<option value="${city}"></option>`)
     .join('');
 
   //создание разметки для дополнительных опций
-  const offersOfType = getArrayForType(TYPE_WITH_OFFERS, type.toLowerCase());
+  const offersOfType = getArrayForType(offers, type);
 
-  const createOfferTemplate = (offer) => {
+  const createOfferTemplate = (offer, index, isDisabled) => {
     let check = '';
 
-    if (offers.some((element) => element.title === offer.title)) {
+    if (point.offers.some((element) => element.title === offer.title)) {
       check = 'checked';
     }
 
     return `<div class="event__offer-selector">
               <input class="event__offer-checkbox  visually-hidden"
-                id="event-offer-${offer.name}"
+                id="event-offer-${index}"
                 type="checkbox"
-                name="event-offer-${offer.name}"
-                ${check}>
-              <label class="event__offer-label" for="event-offer-${offer.name}">
+                name="event-offer-${offer.title}"
+                ${check}
+                ${isDisabled ? 'disabled' : ''}>
+              <label class="event__offer-label" for="event-offer-${index}">
               <span class="event__offer-title">${offer.title}</span>
               &plus;&euro;&nbsp;
               <span class="event__offer-price">${offer.price}</span>
@@ -76,11 +79,16 @@ const createSiteNewPointTemplate = (point) => {
   };
 
   const offersTamplate = () => {
-    if (offersOfType === null || offersOfType === undefined || !offersOfType.length) {
-      return '';
+    if (!offersOfType.offers.length) {
+      return `<section class="event__section  event__section--offers">
+              <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+              <div class="event__available-offers">
+              </div>
+        </section>`;
     }
-    const offerTemplate = offersOfType
-      .map((offer) => createOfferTemplate(offer))
+
+    const offerTemplate = offersOfType.offers
+      .map((offer, index) => createOfferTemplate(offer, index, isDisabled))
       .join('');
 
     return `<section class="event__section  event__section--offers">
@@ -96,22 +104,12 @@ const createSiteNewPointTemplate = (point) => {
     return `<img class="event__photo" src="${photo.src}" alt="${photo.description}">`;
   };
 
-  const createDescriptionTemplate = (description) => {
-    return `${description}`;
-  };
-
   const descriptionsTemplate = () => {
-    if (description === null || description === undefined || description.name === '') {
-      return '';
-    }
-
-    const photoTemplate = descriptions.find((element) => element.name === description.name).pictures
+    const photoTemplate = city.find((element) => element.name === description.name).pictures
       .map((photo) => createPhotoTemplate(photo))
       .join('');
 
-    const descriptionTemplate = descriptions.find((element) => element.name === description.name).description
-      .map((description) => createDescriptionTemplate(description))
-      .join(' ');
+    const descriptionTemplate = city.find((element) => element.name === description.name).description;
 
     return `<section class="event__section  event__section--destination">
                     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
@@ -132,7 +130,7 @@ const createSiteNewPointTemplate = (point) => {
                       <span class="visually-hidden">Choose event type</span>
                       <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
                     </label>
-                    <input class="event__type-toggle  visually-hidden" id="event-type-toggle" type="checkbox">
+                    <input class="event__type-toggle  visually-hidden" id="event-type-toggle" type="checkbox" ${isDisabled ? 'disabled' : ''}>
 
                     <div class="event__type-list">
                       <fieldset class="event__type-group">
@@ -147,10 +145,11 @@ const createSiteNewPointTemplate = (point) => {
                        ${type}
                     </label>
                     <input class="event__input  event__input--destination"
-                      id="event-destination}" type="text"
+                      id="event-destination" type="text"
                       name="event-destination"
                       value="${description.name}"
-                      list="destination-list-1">
+                      list="destination-list"
+                      ${isDisabled ? 'disabled' : ''}>
                     <datalist id="destination-list">
                       ${cityTemplate}
                     </datalist>
@@ -163,14 +162,16 @@ const createSiteNewPointTemplate = (point) => {
                       id="event-start-time"
                       type="text"
                       name="event-start-time"
-                      value="${formatDate(dateFrom)}">
+                      value="${formatDate(dateFrom)}"
+                      ${isDisabled ? 'disabled' : ''}>
                     &mdash;
                     <label class="visually-hidden" for="event-end-time">To</label>
                     <input class="event__input  event__input--time"
                       id="event-end-time"
                       type="text"
                       name="event-end-time"
-                      value="${formatDate(dateTo)}">
+                      value="${formatDate(dateTo)}"
+                      ${isDisabled ? 'disabled' : ''}>
                   </div>
 
                   <div class="event__field-group  event__field-group--price">
@@ -178,11 +179,20 @@ const createSiteNewPointTemplate = (point) => {
                       <span class="visually-hidden">Price</span>
                       &euro;
                     </label>
-                    <input class="event__input  event__input--price" id="event-price" type="number" name="event-price" value="${basePrice}">
+                    <input class="event__input  event__input--price"
+                      id="event-price"
+                      type="number"
+                      name="event-price"
+                      value="${basePrice}"
+                      ${isDisabled ? 'disabled' : ''}>
                   </div>
 
-                  <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-                  <button class="event__reset-btn" type="reset">Cancel</button>
+                  <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>
+                     ${isSaving ? 'Saving...' : 'Save'}
+                   </button>
+                  <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>
+                    Cancel
+                  </button>
                 </header>
                 <section class="event__details">
                   ${offersTamplate()}
@@ -193,9 +203,14 @@ const createSiteNewPointTemplate = (point) => {
 };
 
 export default class NewPoint extends SmartView{
-  constructor(point = BLANK_POINT) {
+  constructor(city, offers, point = BLANK_POINT) {
     super();
     this._point = point;
+    this._city = city;
+    this._offers = [];
+    this._offersAll = offers;
+    this._offersOfPoint = getArrayForType(this._offersAll, this._point.type).offers;
+
     this._datepickerFrom = null;
     this._datepickerTo = null;
     this._point.offers = [];
@@ -215,7 +230,7 @@ export default class NewPoint extends SmartView{
   }
 
   getTemplate() {
-    return createSiteNewPointTemplate(this._point);
+    return createSiteNewPointTemplate(this._city, this._offersAll, this._point);
   }
 
   reset(point) {
@@ -296,7 +311,7 @@ export default class NewPoint extends SmartView{
   }
 
   _validityFormForCity(evt) {
-    CITIES.some((city) => city === evt.target.value) ?
+    this._city.map((city) => city.name).some((city) => city === evt.target.value) ?
       evt.target.setCustomValidity('') :
       evt.target.setCustomValidity('Выберите город из доступного списка');
   }
@@ -331,19 +346,30 @@ export default class NewPoint extends SmartView{
 
   _typeClickHandler(evt) {
     evt.preventDefault();
+    this.updateData(
+      {
+        offers: [],
+      },
+    ),
     this.updateData({
       type: evt.target.value,
     });
+    this._offers = [];
+    this._offersOfPoint = getArrayForType(this._offersAll, this._point.type).offers;
   }
 
   _cityClickHandler(evt) {
-    if (evt.target.value && descriptions.find((element) => element.name === evt.target.value)) {
+    if (evt.target.value && this._city.find((element) => element.name === evt.target.value)) {
       evt.preventDefault();
       this.updateData({
         description: Object.assign(
           {},
           this._point.description,
-          { name: evt.target.value },
+          {
+            name: evt.target.value,
+            description: this._city.find((city)=>city.name===evt.target.value).description,
+            pictures: this._city.find((city) => city.name === evt.target.value).pictures,
+          },
         ),
       });
     }
@@ -362,14 +388,24 @@ export default class NewPoint extends SmartView{
   _offerClickHandler(evt) {
     evt.preventDefault();
     if (evt.target.checked) {
-      this._point.offers.push(OFFERS[evt.target.name.substr(12)]);
+      this._offers.push(this._offersOfPoint.find((offer) => offer.title === evt.target.name.substr(NUMBER_OF_SIGNS_FOR_TRIM)));
+      this.updateData(Object.assign(
+        {},
+        this._point,
+        { offers: this._offers },
+      ));
     }
     else {
-      this._index = this._point.offers.findIndex((point) => point.name === OFFERS[evt.target.name.substr(12)].name);
-      this._point.offers = [
-        ...this._point.offers.slice(0, this._index),
-        ...this._point.offers.slice(this._index + 1),
+      this._index = this._offers.findIndex((point) => point.title === evt.target.name.substr(NUMBER_OF_SIGNS_FOR_TRIM));
+      this._offers = [
+        ...this._offers.slice(0, this._index),
+        ...this._offers.slice(this._index + 1),
       ];
+      this.updateData(Object.assign(
+        {},
+        this._point,
+        { offers: this._offers },
+      ));
     }
   }
 

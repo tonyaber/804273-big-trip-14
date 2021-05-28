@@ -6,6 +6,7 @@ import { sortDay } from '../utils/sort.js';
 dayjs.extend(minMax);
 
 const createSiteTripInfoTemplate = (points) => {
+
   //массив со всех городов
   const cities = points.sort(sortDay).map((city) => city.description.name);
 

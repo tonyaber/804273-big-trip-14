@@ -1,57 +1,57 @@
-import { TYPES} from '../const.js';
-import { CITIES, TYPE_WITH_OFFERS, OFFERS} from '../mock/const.js';
-import { descriptions } from '../mock/point.js';
+import { NUMBER_OF_SIGNS_FOR_TRIM } from '../const.js';
 import { formatDate, getArrayForType } from '../utils/point.js';
 import SmartView from './smart.js';
 import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import dayjs from 'dayjs';
 
-const createSiteEditPointTemplate = (point) => {
-  const { dateFrom, dateTo, basePrice, type, offers, description, id } = point;
+const createSiteEditPointTemplate = (point, city, offers) => {
+  const { dateFrom, dateTo, basePrice, type, description, id, isDisabled, isDeleting, isSaving} = point;
 
   //создание разметки для поля type
   const createTypeTemplate = (typeRadio) => {
     return `<div class="event__type-item">
-              <input id="event-type-${typeRadio.toLowerCase()}-${id}"
+              <input id="event-type-${typeRadio}-${id}"
                 class="event__type-input  visually-hidden"
                 type="radio"
                 name="event-type"
-                value="${typeRadio.toLowerCase()}"
+                value="${typeRadio}"
                 ${(typeRadio === type) ? 'checked' : ''}>
-              <label class="event__type-label  event__type-label--${typeRadio.toLowerCase()}"
-                for="event-type-${typeRadio.toLowerCase()}-${id}">
-                ${typeRadio}
+              <label class="event__type-label  event__type-label--${typeRadio}"
+                for="event-type-${typeRadio}-${id}">
+                ${typeRadio[0].toUpperCase() + typeRadio.slice(1)}
               </label>
             </div>`;
   };
 
-  const typeTemplate = TYPES
+  const typeTemplate = offers
+    .map((offer) => offer.type)
     .map((type) => createTypeTemplate(type))
     .join('');
 
   //создание разметки для поля город
-  const cityTemplate = CITIES
+  const cityTemplate = city
+    .map((city) => city.name)
     .map((city) => `<option value="${city}"></option>`)
     .join('');
 
   //создание разметки для дополнительных опций
-  const offersOfType = getArrayForType(TYPE_WITH_OFFERS, type.toLowerCase());
+  const offersOfType = getArrayForType(offers, type);
 
-  const createOfferTemplate = (offer) => {
+  const createOfferTemplate = (offer, index, isDisabled) => {
     let check = '';
-
-    if (offers.some((element) => element.title === offer.title)) {
+    if (point.offers.some((element) => element.title === offer.title)) {
       check = 'checked';
     }
 
     return `<div class="event__offer-selector">
               <input class="event__offer-checkbox  visually-hidden"
-                id="event-offer-${id}-${offer.name}"
+                id="event-offer-${id}-${index}"
                 type="checkbox"
-                name="event-offer-${offer.name}"
-                ${check}>
-              <label class="event__offer-label" for="event-offer-${id}-${offer.name}">
+                name="event-offer-${offer.title}"
+                ${check}
+                ${isDisabled ? 'disabled' : ''}>
+              <label class="event__offer-label" for="event-offer-${id}-${index}">
               <span class="event__offer-title">${offer.title}</span>
               &plus;&euro;&nbsp;
               <span class="event__offer-price">${offer.price}</span>
@@ -60,11 +60,16 @@ const createSiteEditPointTemplate = (point) => {
   };
 
   const offersTamplate = () => {
-    if (offersOfType === null || offersOfType === undefined || !offersOfType.length) {
-      return '';
+    if (!offersOfType.offers.length) {
+      return `<section class="event__section  event__section--offers">
+              <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+              <div class="event__available-offers">
+              </div>
+        </section>`;
     }
-    const offerTemplate = offersOfType
-      .map((offer) => createOfferTemplate(offer))
+
+    const offerTemplate = offersOfType.offers
+      .map((offer, index) => createOfferTemplate(offer, index, isDisabled))
       .join('');
 
     return `<section class="event__section  event__section--offers">
@@ -80,22 +85,12 @@ const createSiteEditPointTemplate = (point) => {
     return `<img class="event__photo" src="${photo.src}" alt="${photo.description}">`;
   };
 
-  const createDescriptionTemplate = (description) => {
-    return `${description}`;
-  };
-
   const descriptionsTemplate = () => {
-    if (description===null||description===undefined||description.name==='') {
-      return '';
-    }
-
-    const photoTemplate = descriptions.find((element) => element.name === description.name).pictures
+    const photoTemplate = city.find((element) => element.name === description.name).pictures
       .map((photo) => createPhotoTemplate(photo))
       .join('');
 
-    const descriptionTemplate = descriptions.find((element) => element.name === description.name).description
-      .map((description) => createDescriptionTemplate(description))
-      .join(' ');
+    const descriptionTemplate = city.find((element) => element.name === description.name).description;
 
     return `<section class="event__section  event__section--destination">
                     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
@@ -116,7 +111,7 @@ const createSiteEditPointTemplate = (point) => {
                       <span class="visually-hidden">Choose event type</span>
                       <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
                     </label>
-                    <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox">
+                    <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox" ${isDisabled ? 'disabled' : ''}>
 
                     <div class="event__type-list">
                       <fieldset class="event__type-group">
@@ -135,7 +130,8 @@ const createSiteEditPointTemplate = (point) => {
                       type="text"
                       name="event-destination"
                       value="${description.name}"
-                      list="destination-list-1">
+                      list="destination-list-1"
+                      ${isDisabled ? 'disabled' : ''}>
                     <datalist id="destination-list-1">
                       ${cityTemplate}
                     </datalist>
@@ -148,14 +144,16 @@ const createSiteEditPointTemplate = (point) => {
                       id="event-start-time"
                       type="text"
                       name="event-start-time"
-                      value="${formatDate(dateFrom)}">
+                      value="${formatDate(dateFrom)}"
+                      ${isDisabled ? 'disabled' : ''}>
                     &mdash;
                     <label class="visually-hidden" for="event-end-time">To</label>
                     <input class="event__input  event__input--time"
                       id="event-end-time"
                       type="text"
                       name="event-end-time"
-                      value="${formatDate(dateTo)}">
+                      value="${formatDate(dateTo)}"
+                      ${isDisabled ? 'disabled' : ''}>
                   </div>
 
                   <div class="event__field-group  event__field-group--price">
@@ -163,11 +161,21 @@ const createSiteEditPointTemplate = (point) => {
                       <span class="visually-hidden">Price</span>
                       &euro;
                     </label>
-                    <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${basePrice}">
+                    <input
+                      class="event__input  event__input--price"
+                      id="event-price-1"
+                      type="number"
+                      name="event-price"
+                      value="${basePrice}"
+                      ${isDisabled ? 'disabled' : ''}>
                   </div>
 
-                  <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-                  <button class="event__reset-btn" type="reset">Delete</button>
+                  <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>
+                    ${isSaving ? 'Saving...' : 'Save'}
+                  </button>
+                  <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>
+                    ${isDeleting ? 'Deleting...' : 'Delete'}
+                  </button>
                   <button class="event__rollup-btn" type="button">
                     <span class="visually-hidden">Open event</span>
                   </button>
@@ -181,10 +189,13 @@ const createSiteEditPointTemplate = (point) => {
 };
 
 export default class EditPoint extends SmartView {
-  constructor(point) {
+  constructor(point, city, offers) {
     super();
-    this._point = point;
+    this._point = this._data = EditPoint.parsePointToData(point);
     this._offers = this._point.offers.slice();
+    this._city = city;
+    this._offersAll = offers;
+    this._offersOfPoint = getArrayForType(this._offersAll, this._point.type).offers;
 
     this._datepickerFrom = null;
     this._datepickerTo = null;
@@ -204,12 +215,12 @@ export default class EditPoint extends SmartView {
   }
 
   getTemplate() {
-    return createSiteEditPointTemplate(this._point);
+    return createSiteEditPointTemplate(this._point, this._city,this._offersAll);
   }
 
   reset(point) {
-    this.updatePoint(
-      point,
+    this.newPoint(
+      EditPoint.parsePointToData(point),
     );
     this._offers = this._point.offers;
   }
@@ -287,7 +298,7 @@ export default class EditPoint extends SmartView {
   }
 
   _validityFormForCity(evt) {
-    CITIES.some((city) => city === evt.target.value) ?
+    this._city.map((city)=>city.name).some((city) => city === evt.target.value) ?
       evt.target.setCustomValidity('') :
       evt.target.setCustomValidity('Выберите город из доступного списка');
   }
@@ -312,29 +323,30 @@ export default class EditPoint extends SmartView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(this._point);
+    this._callback.formSubmit(EditPoint.parseDataToPoint(this._point));
   }
 
   _editClickHandler(evt) {
     evt.preventDefault();
-    this._callback.editClick(this._point);
+    this._callback.editClick(EditPoint.parseDataToPoint(this._point));
   }
 
   _typeClickHandler(evt) {
     evt.preventDefault();
     this.updateData(
       {
-        offers:[],
+        offers: [],
       },
     ),
     this.updateData({
       type: evt.target.value,
     });
     this._offers = [];
+    this._offersOfPoint = getArrayForType(this._offersAll, this._point.type).offers;
   }
 
   _cityClickHandler(evt) {
-    if (evt.target.value && descriptions.find((element) => element.name === evt.target.value)) {
+    if (evt.target.value && this._city.find((element) => element.name === evt.target.value)) {
       evt.preventDefault();
       this.updateData({
         description: Object.assign(
@@ -359,15 +371,15 @@ export default class EditPoint extends SmartView {
   _offerClickHandler(evt) {
     evt.preventDefault();
     if (evt.target.checked) {
-      this._offers.push(OFFERS[evt.target.name.substr(12)]);
+      this._offers.push(this._offersOfPoint.find((offer) => offer.title === evt.target.name.substr(NUMBER_OF_SIGNS_FOR_TRIM)));
       this.updateData(Object.assign(
         {},
         this._point,
-        {offers: this._offers},
+        { offers: this._offers },
       ));
     }
     else {
-      this._index = this._offers.findIndex((point) => point.name === OFFERS[evt.target.name.substr(12)].name);
+      this._index = this._offers.findIndex((point) => point.title === evt.target.name.substr(NUMBER_OF_SIGNS_FOR_TRIM));
       this._offers = [
         ...this._offers.slice(0, this._index),
         ...this._offers.slice(this._index + 1),
@@ -398,5 +410,26 @@ export default class EditPoint extends SmartView {
   setEditClickHandler(callback) {
     this._callback.editClick = callback;
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._editClickHandler);
+  }
+  static parsePointToData(point) {
+    return Object.assign(
+      {},
+      point,
+      {
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      },
+    );
+  }
+
+  static parseDataToPoint(point) {
+    point = Object.assign({}, point);
+
+    delete point.isDisabled;
+    delete point.isSaving;
+    delete point.isDeleting;
+
+    return point;
   }
 }

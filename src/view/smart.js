@@ -18,7 +18,7 @@ export default class Smart extends Abstract {
     this.updateElement();
   }
 
-  updatePoint(update) {
+  newPoint(update) {
     if (!update) {
       return;
     }
