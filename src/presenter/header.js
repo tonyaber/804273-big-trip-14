@@ -18,6 +18,7 @@ export default class Header {
 
     this._tripInfoComponent = null;
     this._priceComponent = null;
+    this._siteMenuComponent = null;
     this._statisticsComponent = null;
     this._offers = [];
 
@@ -38,10 +39,15 @@ export default class Header {
     this._offers = this._getOffers();
     const prevTripInfoComponent = this._tripInfoComponent;
     const prevPriceComponent = this._priceComponent;
+    const prevSiteMenuComponent = this._siteMenuComponent;
 
-    if (!points.length) {
+    if (!points.length && prevSiteMenuComponent === null) {
       this._siteMenuComponent = new SiteMenuView();
       this._renderSiteMenu();
+      return;
+    }
+
+    if (!points.length) {
       return;
     }
 
