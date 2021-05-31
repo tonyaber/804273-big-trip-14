@@ -11,7 +11,7 @@ const createSiteTripInfoTemplate = (points) => {
   const cities = points.sort(sortDay).map((city) => city.description.name);
 
   const cityTemplate = cities.length <= 3 ? cities.join(' &mdash; ')
-    : `${cities.slice(-1)} &mdash; ... &mdash; ${cities.slice(0, 1)}`;
+    : `${cities.slice(0, 1)} &mdash; ... &mdash; ${cities.slice(-1)}`;
 
   //первая дата с массива всех дат
   const dateFrom = points.map((point) => dayjs(point.dateFrom));

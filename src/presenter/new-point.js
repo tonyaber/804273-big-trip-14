@@ -13,7 +13,7 @@ export default class PointNew {
 
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
-    this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
+    this._escKeyDownClickHandler = this._escKeyDownClickHandler.bind(this);
   }
 
   init() {
@@ -28,7 +28,7 @@ export default class PointNew {
 
     renderElement(this._pointListContainer, this._pointNewComponent, RenderPosition.AFTERBEGIN);
 
-    document.addEventListener('keydown', this._escKeyDownHandler);
+    document.addEventListener('keydown', this._escKeyDownClickHandler);
     document.querySelector('.trip-main__event-add-btn').disabled = true;
   }
 
@@ -48,7 +48,7 @@ export default class PointNew {
       });
     };
 
-    this._taskEditComponent.shake(resetFormState);
+    this._pointNewComponent.shake(resetFormState);
   }
 
   destroy() {
@@ -59,7 +59,7 @@ export default class PointNew {
     remove(this._pointNewComponent);
     this._pointNewComponent = null;
 
-    document.removeEventListener('keydown', this._escKeyDownHandler);
+    document.removeEventListener('keydown', this._escKeyDownClickHandler);
     document.querySelector('.trip-main__event-add-btn').disabled = false;
   }
 
@@ -76,7 +76,7 @@ export default class PointNew {
     this.destroy();
   }
 
-  _escKeyDownHandler(evt) {
+  _escKeyDownClickHandler(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
       this.destroy();

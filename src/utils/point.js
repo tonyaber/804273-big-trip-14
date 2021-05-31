@@ -1,26 +1,15 @@
 import dayjs from 'dayjs';
 import { TimeForFormat } from '../const.js';
 
-const formatDate = (date) => {
+const formatDateForEditPoint = (date) => {
   return dayjs(date).format('DD/MM/YY HH:mm');
 };
 
-/**
- * функция считает промежуток во времени
- *
- * @param {date} start - начало промежутка
- * @param {date} second - конец промежутка
- * @returns {string} - возвращает промежуток в формате ${hours}H ${minutes}M
- * если прошло меньше часа, то возвращает ${minutes}M
- */
-const calculateDuration = (start, end) => {
-  const quantityMinutes = Math.round(end.diff(start) / TimeForFormat.MILLISECOND);
+const formatTime = (quantityMinutes) => {
   let days = Math.floor(quantityMinutes / TimeForFormat.DAY);
   let hours = (quantityMinutes >= TimeForFormat.DAY) ?
-    Math.floor(quantityMinutes % TimeForFormat.DAY / TimeForFormat.MINUTE)
-    : Math.floor(quantityMinutes / TimeForFormat.MINUTE);
-  let minutes = (quantityMinutes >= TimeForFormat.MINUTE) ?
-    (quantityMinutes % TimeForFormat.MINUTE) : quantityMinutes;
+    Math.floor(quantityMinutes % TimeForFormat.DAY / TimeForFormat.MINUTE) : Math.floor(quantityMinutes / TimeForFormat.MINUTE);
+  let minutes = (quantityMinutes >= TimeForFormat.MINUTE) ? (quantityMinutes % TimeForFormat.MINUTE) : quantityMinutes;
 
   if (days < TimeForFormat.STEP) {
     days = '0' + days;
@@ -41,6 +30,18 @@ const calculateDuration = (start, end) => {
   return `${minutes}M`;
 };
 
+/**
+ * функция считает промежуток во времени
+ *
+ * @param {date} start - начало промежутка
+ * @param {date} second - конец промежутка
+ * @returns {string} - возвращает промежуток в формате ${hours}H ${minutes}M
+ * если прошло меньше часа, то возвращает ${minutes}M
+ */
+const calculateDuration = (start, end) => {
+  const quantityMinutes = Math.round(end.diff(start) / TimeForFormat.MILLISECOND);
+  return formatTime(quantityMinutes);
+};
 
 //поиск удобств в зависимости от типа
 const getArrayForType = (array, type) => {
@@ -51,4 +52,4 @@ const getArrayForType = (array, type) => {
   }
 };
 
-export { formatDate, calculateDuration, getArrayForType };
+export { formatDateForEditPoint, calculateDuration, getArrayForType, formatTime };

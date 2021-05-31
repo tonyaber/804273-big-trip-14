@@ -21,14 +21,13 @@ export default class Point {
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleEditClick = this._handleEditClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
-    this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
+    this._escKeyDownClickHandler = this._escKeyDownClickHandler.bind(this);
     this._handleUneditClick = this._handleUneditClick.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
 
   init(point) {
     this._point = point;
-    this._prevPoint = point;
 
     this._prevPointComponent = this._pointComponent;
     this._prevPointEditComponent = this._pointEditComponent;
@@ -103,21 +102,21 @@ export default class Point {
 
   _replaceCardToForm() {
     replace(this._pointEditComponent, this._pointComponent);
-    document.addEventListener('keydown', this._escKeyDownHandler);
+    document.addEventListener('keydown', this._escKeyDownClickHandler);
     this._changeMode();
     this._mode = Mode.EDITING;
   }
 
   _replaceFormToCard() {
     replace(this._pointComponent, this._pointEditComponent);
-    document.removeEventListener('keydown', this._escKeyDownHandler);
+    document.removeEventListener('keydown', this._escKeyDownClickHandler);
     this._mode = Mode.DEFAULT;
   }
 
   _handleFavoriteClick() {
     this._changeData(
-      UserAction.UPDATE_POINT,
-      UpdateType.MAJOR,
+      UserAction.FAVORITE,
+      UpdateType.PATCH,
       Object.assign(
         {},
         this._point,
@@ -153,7 +152,7 @@ export default class Point {
     );
   }
 
-  _escKeyDownHandler(evt) {
+  _escKeyDownClickHandler(evt) {
     if (evt.key === 'Escape' && evt.target.type !== 'text' && evt.target.type !== 'number') {
       evt.preventDefault();
       this._pointEditComponent.reset(this._point);

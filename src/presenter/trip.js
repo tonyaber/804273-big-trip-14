@@ -26,6 +26,7 @@ export default class Trip {
     this._sortComponent = null;
     this._isLoading = true;
 
+    this._points = [];
     this._cities = [];
     this._offers = [];
     this._pointNewPresenter = new PointNewPresenter(this._listComponent, this._handleViewAction, this._cities, this._offers);
@@ -48,17 +49,20 @@ export default class Trip {
     this._clearPoint({ resetRenderedPointCount: true, resetSortType: true });
 
     remove(this._listComponent);
+    remove(this._emptyListComponent);
 
     this._pointsModel.removeObserver(this._handleModelEvent);
     this._filterModel.removeObserver(this._handleModelEvent);
 
-    this._clearSort();
+    this.clearSort();
   }
 
   renderSortDefault() {
-    this._clearSort();
-    this._currentSortType = SortType.DAY;
-    this._renderSort();
+    if (this._points.length) {
+      this.clearSort();
+      this._currentSortType = SortType.DAY;
+      this._renderSort();
+    }
   }
 
   createPoint() {
@@ -68,10 +72,14 @@ export default class Trip {
     this._pointNewPresenter.init();
   }
 
+  clearSort() {
+    remove(this._sortComponent);
+  }
+
   _getPoints() {
     const filterType = this._filterModel.getFilter();
-    const points = this._pointsModel.getPoints();
-    const filtredPoints = filterPoint[filterType](points);
+    this._points = this._pointsModel.getPoints();
+    const filtredPoints = filterPoint[filterType](this._points);
 
     switch (this._currentSortType) {
       case SortType.TIME:
@@ -116,28 +124,25 @@ export default class Trip {
     remove(this._loadingComponent);
   }
 
-  _clearSort() {
-    remove(this._sortComponent);
-  }
-
   _renderTrip() {
     if (this._isLoading) {
       this._renderLoading();
       return;
     }
 
-    const points = this._getPoints();
+    this._points = this._getPoints();
     this._cities = this._getCity();
     this._offers = this._getOffers();
 
-    if (!points.length) {
+    if (!this._points.length) {
       this._renderEmptyList();
       return;
     }
 
-    this._clearSort();
+    this.clearSort();
     this._renderSort();
-    this._renderPoints(points, this._cities, this._offers);
+    this._renderPoints(this._points, this._cities, this._offers);
+    remove(this._emptyListComponent);
   }
 
   _renderSort() {
@@ -157,6 +162,15 @@ export default class Trip {
 
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
+      case UserAction.FAVORITE:
+        this._api.updatePoint(update)
+          .then((response) => {
+            this._pointsModel.updatePoint(updateType, response);
+          })
+          .catch(() => {
+            this._pointPresenter[update.id].setViewState(PointPresenterViewState.ABORTING);
+          });
+        break;
       case UserAction.UPDATE_POINT:
         this._pointPresenter[update.id].setViewState(PointPresenterViewState.SAVING);
         this._api.updatePoint(update)

@@ -1,5 +1,5 @@
 import { NUMBER_OF_SIGNS_FOR_TRIM } from '../const.js';
-import { formatDate, getArrayForType} from '../utils/point.js';
+import { formatDateForEditPoint, getArrayForType} from '../utils/point.js';
 import SmartView from './smart.js';
 import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
@@ -165,7 +165,7 @@ const createSiteNewPointTemplate = (cities, offers, point) => {
                       id="event-start-time"
                       type="text"
                       name="event-start-time"
-                      value="${formatDate(dateFrom)}"
+                      value="${formatDateForEditPoint(dateFrom)}"
                       ${isDisabled ? 'disabled' : ''}>
                     &mdash;
                     <label class="visually-hidden" for="event-end-time">To</label>
@@ -173,7 +173,7 @@ const createSiteNewPointTemplate = (cities, offers, point) => {
                       id="event-end-time"
                       type="text"
                       name="event-end-time"
-                      value="${formatDate(dateTo)}"
+                      value="${formatDateForEditPoint(dateTo)}"
                       ${isDisabled ? 'disabled' : ''}>
                   </div>
 
@@ -209,7 +209,7 @@ const createSiteNewPointTemplate = (cities, offers, point) => {
 export default class NewPoint extends SmartView{
   constructor(cities, offers, point = BLANK_POINT) {
     super();
-    this._point = point;
+    this._point = NewPoint.parsePointToData(point);
     this._cities = cities;
     this._offers = [];
     this._offersAll = offers;
@@ -221,11 +221,11 @@ export default class NewPoint extends SmartView{
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._editClickHandler = this._editClickHandler.bind(this);
-    this._typeClickHandler = this._typeClickHandler.bind(this);
-    this._cityClickHandler = this._cityClickHandler.bind(this);
-    this._priceClickHandler = this._priceClickHandler.bind(this);
+    this._typeChangeHandler = this._typeChangeHandler.bind(this);
+    this._cityChangeHandler = this._cityChangeHandler.bind(this);
+    this._priceChangeHandler = this._priceChangeHandler.bind(this);
     this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
-    this._offerClickHandler = this._offerClickHandler.bind(this);
+    this._offerChangeHandler = this._offerChangeHandler.bind(this);
 
     this._dueDateFromChangeHandler = this._dueDateFromChangeHandler.bind(this);
     this._dueDateToChangeHandler = this._dueDateToChangeHandler.bind(this);
@@ -239,7 +239,7 @@ export default class NewPoint extends SmartView{
 
   reset(point) {
     this.updateData(
-      point,
+      NewPoint.parsePointToData(point),
     );
   }
 
@@ -260,16 +260,16 @@ export default class NewPoint extends SmartView{
     this._setDatepickerTo();
     this.getElement()
       .querySelector('.event__type-group')
-      .addEventListener('change', this._typeClickHandler);
+      .addEventListener('change', this._typeChangeHandler);
     this.getElement()
       .querySelector('.event__input--destination')
-      .addEventListener('change', this._cityClickHandler);
+      .addEventListener('change', this._cityChangeHandler);
     this.getElement()
       .querySelector('.event__input--price')
-      .addEventListener('change', this._priceClickHandler);
+      .addEventListener('change', this._priceChangeHandler);
     this.getElement()
       .querySelector('.event__available-offers')
-      .addEventListener('change', this._offerClickHandler);
+      .addEventListener('change', this._offerChangeHandler);
   }
 
   _setDatepickerFrom() {
@@ -340,15 +340,15 @@ export default class NewPoint extends SmartView{
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(this._point);
+    this._callback.formSubmit(NewPoint.parseDataToPoint(this._point));
   }
 
   _editClickHandler(evt) {
     evt.preventDefault();
-    this._callback.editClick(this._point);
+    this._callback.editClick(NewPoint.parseDataToPoint(this._point));
   }
 
-  _typeClickHandler(evt) {
+  _typeChangeHandler(evt) {
     evt.preventDefault();
     this.updateData(
       {
@@ -362,7 +362,7 @@ export default class NewPoint extends SmartView{
     this._offersOfPoint = getArrayForType(this._offersAll, this._point.type).offers;
   }
 
-  _cityClickHandler(evt) {
+  _cityChangeHandler(evt) {
     if (evt.target.value && this._cities.find((city) => city.name === evt.target.value)) {
       evt.preventDefault();
       this.updateData({
@@ -382,14 +382,14 @@ export default class NewPoint extends SmartView{
     }
   }
 
-  _priceClickHandler(evt) {
+  _priceChangeHandler(evt) {
     evt.preventDefault();
     this.updateData({
       basePrice: evt.target.value,
     });
   }
 
-  _offerClickHandler(evt) {
+  _offerChangeHandler(evt) {
     evt.preventDefault();
     if (evt.target.checked) {
       this._offers.push(this._offersOfPoint.find((offer) => offer.title === evt.target.name.substr(NUMBER_OF_SIGNS_FOR_TRIM)));
@@ -431,5 +431,27 @@ export default class NewPoint extends SmartView{
   setEditClickHandler(callback) {
     this._callback.editClick = callback;
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._editClickHandler);
+  }
+
+  static parsePointToData(point) {
+    return Object.assign(
+      {},
+      point,
+      {
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      },
+    );
+  }
+
+  static parseDataToPoint(point) {
+    point = Object.assign({}, point);
+
+    delete point.isDisabled;
+    delete point.isSaving;
+    delete point.isDeleting;
+
+    return point;
   }
 }

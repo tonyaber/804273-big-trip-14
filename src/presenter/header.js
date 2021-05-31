@@ -6,9 +6,8 @@ import StatisticsView from '../view/stats.js';
 import { RenderPosition, MenuItem } from '../const.js';
 
 export default class Header {
-  constructor(tripInfoContainer, tripFilterContainer, siteNavigationContainer, siteEventsElement, pointsModel, tripPresenter, filterPresenter, api) {
+  constructor(tripInfoContainer, siteNavigationContainer, siteEventsElement, pointsModel, tripPresenter, filterPresenter, api) {
     this._tripInfoContainer = tripInfoContainer;
-    this._tripFilterContainer = tripFilterContainer;
     this._siteNavigationContainer = siteNavigationContainer;
     this._siteEventsElement = siteEventsElement;
     this._pointsModel = pointsModel;
@@ -48,6 +47,9 @@ export default class Header {
     }
 
     if (!points.length) {
+      remove(this._tripInfoComponent);
+      remove(this._priceComponent);
+      this._tripPresenter.clearSort();
       return;
     }
 

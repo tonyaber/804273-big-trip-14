@@ -8,7 +8,7 @@ import TripPresenter from './presenter/trip.js';
 import FilterPresenter from './presenter/filter.js';
 import Api from './api.js';
 
-const AUTHORIZATION = 'Basic fvfv451v7f85v4h';
+const AUTHORIZATION = 'Basic fvfv477751v7f85v4h';
 const END_POINT = 'https://14.ecmascript.pages.academy/big-trip/';
 
 const siteHeaderElement = document.querySelector('.trip-main');
@@ -35,7 +35,7 @@ const siteTripInfoElement = siteHeaderElement.querySelector('.trip-main__trip-in
 //создаем презентер
 const tripPresenter = new TripPresenter(siteEventsElement, pointsModel, filterModel, api);
 const filterPresenter = new FilterPresenter(siteFiltersElement, filterModel, pointsModel, tripPresenter);
-const headerPresenter = new HeaderPresenter(siteTripInfoElement, siteFiltersElement, siteNavigationElement, siteEventsElement, pointsModel, tripPresenter, filterPresenter, api);
+const headerPresenter = new HeaderPresenter(siteTripInfoElement, siteNavigationElement, siteEventsElement, pointsModel, tripPresenter, filterPresenter, api);
 
 headerPresenter.init();
 filterPresenter.init();

@@ -1,5 +1,3 @@
-const POINT_COUNT = 20;
-
 const BAR_HEIGHT = 55;
 
 const NUMBER_OF_SIGNS_FOR_TRIM = 12;
@@ -31,8 +29,6 @@ const State = {
   ABORTING: 'ABORTING',
 };
 
-const FILTERS = ['Everything', 'Future', 'Past'];
-
 const RenderPosition = {
   AFTERBEGIN: 'afterbegin',
   BEFOREEND: 'beforeend',
@@ -43,13 +39,8 @@ const Mode = {
   EDITING: 'EDITING',
 };
 
-const SortListChecked = {
-  DAY: true,
-  TIME: false,
-  PRICE: false,
-};
-
 const UserAction = {
+  FAVORITE: 'FAVORITE',
   UPDATE_POINT: 'UPDATE_POINT',
   ADD_POINT: 'ADD_POINT',
   DELETE_POINT: 'DELETE_POINT',
@@ -78,4 +69,4 @@ const SortType = {
   DAY: 'sort-day',
 };
 
-export { SortType, BAR_HEIGHT, Method, SuccessHTTPStatusRange ,SHAKE_ANIMATION_TIMEOUT, State, RenderPosition, TimeForFormat, NUMBER_OF_SIGNS_FOR_TRIM, POINT_COUNT, FILTERS, Mode, SortListChecked, UserAction, UpdateType, FilterType, MenuItem };
+export { SortType, BAR_HEIGHT, Method, SuccessHTTPStatusRange ,SHAKE_ANIMATION_TIMEOUT, State, RenderPosition, TimeForFormat, NUMBER_OF_SIGNS_FOR_TRIM, Mode, UserAction, UpdateType, FilterType, MenuItem };

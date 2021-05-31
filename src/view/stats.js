@@ -1,7 +1,7 @@
 import SmartView from './smart.js';
 import Chart from 'chart.js';
 import { BAR_HEIGHT } from '../const.js';
-import { countMoney, countTypes, countTime, formatTime } from '../utils/stats.js';
+import { countMoney, countTypes, countTime, formatTimeForStats } from '../utils/stats.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 const renderMoneyChart = (moneyCtx, trip) => {
@@ -162,7 +162,7 @@ const renderTimeChart = (timeCtx, trip) => {
           color: '#000000',
           anchor: 'end',
           align: 'start',
-          formatter: (val) => formatTime(val),
+          formatter: (val) => formatTimeForStats(val),
         },
       },
       title: {
@@ -273,15 +273,17 @@ export default class Statistics extends SmartView {
     const moneys = offers.map((type) => countMoney(this._points, type));
     const types = offers.map((type) => countTypes(this._points, type));
     const time = offers.map((type) => countTime(this._points, type));
-    const trip = offers.map((item, index) => ({ type: item, money: moneys[index], types: types[index], time: time[index] }));
+    const trip = offers
+      .map((item, index) => ({ type: item, money: moneys[index], types: types[index], time: time[index] }))
+      .filter((point) => point.money > 0 && point.types > 0 && point.time > 0);
 
     const moneyCtx = this.getElement().querySelector('.statistics__chart--money');
     const typeCtx = this.getElement().querySelector('.statistics__chart--transport');
     const timeCtx = this.getElement().querySelector('.statistics__chart--time');
 
-    moneyCtx.height = BAR_HEIGHT * offers.length;
-    typeCtx.height = BAR_HEIGHT * offers.length;
-    timeCtx.height = BAR_HEIGHT * offers.length;
+    moneyCtx.height = BAR_HEIGHT * trip.length;
+    typeCtx.height = BAR_HEIGHT * trip.length;
+    timeCtx.height = BAR_HEIGHT * trip.length;
 
     this._moneyCart = renderMoneyChart(moneyCtx, trip);
     this._typeCart = renderTypeChart(typeCtx, trip);
