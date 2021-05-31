@@ -10,7 +10,7 @@ import { filterPoint } from '../utils/filter.js';
 import { RenderPosition, UpdateType, UserAction, FilterType, SortType, State as PointPresenterViewState } from '../const.js';
 
 export default class Trip {
-  constructor(tripContainer, pointsModel, filterModel, api ) {
+  constructor(tripContainer, pointsModel, filterModel, api) {
     this._tripContainer = tripContainer;
 
     this._pointsModel = pointsModel;
@@ -182,13 +182,14 @@ export default class Trip {
           });
         break;
       case UserAction.ADD_POINT:
-        this._pointNewPresenter.setSaving();
+        this._pointNewPresenter.setViewState(PointPresenterViewState.SAVING);
         this._api.addPoint(update)
           .then((response) => {
             this._pointsModel.addPoint(updateType, response);
+            this._pointNewPresenter.destroy();
           })
           .catch(() => {
-            this._pointNewPresenter.setAborting();
+            this._pointNewPresenter.setViewState(PointPresenterViewState.ABORTING);
           });
         break;
       case UserAction.DELETE_POINT:

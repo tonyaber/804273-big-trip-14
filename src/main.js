@@ -8,7 +8,7 @@ import TripPresenter from './presenter/trip.js';
 import FilterPresenter from './presenter/filter.js';
 import Api from './api.js';
 
-const AUTHORIZATION = 'Basic fvfv477751v7f85v4h';
+const AUTHORIZATION = 'Basic fvfv47jnj51v7f85v4h';
 const END_POINT = 'https://14.ecmascript.pages.academy/big-trip/';
 
 const siteHeaderElement = document.querySelector('.trip-main');

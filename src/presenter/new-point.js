@@ -1,6 +1,6 @@
 import PointNewView from '../view/new-point';
 import { remove, renderElement } from '../utils/render.js';
-import { UserAction, UpdateType, RenderPosition } from '../const.js';
+import { UserAction, UpdateType, RenderPosition, State } from '../const.js';
 
 export default class PointNew {
   constructor(pointListContainer, changeData, cities, offers) {
@@ -32,14 +32,7 @@ export default class PointNew {
     document.querySelector('.trip-main__event-add-btn').disabled = true;
   }
 
-  setSaving() {
-    this._pointNewComponent.updateData({
-      isDisabled: true,
-      isSaving: true,
-    });
-  }
-
-  setAborting() {
+  setViewState(state) {
     const resetFormState = () => {
       this._pointNewComponent.updateData({
         isDisabled: false,
@@ -48,7 +41,17 @@ export default class PointNew {
       });
     };
 
-    this._pointNewComponent.shake(resetFormState);
+    switch (state) {
+      case State.SAVING:
+        this._pointNewComponent.updateData({
+          isDisabled: true,
+          isSaving: true,
+        });
+        break;
+      case State.ABORTING:
+        this._pointNewComponent.shake(resetFormState);
+        break;
+    }
   }
 
   destroy() {
@@ -69,7 +72,6 @@ export default class PointNew {
       UpdateType.MAJOR,
       point,
     );
-    this.destroy();
   }
 
   _handleDeleteClick() {
