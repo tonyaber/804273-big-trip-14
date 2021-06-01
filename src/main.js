@@ -6,9 +6,9 @@ import PointsModel from './model/point.js';
 import FilterModel from './model/filter.js';
 import TripPresenter from './presenter/trip.js';
 import FilterPresenter from './presenter/filter.js';
-import Api from './api.js';
+import Api from './api/api.js';
 
-const AUTHORIZATION = 'Basic fvfv47jnj51v7f85v4h';
+const AUTHORIZATION = 'Basic fvfvjnj51v7f5v4h';
 const END_POINT = 'https://14.ecmascript.pages.academy/big-trip/';
 
 const siteHeaderElement = document.querySelector('.trip-main');
@@ -58,3 +58,7 @@ Promise.all([
     pointsModel.setPoints(UpdateType.INIT, points[0]);
   })
   .catch(() => pointsModel.setPoints(UpdateType.INIT, []));
+
+window.addEventListener('load', () => {
+  navigator.serviceWorker.register('/sw.js');
+});
