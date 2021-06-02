@@ -4,6 +4,7 @@ const NUMBER_OF_SIGNS_FOR_TRIM = 12;
 
 const SHAKE_ANIMATION_TIMEOUT = 600;
 
+const OFFLINE = ' [offline]';
 const Method = {
   GET: 'GET',
   PUT: 'PUT',
@@ -69,4 +70,4 @@ const SortType = {
   DAY: 'sort-day',
 };
 
-export { SortType, BAR_HEIGHT, Method, SuccessHTTPStatusRange ,SHAKE_ANIMATION_TIMEOUT, State, RenderPosition, TimeForFormat, NUMBER_OF_SIGNS_FOR_TRIM, Mode, UserAction, UpdateType, FilterType, MenuItem };
+export { SortType, BAR_HEIGHT, Method, OFFLINE, SuccessHTTPStatusRange ,SHAKE_ANIMATION_TIMEOUT, State, RenderPosition, TimeForFormat, NUMBER_OF_SIGNS_FOR_TRIM, Mode, UserAction, UpdateType, FilterType, MenuItem };

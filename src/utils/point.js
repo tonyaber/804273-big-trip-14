@@ -52,4 +52,8 @@ const getArrayForType = (array, type) => {
   }
 };
 
-export { formatDateForEditPoint, calculateDuration, getArrayForType, formatTime };
+const isOnline = () => {
+  return window.navigator.onLine;
+};
+
+export { formatDateForEditPoint, calculateDuration, getArrayForType, formatTime, isOnline };

@@ -194,7 +194,7 @@ const createSiteNewPointTemplate = (cities, offers, point) => {
                   <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>
                      ${isSaving ? 'Saving...' : 'Save'}
                    </button>
-                  <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>
+                  <button class="event__reset-btn" type="reset">
                     Cancel
                   </button>
                 </header>

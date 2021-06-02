@@ -3,7 +3,7 @@ import AbstractView from './abstract.js';
 import { calculateDuration } from '../utils/point.js';
 
 const createSitePointTemplate = (point) => {
-  const { dateFrom, dateTo, basePrice, isFavorite, type, offers, description } = point;
+  const { dateFrom, dateTo, basePrice, isFavorite, type, offers, description, id } = point;
 
   //создание списка дополнительных опций
   const createOffers = (offer) => {
@@ -22,7 +22,7 @@ const createSitePointTemplate = (point) => {
     .map((offer) => createOffers(offer))
     .join('');
 
-  return `<li class="trip-events__item">
+  return `<li class="trip-events__item item-${id}">
               <div class="event">
                 <time class="event__date" datetime="${dayjs(dateFrom).format('YYYY-MM-DD')}">${dayjs(dateFrom).format('D MMM')}</time>
                 <div class="event__type">

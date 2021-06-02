@@ -3,6 +3,8 @@ import PointView from '../view/point.js';
 import { RenderPosition, Mode } from '../const.js';
 import { replace, remove, renderElement } from '../utils/render.js';
 import { UserAction, UpdateType, State } from '../const.js';
+import { isOnline } from '../utils/point.js';
+import { toast } from '../utils/toast.js';
 
 export default class Point {
   constructor(tripContainer, changeData, changeMode, cities, offers) {
@@ -24,6 +26,8 @@ export default class Point {
     this._escKeyDownClickHandler = this._escKeyDownClickHandler.bind(this);
     this._handleUneditClick = this._handleUneditClick.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
+    this._blockForm = this._blockForm.bind(this);
+    this._unBlockForm = this._unBlockForm.bind(this);
   }
 
   init(point) {
@@ -100,6 +104,11 @@ export default class Point {
     }
   }
 
+  _deleteEventListener() {
+    window.removeEventListener('offline', this._blockForm);
+    window.removeEventListener('online', this._unBlockForm);
+  }
+
   _replaceCardToForm() {
     replace(this._pointEditComponent, this._pointComponent);
     document.addEventListener('keydown', this._escKeyDownClickHandler);
@@ -127,13 +136,35 @@ export default class Point {
     );
   }
 
+  _blockForm() {
+    this._pointEditComponent.shake(() => {
+      this._pointEditComponent.updateData({
+        isDisabled: true,
+      });
+    });
+  }
+
+  _unBlockForm() {
+    this._pointEditComponent.updateData({
+      isDisabled: false,
+    });
+  }
+
   _handleEditClick() {
+    if (!isOnline()) {
+      toast('You can\'t edit point offline');
+      return;
+    }
+    window.addEventListener('offline', this._blockForm);
+    window.addEventListener('online', this._unBlockForm);
+
     this._replaceCardToForm();
   }
 
   _handleUneditClick() {
     this._pointEditComponent.reset(this._point);
     this._replaceFormToCard();
+    this._deleteEventListener();
   }
 
   _handleFormSubmit(point) {
@@ -142,6 +173,7 @@ export default class Point {
       UpdateType.MAJOR,
       point,
     );
+    this._deleteEventListener();
   }
 
   _handleDeleteClick(point) {
@@ -150,6 +182,7 @@ export default class Point {
       UpdateType.MAJOR,
       point,
     );
+    this._deleteEventListener();
   }
 
   _escKeyDownClickHandler(evt) {
@@ -157,6 +190,7 @@ export default class Point {
       evt.preventDefault();
       this._pointEditComponent.reset(this._point);
       this._replaceFormToCard();
+      this._deleteEventListener();
     }
   }
 }

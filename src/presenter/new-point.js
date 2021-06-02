@@ -14,6 +14,8 @@ export default class PointNew {
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
     this._escKeyDownClickHandler = this._escKeyDownClickHandler.bind(this);
+    this._blockForm = this._blockForm.bind(this);
+    this._unBlockForm = this._unBlockForm.bind(this);
   }
 
   init() {
@@ -30,6 +32,9 @@ export default class PointNew {
 
     document.addEventListener('keydown', this._escKeyDownClickHandler);
     document.querySelector('.trip-main__event-add-btn').disabled = true;
+
+    window.addEventListener('offline', this._blockForm);
+    window.addEventListener('online', this._unBlockForm);
   }
 
   setViewState(state) {
@@ -66,6 +71,20 @@ export default class PointNew {
     document.querySelector('.trip-main__event-add-btn').disabled = false;
   }
 
+  _blockForm() {
+    this._pointNewComponent.shake(() => {
+      this._pointNewComponent.updateData({
+        isDisabled: true,
+      });
+    });
+  }
+
+  _unBlockForm() {
+    this._pointNewComponent.updateData({
+      isDisabled: false,
+    });
+  }
+
   _handleFormSubmit(point) {
     this._changeData(
       UserAction.ADD_POINT,
@@ -75,6 +94,8 @@ export default class PointNew {
   }
 
   _handleDeleteClick() {
+    window.removeEventListener('offline', this._blockForm);
+    window.removeEventListener('online', this._unBlockForm);
     this.destroy();
   }
 
