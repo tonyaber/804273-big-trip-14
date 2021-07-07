@@ -7,15 +7,27 @@ export default class Store {
   }
 
   getItems() {
-    return JSON.parse(this._storage.getItem(this._storeKeyPoint));
+    try {
+      return JSON.parse(this._storage.getItem(this._storeKeyPoint));
+    } catch (err) {
+      return {};
+    }
   }
 
   getCity() {
-    return JSON.parse(this._storage.getItem(this._storeKeyCity)) || {};
+    try {
+      return JSON.parse(this._storage.getItem(this._storeKeyCity)) || {};
+    } catch (err) {
+      return {};
+    }
   }
 
   getOffers() {
-    return JSON.parse(this._storage.getItem(this._storeKeyOffers)) || {};
+    try {
+      return JSON.parse(this._storage.getItem(this._storeKeyOffers)) || {};
+    } catch (err) {
+      return {};
+    }
   }
 
   setItems(items) {
